@@ -210,7 +210,7 @@ input{font-family:inherit}
     </div>
     <div class="card">
       <h3>Қалай жұмыс істейді</h3>
-      <p class="why" style="margin:6px 0 0">Заттар кеңесі 7.41e патчына (2026 ж. шілде) қарап жазылған: Shiva’s Guard енді емдеуді кеспейді, оның орнына Crella’s Crozier; сиқырға қарсы Consecrated Wraps пен Shawl; тығыз геройларға Hydra’s Breath. Дерек бір рет жүктеліп телефонда сақталады (геройлар — 7 күн, матчаптар — 3 күн), содан кейін интернетсіз де ашылады. Жұлдызша қойылған геройлар «Таңдаулы» сүзгісінен көрінеді.</p>
+      <p class="why" style="margin:6px 0 0">Әр геройға арналған қарсы заттар Dotabuff/Dota2counters/Dota 2 Wiki counter гайдтарынан жинақталған (127 герой). Заттар кеңесі 7.41e патчына (2026 ж. шілде) сай: Shiva’s Guard енді емдеуді кеспейді, оның орнына Crella’s Crozier; сиқырға қарсы Consecrated Wraps пен Shawl; тығыз геройларға Hydra’s Breath. Дерек бір рет жүктеліп телефонда сақталады (геройлар — 7 күн, матчаптар — 3 күн), содан кейін интернетсіз де ашылады. Жұлдызша қойылған геройлар «Таңдаулы» сүзгісінен көрінеді.</p>
     </div>
     <div class="note" id="ver"></div>
   </section>
@@ -242,7 +242,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='1.0';
+const V='1.5';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -430,6 +430,137 @@ const IREACT={
  'Echo Sabre':{items:['Force Staff','Ghost Scepter'],note:'Екі соққымен баяулатып ұстайды.'},
  'Parasma':{items:['Pipe of Insight','Consecrated Wraps'],note:'Сиқыр қарсылығыңды түсіреді.'},
  'Consecrated Wraps':{items:['Desolator','Assault Cuirass'],note:'Сиқырға қарсылығы мен қалқаны бар — физика жақсырақ.'}
+};
+
+/* Әр геройға нақты қарсы заттар (Dotabuff/Dota2counters/Fandom counter гайдтарынан жинақталған) */
+const HCOUNTER={
+ phantom_assassin:{i:['Monkey King Bar','Bloodthorn','Silver Edge',"Heaven's Halberd",'Assault Cuirass'],w:'жалтару + крит'},
+ antimage:{i:['Scythe of Vyse','Orchid Malevolence','Abyssal Blade','Rod of Atos'],w:'блинк, мана жеу'},
+ juggernaut:{i:['Ghost Scepter',"Eul's Scepter of Divinity",'Force Staff','Crimson Guard','Spirit Vessel'],w:'Omnislash пен емдеу ыдысы'},
+ spectre:{i:['Scythe of Vyse','Silver Edge','Crimson Guard','Radiance','Battle Fury'],w:'Dispersion, Haunt'},
+ medusa:{i:['Diffusal Blade','Disperser',"Heaven's Halberd",'Spirit Vessel','Solar Crest'],w:'Mana Shield — мана жеу'},
+ terrorblade:{i:['Mjollnir','Battle Fury','Bloodthorn','Crimson Guard'],w:'елес пен Sunder'},
+ phantom_lancer:{i:['Mjollnir','Battle Fury','Radiance',"Shiva's Guard",'Gleipnir'],w:'елес лашыны'},
+ naga_siren:{i:['Mjollnir','Battle Fury','Black King Bar','Radiance'],w:'елес + Song'},
+ chaos_knight:{i:['Mjollnir','Battle Fury','Crimson Guard','Silver Edge'],w:'елес + крит'},
+ meepo:{i:['Mjollnir','Battle Fury','Crimson Guard',"Shiva's Guard"],w:'көп дене'},
+ arc_warden:{i:['Mjollnir','Nullifier','Gem of True Sight','Crimson Guard'],w:'Tempest Double, сплит'},
+ troll_warlord:{i:['Silver Edge',"Heaven's Halberd",'Ghost Scepter','Spirit Vessel','Crimson Guard'],w:'Fervor + вампиризм'},
+ ursa:{i:['Ghost Scepter','Force Staff','Silver Edge','Crimson Guard'],w:'Fury Swipes'},
+ sven:{i:["Heaven's Halberd",'Ghost Scepter','Crimson Guard','Solar Crest','Silver Edge'],w:'Cleave + God\u2019s Strength'},
+ slark:{i:['Sentry Ward','Dust of Appearance','Silver Edge','Bloodthorn','Rod of Atos'],w:'Shadow Dance, Essence Shift'},
+ riki:{i:['Sentry Ward','Dust of Appearance','Gem of True Sight','Bloodthorn','Crimson Guard'],w:'көрінбеу + Backstab'},
+ clinkz:{i:['Sentry Ward','Dust of Appearance','Crimson Guard',"Heaven's Halberd",'Force Staff'],w:'жасырын шабуыл'},
+ bounty_hunter:{i:['Sentry Ward','Dust of Appearance','Gem of True Sight'],w:'Track пен көрінбеу'},
+ weaver:{i:['Dust of Appearance','Sentry Ward','Orchid Malevolence','Scythe of Vyse'],w:'Shukuchi, Time Lapse'},
+ templar_assassin:{i:['Sentry Ward','Dust of Appearance',"Heaven's Halberd",'Ghost Scepter','Crimson Guard'],w:'Meld + Refraction'},
+ morphling:{i:['Orchid Malevolence','Scythe of Vyse','Bloodthorn','Eye of Skadi'],w:'Attribute Shift'},
+ storm_spirit:{i:['Orchid Malevolence','Scythe of Vyse','Rod of Atos','Diffusal Blade','Disperser'],w:'Ball Lightning — мана'},
+ ember_spirit:{i:['Rod of Atos','Gleipnir','Scythe of Vyse','Orchid Malevolence'],w:'Sleight of Fist'},
+ void_spirit:{i:['Rod of Atos','Scythe of Vyse','Orchid Malevolence'],w:'Astral Step'},
+ queenofpain:{i:['Orchid Malevolence','Rod of Atos','Pipe of Insight','Consecrated Wraps'],w:'Blink + сиқыр'},
+ invoker:{i:['Black King Bar','Pipe of Insight',"Linken's Sphere",'Scythe of Vyse'],w:'комбо сиқыр'},
+ zuus:{i:['Black King Bar','Pipe of Insight','Consecrated Wraps',"Linken's Sphere"],w:'таза сиқыр зияны'},
+ lina:{i:['Black King Bar','Pipe of Insight',"Linken's Sphere",'Glimmer Cape'],w:'Laguna жарылысы'},
+ lion:{i:["Linken's Sphere",'Black King Bar','Aeon Disk','Lotus Orb','Glimmer Cape'],w:'Hex + Finger'},
+ shadow_shaman:{i:["Linken's Sphere",'Black King Bar','Lotus Orb','Mjollnir'],w:'Shackles + вард'},
+ pudge:{i:["Linken's Sphere",'Lotus Orb','Force Staff','Aeon Disk'],w:'Hook + Dismember'},
+ axe:{i:['Lotus Orb','Force Staff','Aeon Disk',"Eul's Scepter of Divinity"],w:'Call BKB-дан өтеді'},
+ legion_commander:{i:['Lotus Orb',"Linken's Sphere",'Aeon Disk'],w:'Duel BKB-дан өтеді'},
+ doom_bringer:{i:["Linken's Sphere",'Lotus Orb','Aeon Disk'],w:'Doom BKB-дан өтеді'},
+ faceless_void:{i:['Black King Bar','Silver Edge','Aeon Disk','Manta Style'],w:'Chrono + Backtrack'},
+ tidehunter:{i:['Black King Bar','Pipe of Insight','Silver Edge','Aeon Disk'],w:'Ravage + Kraken Shell'},
+ enigma:{i:['Black King Bar','Aeon Disk',"Eul's Scepter of Divinity",'Mjollnir'],w:'Black Hole'},
+ magnataur:{i:['Black King Bar','Aeon Disk','Lotus Orb'],w:'RP'},
+ earthshaker:{i:['Black King Bar','Aeon Disk','Force Staff','Pipe of Insight'],w:'Echo Slam'},
+ tiny:{i:['Black King Bar','Pipe of Insight','Ghost Scepter','Crimson Guard'],w:'Avalanche+Toss'},
+ sniper:{i:['Silver Edge',"Heaven's Halberd",'Force Staff','Blink Dagger'],w:'Headshot, қашықтық'},
+ drow_ranger:{i:['Silver Edge',"Heaven's Halberd",'Manta Style','Black King Bar'],w:'Marksmanship + Gust'},
+ luna:{i:['Crimson Guard','Silver Edge',"Heaven's Halberd",'Assault Cuirass'],w:'Moon Glaives'},
+ gyrocopter:{i:['Crimson Guard',"Heaven's Halberd",'Ghost Scepter','Assault Cuirass'],w:'Flak Cannon'},
+ life_stealer:{i:["Heaven's Halberd",'Ghost Scepter','Spirit Vessel','Eye of Skadi','Force Staff'],w:'Rage + Feast'},
+ skeleton_king:{i:['Silver Edge','Spirit Vessel','Mjollnir',"Heaven's Halberd"],w:'Reincarnation, қаңқа'},
+ bristleback:{i:['Silver Edge','Spirit Vessel',"Heaven's Halberd","Crella's Crozier"],w:'Bristleback + регені'},
+ huskar:{i:["Heaven's Halberd",'Silver Edge','Assault Cuirass','Eye of Skadi','Spirit Vessel','Solar Crest'],w:'аз өмір = көп зиян'},
+ necrolyte:{i:['Spirit Vessel',"Linken's Sphere",'Eye of Skadi','Pipe of Insight'],w:'Heartstopper + Scythe'},
+ dazzle:{i:['Orchid Malevolence','Bloodthorn','Spirit Vessel'],w:'Shallow Grave'},
+ oracle:{i:['Orchid Malevolence','Bloodthorn','Spirit Vessel','Nullifier'],w:'False Promise'},
+ omniknight:{i:['Orchid Malevolence','Spirit Vessel','Nullifier',"Crella's Crozier"],w:'Guardian Angel + емдеу'},
+ abaddon:{i:['Spirit Vessel','Eye of Skadi','Silver Edge',"Crella's Crozier"],w:'Aphotic Shield + Borrowed Time'},
+ undying:{i:['Spirit Vessel','Mjollnir','Crimson Guard'],w:'Tombstone + Flesh Golem'},
+ alchemist:{i:['Silver Edge','Spirit Vessel',"Heaven's Halberd",'Crimson Guard'],w:'Chemical Rage'},
+ shredder:{i:['Spirit Vessel','Orchid Malevolence','Bloodthorn','Silver Edge','Scythe of Vyse'],w:'Reactive Armor'},
+ centaur:{i:['Silver Edge','Force Staff','Spirit Vessel'],w:'Return + Stampede'},
+ dragon_knight:{i:['Silver Edge','Desolator','Solar Crest','Spirit Vessel'],w:'Dragon Blood брон'},
+ slardar:{i:['Force Staff','Ghost Scepter',"Heaven's Halberd"],w:'Amplify Damage'},
+ night_stalker:{i:['Silver Edge',"Heaven's Halberd",'Force Staff','Ghost Scepter'],w:'түнгі күші'},
+ primal_beast:{i:['Black King Bar','Force Staff','Silver Edge','Aeon Disk'],w:'Pulverize + Uproar'},
+ mars:{i:['Black King Bar','Force Staff',"Eul's Scepter of Divinity",'Aeon Disk'],w:'Arena'},
+ underlord:{i:['Pipe of Insight','Consecrated Wraps','Black King Bar','Force Staff'],w:'Firestorm аурасы'},
+ tinker:{i:['Rod of Atos','Orchid Malevolence','Scythe of Vyse','Pipe of Insight',"Linken's Sphere"],w:'Rearm — тыныштандыру'},
+ furion:{i:['Rod of Atos','Orchid Malevolence','Crimson Guard','Gem of True Sight'],w:'телепорт, сплит'},
+ techies:{i:['Gem of True Sight','Sentry Ward','Pipe of Insight','Force Staff'],w:'мина мен көрінбейтін зиян'},
+ broodmother:{i:['Crimson Guard','Mjollnir','Sentry Ward','Assault Cuirass'],w:'өрмекшілер'},
+ lone_druid:{i:['Crimson Guard','Mjollnir',"Heaven's Halberd",'Assault Cuirass'],w:'Аю'},
+ lycan:{i:['Crimson Guard','Mjollnir','Spirit Vessel','Silver Edge'],w:'қасқыр + Howl'},
+ beastmaster:{i:['Mjollnir','Crimson Guard',"Linken's Sphere",'Pipe of Insight'],w:'аңдар + Roar'},
+ visage:{i:['Mjollnir','Crimson Guard','Assault Cuirass','Pipe of Insight'],w:'Familiar'},
+ warlock:{i:['Black King Bar','Aeon Disk','Spirit Vessel','Mjollnir'],w:'Upheaval + Golem'},
+ witch_doctor:{i:['Black King Bar',"Linken's Sphere",'Aeon Disk','Glimmer Cape'],w:'Death Ward'},
+ disruptor:{i:['Black King Bar','Aeon Disk',"Eul's Scepter of Divinity",'Manta Style'],w:'Static Storm'},
+ silencer:{i:['Manta Style','Black King Bar',"Eul's Scepter of Divinity",'Lotus Orb'],w:'Global Silence'},
+ skywrath_mage:{i:['Black King Bar','Pipe of Insight','Consecrated Wraps','Glimmer Cape',"Linken's Sphere"],w:'Ancient Seal + сиқыр'},
+ grimstroke:{i:['Black King Bar',"Linken's Sphere",'Lotus Orb','Aeon Disk'],w:'Soulbind'},
+ shadow_demon:{i:['Black King Bar',"Linken's Sphere",'Lotus Orb','Mjollnir'],w:'Disruption + Demonic'},
+ winter_wyvern:{i:['Black King Bar',"Linken's Sphere",'Aeon Disk','Spirit Vessel'],w:"Winter's Curse + емдеу"},
+ ancient_apparition:{i:["Linken's Sphere",'Black King Bar','Aeon Disk','Pipe of Insight'],w:'Ice Blast емдеуді жабады'},
+ crystal_maiden:{i:['Black King Bar','Pipe of Insight','Force Staff','Glimmer Cape'],w:'Freezing Field'},
+ jakiro:{i:['Pipe of Insight','Consecrated Wraps','Black King Bar'],w:'Macropyre + Ice Path'},
+ lich:{i:['Pipe of Insight','Black King Bar','Glimmer Cape'],w:'Chain Frost'},
+ venomancer:{i:['Pipe of Insight','Consecrated Wraps','Manta Style','Spirit Vessel'],w:'у мен вард'},
+ viper:{i:['Pipe of Insight','Consecrated Wraps','Manta Style','Silver Edge','Black King Bar'],w:'Corrosive Skin + Nethertoxin'},
+ razor:{i:['Ghost Scepter','Force Staff',"Eul's Scepter of Divinity",'Pipe of Insight'],w:'Static Link'},
+ sand_king:{i:['Sentry Ward','Black King Bar','Pipe of Insight','Force Staff'],w:'Sand Storm + Epicenter'},
+ nyx_assassin:{i:['Sentry Ward','Dust of Appearance',"Linken's Sphere",'Black King Bar'],w:'Vendetta + Carapace'},
+ puck:{i:['Rod of Atos','Scythe of Vyse','Orchid Malevolence','Black King Bar'],w:'Phase Shift + Coil'},
+ earth_spirit:{i:['Black King Bar','Force Staff','Rod of Atos'],w:'тас домалату'},
+ pangolier:{i:['Black King Bar','Rod of Atos','Silver Edge','Monkey King Bar'],w:'Rolling Thunder + Lucky Shot'},
+ monkey_king:{i:['Silver Edge','Mjollnir',"Heaven's Halberd",'Crimson Guard'],w:'Jingu + Wukong'},
+ marci:{i:['Black King Bar',"Heaven's Halberd",'Ghost Scepter','Spirit Vessel'],w:'Unleash + Sidekick'},
+ dawnbreaker:{i:['Spirit Vessel',"Heaven's Halberd",'Silver Edge','Ghost Scepter'],w:'Luminosity емдеуі'},
+ muerta:{i:['Pipe of Insight','Consecrated Wraps','Force Staff','Black King Bar'],w:'Pierce the Veil'},
+ kez:{i:['Black King Bar',"Heaven's Halberd",'Ghost Scepter','Force Staff'],w:'екі стойка, жақын зиян'},
+ ringmaster:{i:['Black King Bar',"Linken's Sphere",'Lotus Orb','Aeon Disk'],w:'ұстап тұратын ұлт'},
+ snapfire:{i:['Black King Bar','Pipe of Insight',"Linken's Sphere"],w:'Mortimer Kisses'},
+ hoodwink:{i:['Rod of Atos','Orchid Malevolence','Black King Bar'],w:'Sharpshooter + Scurry'},
+ windrunner:{i:['Monkey King Bar',"Linken's Sphere",'Black King Bar',"Heaven's Halberd"],w:'Windrun жалтаруы'},
+ brewmaster:{i:['Monkey King Bar','Black King Bar','Mjollnir','Crimson Guard'],w:'Drunken Brawler + панда'},
+ wisp:{i:['Spirit Vessel','Orchid Malevolence','Bloodthorn','Eye of Skadi'],w:'Tether емдеуі'}
+ ,io:{i:['Spirit Vessel','Orchid Malevolence','Bloodthorn','Eye of Skadi'],w:'Tether емдеуі'},
+ treant:{i:['Sentry Ward','Spirit Vessel','Orchid Malevolence'],w:'Living Armor + жасырыну'},
+ enchantress:{i:['Spirit Vessel','Silver Edge','Black King Bar'],w:'Untouchable'},
+ chen:{i:['Mjollnir','Spirit Vessel','Crimson Guard'],w:'орман жаны + емдеу'},
+ keeper_of_the_light:{i:['Black King Bar','Pipe of Insight',"Linken's Sphere"],w:'Illuminate'},
+ vengefulspirit:{i:["Linken's Sphere",'Lotus Orb','Black King Bar'],w:'Swap'},
+ nevermore:{i:['Black King Bar','Pipe of Insight','Force Staff','Ghost Scepter'],w:'Requiem + Razes'},
+ obsidian_destroyer:{i:['Black King Bar',"Linken's Sphere",'Pipe of Insight'],w:'Astral + таза зиян'},
+ death_prophet:{i:['Crimson Guard','Ghost Scepter','Pipe of Insight','Assault Cuirass'],w:'Exorcism рухтары'},
+ leshrac:{i:['Black King Bar','Pipe of Insight','Consecrated Wraps','Glimmer Cape'],w:'Pulse Nova'},
+ pugna:{i:['Black King Bar','Mjollnir','Lotus Orb','Pipe of Insight'],w:'Nether Ward + Life Drain'},
+ batrider:{i:['Black King Bar',"Linken's Sphere",'Lotus Orb','Force Staff'],w:'Lasso'},
+ rattletrap:{i:['Black King Bar','Force Staff',"Linken's Sphere",'Lotus Orb'],w:'Cogs + Hookshot'},
+ tusk:{i:['Black King Bar','Lotus Orb','Force Staff'],w:'Snowball + Walrus'},
+ spirit_breaker:{i:["Linken's Sphere",'Ghost Scepter','Force Staff',"Heaven's Halberd"],w:'Charge'},
+ bloodseeker:{i:['Silver Edge',"Linken's Sphere",'Ghost Scepter',"Heaven's Halberd"],w:'Rupture + Thirst'},
+ ogre_magi:{i:['Black King Bar',"Linken's Sphere",'Pipe of Insight'],w:'Multicast'},
+ rubick:{i:['Black King Bar','Lotus Orb',"Linken's Sphere"],w:'Spell Steal'},
+ bane:{i:["Linken's Sphere",'Lotus Orb','Aeon Disk'],w:"Fiend's Grip BKB-дан өтеді"},
+ elder_titan:{i:['Black King Bar','Pipe of Insight','Aeon Disk'],w:'Natural Order + Stomp'},
+ kunkka:{i:['Black King Bar','Force Staff','Silver Edge','Pipe of Insight'],w:'Torrent + Tidebringer'},
+ mirana:{i:['Sentry Ward','Dust of Appearance',"Linken's Sphere",'Black King Bar'],w:'Moonlight Shadow + Arrow'},
+ dark_willow:{i:['Black King Bar',"Linken's Sphere",'Lotus Orb'],w:'Cursed Crown + Bramble'},
+ dark_seer:{i:['Pipe of Insight','Consecrated Wraps','Black King Bar','Mjollnir'],w:'Ion Shell + Wall'},
+ phoenix:{i:['Pipe of Insight','Black King Bar','Force Staff','Spirit Vessel'],w:'Supernova'}
 };
 
 const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Shard",tpscroll:'TP Scroll',
@@ -726,14 +857,19 @@ async function renderItems(){
       + bought.map(f=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
           <div><div class="pn">${f.localized_name}</div><div class="pw">${S.fi[f.id].join(' · ')}</div></div></div>`).join('')
       + `<p class="why" style="margin:9px 0 0">Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.</p></div>`;
+    const per=fs.map(f=>({f,c:HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)]})).filter(x=>x.c);
+    const perCard = per.length?`<div class="card"><h3>Әр қарсыласқа қарсы зат</h3>`
+      + per.map(({f,c})=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
+          <div><div class="pn">${f.localized_name}<span style="color:var(--dim);font-weight:400"> — ${c.w}</span></div>
+          <div class="pw">${c.i.join(' · ')}</div></div></div>`).join('') + '</div>':'';
     const hits=THREATS.map(t=>({t,who:fs.filter(h=>has(t.list,h))})).filter(x=>x.who.length)
       .sort((a,b)=>b.who.length-a.who.length);
-    th.innerHTML = hits.length? hits.map(({t,who})=>`
+    th.innerHTML = perCard + (hits.length? hits.map(({t,who})=>`
       <div class="card"><span class="tagn">${who.length}</span><h3>${t.ttl}</h3>
         <p class="why">${who.map(h=>h.localized_name).join(', ')} — ${t.why}</p>
         <div class="items">${t.items.map(n=>`<span class="it"><img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">${n}</span>`).join('')}</div>
       </div>`).join('')
-      : '<div class="empty">Ерекше қауіп табылмады — әдеттегі жинақпен жүре бер.</div>';
+      : '');
   }
   const my=document.getElementById('myHeroes'), bd=document.getElementById('build');
   my.innerHTML='';
@@ -762,10 +898,23 @@ async function showPlan(h){
     const who=fs.filter(x=>has(t.list,x)); if(!who.length) return;
     t.items.forEach(n=>{
       if(!fits(n,h)) return;
-      const e=map.get(n)||{n,who:new Set(),cats:new Set()};
-      who.forEach(w=>e.who.add(w.localized_name)); e.cats.add(t.ttl); map.set(n,e);
+      const e=map.get(n)||{n,who:new Map(),cats:new Set()};
+      who.forEach(w=>{ if(!e.who.has(w.localized_name)) e.who.set(w.localized_name,''); });
+      e.cats.add(t.ttl); map.set(n,e);
     });
   });
+  // әр қарсылас геройына арналған нақты қарсы заттар
+  const hc=h2=>HCOUNTER[key(h2)]||HCOUNTER[slug(h2.localized_name)];
+  fs.forEach(f=>{
+    const c=hc(f); if(!c) return;
+    c.i.forEach(n=>{
+      if(!fits(n,h)) return;
+      const e=map.get(n)||{n,who:new Map(),cats:new Set()};
+      if(!(e.who.get(f.localized_name)||'').startsWith('→')) e.who.set(f.localized_name, c.w?'— '+c.w:'');
+      e.cats.add('Геройға қарсы'); e.hero=1; map.set(n,e);
+    });
+  });
+
   // қарсылас нақты сатып алған заттарға реакция
   const notes=[];
   fs.forEach(f=>{ (S.fi[f.id]||[]).forEach(it=>{
@@ -773,14 +922,15 @@ async function showPlan(h){
     if(r.note) notes.push({f:f.localized_name,it,note:r.note});
     (r.items||[]).forEach(n=>{
       if(!fits(n,h)) return;
-      const e=map.get(n)||{n,who:new Set(),cats:new Set()};
-      e.who.add(f.localized_name+' → '+it); e.cats.add('Қарсыластың заты'); e.hot=1; map.set(n,e);
+      const e=map.get(n)||{n,who:new Map(),cats:new Set()};
+      e.who.set(f.localized_name,'→ '+it); e.cats.add('Қарсыластың заты'); e.hot=1; map.set(n,e);
     });
   });});
-  const list=[...map.values()].sort((a,b)=> (b.hot||0)-(a.hot||0) || b.who.size-a.who.size || b.cats.size-a.cats.size);
+  const wt=e=>(e.hot?2:0)+(e.hero?1:0);
+  const list=[...map.values()].sort((a,b)=> wt(b)-wt(a) || b.who.size-a.who.size || b.cats.size-a.cats.size);
   const itemRow=e=>`<div class="pl${e.hot?' hot':''}">
       <img src="${IMG(ikey(e.n))}" alt="" loading="lazy" onerror="this.style.display='none'">
-      <div><div class="pn">${e.n}</div><div class="pw">${[...e.cats].join(' · ')} — ${[...e.who].join(', ')}</div></div></div>`;
+      <div><div class="pn">${e.n}</div><div class="pw">${[...e.who].map(([n2,d])=>n2+(d?' '+d:'')).join(', ')}</div></div></div>`;
   let counter;
   if(!fs.length) counter='<div class="empty">Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.</div>';
   else if(!list.length) counter='<div class="empty">Бұл геройға қосымша қарсы зат қажет емес — әдеттегі жинақпен жүре бер.</div>';
