@@ -97,6 +97,13 @@ input{font-family:inherit}
 .it img{width:32px;height:24px;border-radius:3px;object-fit:cover;background:#0B0F18}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
+.pl{display:flex;gap:9px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.plist .pl:first-child{border-top:0;padding-top:2px}
+.pl img{width:42px;height:31px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.pn{font-size:13px;font-weight:600}
+.pw{font-size:11.5px;color:var(--dim);line-height:1.3}
+.grow{margin-top:9px}
+.gt{display:block;font-family:var(--disp);font-size:11px;letter-spacing:.12em;color:var(--gold);margin-bottom:5px}
 .split{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px}
 .stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
@@ -129,6 +136,17 @@ input{font-family:inherit}
 .gh:first-child{margin-top:2px;border-top:0;padding-top:0}
 .gh i{font-style:normal;font-family:var(--body);font-size:11px;color:var(--dim);letter-spacing:0}
 .hb .st{position:absolute;top:3px;right:5px;font-size:12px;color:var(--gold);text-shadow:0 1px 3px #000}
+.igrid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:repeat(2,1fr);gap:8px;align-content:start}
+.ib{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:6px;text-align:left}
+.ib img{width:40px;height:30px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.ib span{font-size:11.5px;line-height:1.2}
+.ib.sel{border-color:var(--gold);background:#2A2415}
+.slot .cnt{display:inline-block;margin-left:5px;background:var(--gold);color:#171203;font-size:9.5px;
+  font-weight:800;border-radius:6px;padding:0 4px;vertical-align:1px}
+.pl.hot .pn::after{content:'қарсыластың заты';margin-left:6px;font-family:var(--disp);font-size:9.5px;
+  letter-spacing:.1em;color:var(--gold);vertical-align:1px}
 
 /* tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);
@@ -174,11 +192,11 @@ input{font-family:inherit}
   <section id="p-items" class="page">
     <div class="sec"><h2>Қарсылас құрамы</h2></div>
     <div id="comp"></div>
-    <div class="sec"><h2>Не сатып алу керек</h2><span class="hint">қарсыласқа қарай</span></div>
-    <div id="threats"></div>
-    <div class="sec"><h2>Менің геройымның жинағы</h2></div>
+    <div class="sec"><h2>Менің геройым</h2><span class="hint">басып таңда</span></div>
     <div class="chips" id="myHeroes"></div>
     <div id="build"></div>
+    <div class="sec"><h2>Жалпы қауіптер</h2><span class="hint">бүкіл команда үшін</span></div>
+    <div id="threats"></div>
   </section>
 
   <!-- БАПТАУ -->
@@ -203,6 +221,15 @@ input{font-family:inherit}
   <button class="tab" data-go="p-items"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg>Заттар</button>
   <button class="tab" data-go="p-set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>Баптау</button>
 </nav>
+
+<div class="sheet" id="isheet">
+  <div class="bg" data-iclose></div>
+  <div class="box">
+    <div class="hd"><h2 id="isTitle">Заттары</h2><button class="cl" data-iclose>✕</button></div>
+    <input class="srch" id="isSrch" placeholder="Зат іздеу" autocomplete="off">
+    <div class="igrid" id="isGrid"></div>
+  </div>
+</div>
 
 <div class="sheet" id="sheet">
   <div class="bg" data-close></div>
@@ -229,7 +256,8 @@ const LS={
 };
 
 let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
-let S = LS.get('state') || {mine:[],foe:[]};
+let S = LS.get('state') || {mine:[],foe:[],fi:{}};
+if(!S.fi) S.fi={};
 let FAV = LS.get('fav') || ['phantom_assassin','ursa','shadow_shaman','drow_ranger'];
 let filt='all', shFilt='all', shSide='mine', shIdx=0;
 
@@ -291,6 +319,118 @@ const THREATS=[
   items:["Heaven's Halberd",'Ghost Scepter','Force Staff','Rod of Atos'],
   list:['phantom_assassin','juggernaut','sven','ursa','troll_warlord','slark','riki','anti_mage','antimage','spectre','life_stealer','lifestealer','monkey_king','bloodseeker','chaos_knight','skeleton_king','wraith_king','marci','dawnbreaker','primal_beast','kez','tiny','alchemist','ember_spirit','pangolier','brewmaster','lone_druid','lycan','meepo','phantom_lancer','naga_siren','night_stalker','slardar','magnataur','magnus','earth_spirit','tusk','faceless_void','centaur','axe','legion_commander']}
 ];
+
+
+/* қай зат кімге келеді: r=рөл, atk=ұрысшыға, melee/ranged=шабуыл түрі */
+const FIT={
+ 'Sentry Ward':{r:['sup']},'Dust of Appearance':{r:['sup','core']},'Gem of True Sight':{r:['sup','core']},
+ 'Battle Fury':{r:['core'],atk:1,melee:1},"Hydra's Breath":{r:['core'],atk:1,ranged:1},
+ 'Monkey King Bar':{r:['core'],atk:1},'Bloodthorn':{r:['core'],atk:1},'Silver Edge':{r:['core'],atk:1},
+ 'Desolator':{r:['core'],atk:1},'Mjollnir':{r:['core'],atk:1},'Assault Cuirass':{r:['core'],atk:1},
+ 'Eye of Skadi':{r:['core'],atk:1},'Nullifier':{r:['core'],atk:1},'Manta Style':{r:['core'],atk:1},
+ 'Radiance':{r:['core']},'Orchid Malevolence':{r:['core']},"Crella's Crozier":{r:['core']},
+ "Heaven's Halberd":{r:['core']},"Linken's Sphere":{r:['core']},'Aeon Disk':{r:['core']},
+ 'Sange and Yasha':{r:['core']},'Spirit Vessel':{r:['sup','core']},'Medallion of Courage':{r:['sup']},
+ 'Solar Crest':{r:['sup','core']},'Glimmer Cape':{r:['sup']},'Force Staff':{r:['sup','core']},
+ 'Pipe of Insight':{r:['sup','core']},'Crimson Guard':{r:['sup','core']},'Shawl':{r:['sup','core']},
+ 'Ghost Scepter':{r:['sup','core']},'Lotus Orb':{r:['sup','core']},'Scythe of Vyse':{r:['sup','core']}
+};
+const kindOf=h=>{
+  const k=[];
+  if(has(POS.carry,h)||has(POS.mid,h)||has(POS.off,h)) k.push('core');
+  if(has(POS.sup,h)) k.push('sup');
+  return k.length?k:['core','sup'];
+};
+const attacker=h=>has(POS.carry,h)||h.roles.includes('Carry');
+function fits(name,h){
+  const f=FIT[name]; if(!f) return true;
+  const k=kindOf(h);
+  if(f.r && !f.r.some(r=>k.includes(r))) return false;
+  if(f.atk && !attacker(h)) return false;
+  if(f.melee && h.attack_type!=='Melee') return false;
+  if(f.ranged && h.attack_type!=='Ranged') return false;
+  return true;
+}
+
+/* қарсылас сатып алатын маңызды заттар (таңдау терезесі үшін) */
+const ITEMLIST=['Black King Bar','Blade Mail','Butterfly','Heart of Tarrasque','Satanic','Radiance',
+ 'Blink Dagger','Manta Style','Silver Edge','Shadow Blade','Desolator','Monkey King Bar','Assault Cuirass',
+ 'Crimson Guard','Pipe of Insight',"Shiva's Guard",'Lotus Orb',"Linken's Sphere",'Aeon Disk',
+ "Eul's Scepter of Divinity",'Force Staff','Glimmer Cape','Ghost Scepter','Scythe of Vyse','Orchid Malevolence',
+ 'Bloodthorn','Rod of Atos','Gleipnir','Nullifier','Abyssal Blade','Skull Basher','Eye of Skadi','Daedalus',
+ 'Divine Rapier','Refresher Orb','Octarine Core',"Aghanim's Scepter",'Solar Crest',"Vladmir's Offering",
+ 'Spirit Vessel',"Heaven's Halberd",'Guardian Greaves','Mask of Madness','Diffusal Blade','Disperser',
+ 'Dagon','Veil of Discord','Bloodstone','Eternal Shroud','Mage Slayer','Parasma','Wind Waker','Harpoon',
+ 'Echo Sabre','Battle Fury','Mjollnir','Boots of Travel','Hand of Midas','Sange and Yasha','Kaya and Sange',
+ 'Meteor Hammer','Khanda',"Hydra's Breath","Crella's Crozier",'Consecrated Wraps',"Specialist's Array"];
+
+/* қарсылас сол затты алса — не істеу керек */
+const IREACT={
+ 'Butterfly':{items:['Monkey King Bar','Bloodthorn'],note:'Жалтаруын тек дәлдік беретін зат бұзады.'},
+ "Heaven's Halberd":{items:['Black King Bar',"Linken's Sphere"],note:'Қаруыңды алып тастайды — BKB қосып тұрып ұр.'},
+ 'Black King Bar':{items:['Abyssal Blade','Silver Edge'],note:'BKB қосулы кезде заклинание өтпейді: Abyssal басы иммунитеттен өтеді, қалғанын күтіп ұр.'},
+ 'Blade Mail':{items:['Satanic','Pipe of Insight'],note:'Жарқырап тұрғанда бүкіл зияның өзіңе қайтады — 5 секунд тимей тұр.'},
+ 'Heart of Tarrasque':{items:['Silver Edge','Spirit Vessel','Eye of Skadi'],note:'Регенін Silver Edge сөндіреді, емдеу кесетін зат азайтады.'},
+ 'Satanic':{items:['Spirit Vessel',"Crella's Crozier",'Eye of Skadi'],note:'Қосқанда өзін толық емдейді — емдеу кесу міндетті.'},
+ "Vladmir's Offering":{items:['Spirit Vessel','Eye of Skadi'],note:'Бүкіл командасына вампиризм — емдеу кесу жақсы жұмыс істейді.'},
+ 'Guardian Greaves':{items:['Spirit Vessel',"Crella's Crozier"],note:'Ұрыс ортасында бәрін емдейді — Vessel сол сәтті бұзады.'},
+ 'Bloodstone':{items:['Spirit Vessel',"Crella's Crozier"],note:'Заклинание қосқан сайын емделеді.'},
+ 'Radiance':{items:['Pipe of Insight','Consecrated Wraps'],note:'Жанында тұрған сайын күйесің — қашықтық ұста.'},
+ 'Blink Dagger':{items:['Rod of Atos','Gleipnir','Nullifier'],note:'Root тұрғанда блинк жұмыс істемейді. Ұрыс алдында бір рет тисең, блинк 3 секундқа өшеді.'},
+ 'Shadow Blade':{items:['Sentry Ward','Dust of Appearance','Gem of True Sight'],note:'Көрінбей келеді — картаңа вард қой.'},
+ 'Silver Edge':{items:['Sentry Ward','Dust of Appearance','Gem of True Sight'],note:'Көрінбей келіп пассивіңді сөндіреді.'},
+ 'Manta Style':{items:['Mjollnir','Battle Fury'],note:'Елесімен байлауыңнан құтылады — AoE зиян елесті тазалайды.'},
+ "Linken's Sphere":{items:[],note:'Алдымен арзан заклинание не жай соққымен сфераны сындыр, содан кейін негізгісін қос.'},
+ 'Lotus Orb':{items:[],note:'Бір нысанға арналған заклинаниең өзіңе қайтады — алдымен сол қалқанды түсір не күт.'},
+ 'Aeon Disk':{items:['Orchid Malevolence','Bloodthorn','Scythe of Vyse'],note:'Бір жарылыспен өлмейді — екінші толқын зиян не тыныштандыру керек.'},
+ 'Pipe of Insight':{items:['Desolator','Assault Cuirass'],note:'Сиқыр зияны нашарлайды — қатты зиянға ауыс.'},
+ 'Eternal Shroud':{items:['Desolator','Assault Cuirass'],note:'Сиқырмен ұрсаң, ол емделеді — физика жақсырақ.'},
+ 'Mage Slayer':{items:['Desolator','Assault Cuirass'],note:'Сиқырға қарсылығы өседі.'},
+ 'Crimson Guard':{items:['Desolator',"Hydra's Breath","Shiva's Guard"],note:'Қалқан жай соққыны жұтады — броны түсіретін не пайызбен жейтін зат.'},
+ 'Assault Cuirass':{items:['Desolator','Solar Crest',"Hydra's Breath"],note:'Броны көп — түсіріп ал.'},
+ "Shiva's Guard":{items:['Desolator','Solar Crest'],note:'Брон мен шабуыл жылдамдығына әсер етеді.'},
+ 'Ghost Scepter':{items:['Nullifier'],note:'Nullifier аруақ күйін сыпырып тастайды.'},
+ "Crella's Crozier":{items:['Nullifier'],note:'Аруақ күйін Nullifier алып тастайды, әрі емдеуіңді кеседі.'},
+ 'Scythe of Vyse':{items:['Black King Bar',"Linken's Sphere",'Aeon Disk'],note:'Қойға айналдырады — BKB не сфера ұста.'},
+ 'Orchid Malevolence':{items:['Black King Bar','Manta Style',"Linken's Sphere"],note:'Тыныштандырады — Manta дispel жасайды.'},
+ 'Bloodthorn':{items:['Black King Bar','Manta Style'],note:'Тыныштық + крит — BKB мен Manta құтқарады.'},
+ 'Nullifier':{items:['Black King Bar',"Linken's Sphere"],note:'Заттарыңды құлыптайды — сфера бірінші соққыны жұтады.'},
+ 'Abyssal Blade':{items:['Force Staff',"Linken's Sphere"],note:'Басы BKB-дан өтеді — жақындатпау керек.'},
+ 'Skull Basher':{items:['Force Staff',"Linken's Sphere"],note:'Ұрып тұрып қатырады — қашықтық ұста.'},
+ 'Desolator':{items:["Shiva's Guard",'Assault Cuirass','Solar Crest'],note:'Броныңды түсіреді — брон қосатын зат ал.'},
+ 'Monkey King Bar':{items:["Shiva's Guard",'Assault Cuirass'],note:'Жалтаруың пайдасыз болды — брон мен өмірге ауыс.'},
+ 'Diffusal Blade':{items:['Black King Bar','Manta Style'],note:'Манаңды жейді — Manta слоуын сыпырады.'},
+ 'Disperser':{items:['Black King Bar','Manta Style'],note:'Манаңды жеп, баяулатады.'},
+ 'Dagon':{items:['Black King Bar','Consecrated Wraps','Pipe of Insight'],note:'Жарылыс сиқыры — сиқырға қарсылық қос.'},
+ 'Veil of Discord':{items:['Black King Bar','Pipe of Insight'],note:'Сиқыр зияны күшейеді — BKB ерте керек.'},
+ 'Mask of Madness':{items:['Spirit Vessel'],note:'Қосқанда броны түседі — сол сәтте жарылт.'},
+ 'Wind Waker':{items:['Orchid Malevolence','Scythe of Vyse'],note:'Аспанға көтеріліп қашады — тыныштандыр не хекс.'},
+ 'Harpoon':{items:['Force Staff',"Linken's Sphere"],note:'Өзіне тартып алады — шығатын зат ұста.'},
+ 'Refresher Orb':{items:['Aeon Disk','Black King Bar'],note:'Ұлтын екі рет қосады — екінші комбоға да дайын тұр.'},
+ "Aghanim's Scepter":{items:['Black King Bar'],note:'Ұлты күшейді — қауіп деңгейін көтер.'},
+ 'Divine Rapier':{items:['Ghost Scepter','Force Staff'],note:'Бір соққымен өлтіреді — тимеу керек, өлтірсең рапира түседі.'},
+ 'Boots of Travel':{items:[],note:'Бөлек итеріп жүреді — линияны бақыла, бір өзін ұстап ал.'},
+ 'Hand of Midas':{items:[],note:'Ерте қысым жаса — уақыт өтсе, ол күшейеді.'},
+ "Hydra's Breath":{items:['Pipe of Insight','Consecrated Wraps'],note:'Максимал өміріңнің пайызын жейді.'},
+ "Specialist's Array":{items:["Shiva's Guard",'Assault Cuirass'],note:'Броныңды түсіреді.'},
+ 'Octarine Core':{items:['Black King Bar'],note:'Заклинаниелерін жиі қосады.'},
+ 'Meteor Hammer':{items:['Black King Bar','Force Staff'],note:'Каналды заклинание — үзіп жіберуге болады.'},
+ 'Khanda':{items:['Black King Bar'],note:'Заклинаниеден кейінгі соққысы қатты.'},
+ 'Eye of Skadi':{items:['Black King Bar','Manta Style'],note:'Ұзақ баяулатады — дispel не BKB.'},
+ 'Daedalus':{items:["Shiva's Guard",'Assault Cuirass','Crimson Guard'],note:'Крит қатты — брон мен қалқан.'},
+ 'Battle Fury':{items:['Crimson Guard'],note:'Линияны тез тазалайды.'},
+ 'Mjollnir':{items:['Black King Bar'],note:'Елестерің мен саппорттарыңды тез тазалайды.'},
+ 'Solar Crest':{items:['Assault Cuirass',"Shiva's Guard"],note:'Броныңды түсіреді.'},
+ 'Spirit Vessel':{items:[],note:'Емдеуің кесіледі — регенге сенбе.'},
+ 'Force Staff':{items:['Rod of Atos','Gleipnir'],note:'Итеріп қашады — байлайтын зат керек.'},
+ 'Glimmer Cape':{items:['Sentry Ward','Dust of Appearance'],note:'Көрінбей қалады — Dust ұста.'},
+ "Eul's Scepter of Divinity":{items:['Rod of Atos','Gleipnir'],note:'Циклонмен құтылады.'},
+ 'Sange and Yasha':{items:['Rod of Atos','Gleipnir'],note:'Күй қарсылығы өседі — ұзақ ұстайтын зат керек.'},
+ 'Kaya and Sange':{items:['Rod of Atos','Gleipnir'],note:'Күй қарсылығы мен сиқыры күшейеді.'},
+ 'Echo Sabre':{items:['Force Staff','Ghost Scepter'],note:'Екі соққымен баяулатып ұстайды.'},
+ 'Parasma':{items:['Pipe of Insight','Consecrated Wraps'],note:'Сиқыр қарсылығыңды түсіреді.'},
+ 'Consecrated Wraps':{items:['Desolator','Assault Cuirass'],note:'Сиқырға қарсылығы мен қалқаны бар — физика жақсырақ.'}
+};
 
 const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Shard",tpscroll:'TP Scroll',
  ward_observer:'Observer Ward',ward_sentry:'Sentry Ward',bfury:'Battle Fury',greater_crit:'Daedalus',
@@ -376,10 +516,14 @@ function slots(side){
     const h=BYID[arr[i]];
     const b=document.createElement('button');
     b.className='slot'+(h?' full':'');
+    const n=h&&side!=='mine'?(S.fi[h.id]||[]).length:0;
     b.innerHTML = h
-      ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}</span><span class="x">✕</span>`
+      ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x">✕</span>`
       : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
-    b.onclick=()=>{ if(h){ arr.splice(i,1); save(); board(); } else openPicker(side,i); };
+    if(h){
+      b.onclick=()=>{ if(side==='mine'){ arr.splice(i,1); save(); board(); } else openItems(h); };
+      b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete S.fi[h.id]; save(); board(); };
+    } else b.onclick=()=>openPicker(side,i);
     box.appendChild(b);
   }
 }
@@ -525,13 +669,47 @@ async function pick(h){
   }
 }
 
+/* ---------- қарсыластың заттарын енгізу ---------- */
+let isHero=null;
+function openItems(h){
+  isHero=h;
+  document.getElementById('isTitle').textContent=h.localized_name+' не жинады';
+  document.getElementById('isSrch').value='';
+  document.getElementById('isheet').classList.add('on');
+  history.pushState({sheet:1},'');
+  renderIGrid();
+}
+function closeItems(fromPop){
+  document.getElementById('isheet').classList.remove('on');
+  if(fromPop!==true && history.state && history.state.sheet) history.back();
+  board(); if(document.getElementById('p-items').classList.contains('on')) renderItems();
+}
+document.querySelectorAll('[data-iclose]').forEach(e=>e.onclick=()=>closeItems());
+document.getElementById('isSrch').oninput=renderIGrid;
+function renderIGrid(){
+  const q=document.getElementById('isSrch').value.trim().toLowerCase();
+  const cur=S.fi[isHero.id]||[];
+  const g=document.getElementById('isGrid'); g.innerHTML='';
+  ITEMLIST.filter(n=>!q||n.toLowerCase().includes(q)).forEach(n=>{
+    const b=document.createElement('button');
+    b.className='ib'+(cur.includes(n)?' sel':'');
+    b.innerHTML=`<img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'"><span>${n}</span>`;
+    b.onclick=()=>{
+      const l=S.fi[isHero.id]||[];
+      S.fi[isHero.id]=l.includes(n)?l.filter(x=>x!==n):[...l,n];
+      save(); renderIGrid();
+    };
+    g.appendChild(b);
+  });
+}
+
 /* ---------- заттар ---------- */
 function foeHeroes(){ return S.foe.map(id=>BYID[id]).filter(Boolean); }
 async function renderItems(){
   try{ await loadItemIds(); }catch(e){}
   const fs=foeHeroes(), comp=document.getElementById('comp'), th=document.getElementById('threats');
   if(!fs.length){
-    comp.innerHTML=''; th.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>«Таңдау» бетінде қарсылас геройларын қос — заттар өзі шығады.</div>';
+    comp.innerHTML=''; th.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>«Таңдау» бетінде қарсылас геройларын қос. Герой суретін бассаң — оның не жинағанын белгілей аласың.</div>';
   } else {
     const magic=fs.filter(h=>has(THREATS.find(t=>t.id==='magic').list,h)).length;
     const phys=fs.filter(h=>has(THREATS.find(t=>t.id==='phys').list,h)).length;
@@ -543,6 +721,11 @@ async function renderItems(){
       <div class="stat"><div class="k">Жақын / қашық</div><div class="v">${melee} : ${fs.length-melee}</div>
         <div class="mbar"><i style="width:${melee/fs.length*100}%;background:var(--gold)"></i><i style="width:${(1-melee/fs.length)*100}%;background:#5B8DEF"></i></div></div>
     </div>`;
+    const bought=fs.filter(f=>(S.fi[f.id]||[]).length);
+    if(bought.length) comp.innerHTML+=`<div class="card" style="margin-top:9px"><h3>Қарсылас не жинады</h3>`
+      + bought.map(f=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
+          <div><div class="pn">${f.localized_name}</div><div class="pw">${S.fi[f.id].join(' · ')}</div></div></div>`).join('')
+      + `<p class="why" style="margin:9px 0 0">Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.</p></div>`;
     const hits=THREATS.map(t=>({t,who:fs.filter(h=>has(t.list,h))})).filter(x=>x.who.length)
       .sort((a,b)=>b.who.length-a.who.length);
     th.innerHTML = hits.length? hits.map(({t,who})=>`
@@ -554,30 +737,77 @@ async function renderItems(){
   }
   const my=document.getElementById('myHeroes'), bd=document.getElementById('build');
   my.innerHTML='';
-  if(!S.mine.length){ bd.innerHTML='<div class="empty">Өз геройыңды қосқанда, оның ең көп жиналатын заттары осында шығады.</div>'; return; }
-  S.mine.map(id=>BYID[id]).filter(Boolean).forEach(h=>{
-    const b=document.createElement('button'); b.className='chip'; b.textContent=h.localized_name;
-    b.onclick=()=>{ my.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); b.classList.add('on'); showBuild(h); };
+  if(!S.mine.length){ bd.innerHTML='<div class="empty"><b>Өз геройың әлі жоқ</b>«Таңдау» бетінде өз геройыңды қос — сол геройға арналған, дәл осы қарсыласқа қарсы жинақ шығады.</div>'; return; }
+  const mine=S.mine.map(id=>BYID[id]).filter(Boolean);
+  mine.forEach((h,i)=>{
+    const b=document.createElement('button'); b.className='chip'+(i===0?' on':''); b.textContent=h.localized_name;
+    b.onclick=()=>{ my.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); b.classList.add('on'); showPlan(h); };
     my.appendChild(b);
   });
-  bd.innerHTML='<div class="empty">Герой атын басып, жинағын көр.</div>';
+  showPlan(mine[0]);
 }
-async function showBuild(h){
+
+/* геройға арналған жоспар: қарсыласқа қарсы заттар + негізгі жинақ */
+async function showPlan(h){
   const bd=document.getElementById('build');
-  bd.innerHTML='<div class="load">Жүктелуде…</div>';
+  bd.innerHTML='<div class="load">Есептелуде…</div>';
+  const fs=foeHeroes();
+  const kind=kindOf(h).map(k=>k==='core'?'кор':'қолдау').join('/');
+  const head=`<div class="card"><h3>${h.localized_name}</h3>
+    <p class="why" style="margin:4px 0 0">${posOf(h).join(' / ')||'—'} · ${h.attack_type==='Melee'?'жақын':'қашық'} · ${kind} заттары бойынша сұрыпталды</p></div>`;
+
+  // қарсыласқа қарсы заттар — бір затқа бірнеше себеп жиналады
+  const map=new Map();
+  THREATS.forEach(t=>{
+    const who=fs.filter(x=>has(t.list,x)); if(!who.length) return;
+    t.items.forEach(n=>{
+      if(!fits(n,h)) return;
+      const e=map.get(n)||{n,who:new Set(),cats:new Set()};
+      who.forEach(w=>e.who.add(w.localized_name)); e.cats.add(t.ttl); map.set(n,e);
+    });
+  });
+  // қарсылас нақты сатып алған заттарға реакция
+  const notes=[];
+  fs.forEach(f=>{ (S.fi[f.id]||[]).forEach(it=>{
+    const r=IREACT[it]; if(!r) return;
+    if(r.note) notes.push({f:f.localized_name,it,note:r.note});
+    (r.items||[]).forEach(n=>{
+      if(!fits(n,h)) return;
+      const e=map.get(n)||{n,who:new Set(),cats:new Set()};
+      e.who.add(f.localized_name+' → '+it); e.cats.add('Қарсыластың заты'); e.hot=1; map.set(n,e);
+    });
+  });});
+  const list=[...map.values()].sort((a,b)=> (b.hot||0)-(a.hot||0) || b.who.size-a.who.size || b.cats.size-a.cats.size);
+  const itemRow=e=>`<div class="pl${e.hot?' hot':''}">
+      <img src="${IMG(ikey(e.n))}" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div><div class="pn">${e.n}</div><div class="pw">${[...e.cats].join(' · ')} — ${[...e.who].join(', ')}</div></div></div>`;
+  let counter;
+  if(!fs.length) counter='<div class="empty">Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.</div>';
+  else if(!list.length) counter='<div class="empty">Бұл геройға қосымша қарсы зат қажет емес — әдеттегі жинақпен жүре бер.</div>';
+  else counter=`<div class="card"><span class="tagn">${list.length}</span><h3>Бірінші кезекте</h3>
+      <div class="plist">${list.slice(0,3).map(itemRow).join('')}</div></div>`
+    + (list.length>3?`<div class="card"><h3>Жағдайға қарай</h3>
+      <div class="plist">${list.slice(3).map(itemRow).join('')}</div></div>`:'');
+
+  const noteCard = notes.length
+    ? `<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`
+      + notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')
+      + '</div>' : '';
+  bd.innerHTML=head+counter+noteCard+'<div class="load">Негізгі жинақ жүктелуде…</div>';
+
+  let core='';
   try{
     await loadItemIds();
     let d=LS.get('ip'+h.id,7);
     if(!d){ d=await getJSON(API+'/heroes/'+h.id+'/itemPopularity'); LS.set('ip'+h.id,d); }
-    const grp=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n)
-      .map(([id])=>ITEMIDS[id]).filter(Boolean);
+    const grp=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([id])=>ITEMIDS[id]).filter(Boolean);
     const rows=[['Бастапқы',grp(d.start_game_items,6)],['Ерте',grp(d.early_game_items,5)],
-      ['Орта',grp(d.mid_game_items,5)],['Кеш',grp(d.late_game_items,5)]];
-    bd.innerHTML=rows.filter(r=>r[1].length).map(([t,its])=>`
-      <div class="card"><h3>${t}</h3>
-      <div class="items" style="margin-top:8px">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}</span>`).join('')}</div></div>`).join('')
-      +`<div class="note">${h.localized_name} бойынша нақты ойындарда ең жиі жиналған заттар. Жоғарыдағы «Не сатып алу керек» бөлімі осының үстіне қосылады.</div>`;
-  }catch(e){ bd.innerHTML='<div class="empty"><b>Жинақ жүктелмеді</b>Интернетті тексеріп, қайта бас.</div>'; }
+      ['Орта',grp(d.mid_game_items,5)],['Кеш',grp(d.late_game_items,5)]].filter(r=>r[1].length);
+    core=`<div class="card"><h3>Негізгі жинақ</h3><p class="why">Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады.</p>`
+      + rows.map(([t,its])=>`<div class="grow"><span class="gt">${t}</span><div class="items">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}</span>`).join('')}</div></div>`).join('')
+      + '</div>';
+  }catch(e){ core='<div class="empty">Негізгі жинақ жүктелмеді — интернетті тексер.</div>'; }
+  bd.innerHTML=head+counter+noteCard+core;
 }
 
 /* ---------- баптау ---------- */
@@ -592,7 +822,10 @@ document.getElementById('bRefresh').onclick=async e=>{
 document.getElementById('ver').textContent='Dota 2 Pick v'+V+' · дерек: OpenDota';
 
 /* ---------- артқа түймесі ---------- */
-window.addEventListener('popstate',()=>{ if(document.getElementById('sheet').classList.contains('on')) closePicker(true); });
+window.addEventListener('popstate',()=>{
+  if(document.getElementById('sheet').classList.contains('on')) closePicker(true);
+  if(document.getElementById('isheet').classList.contains('on')) closeItems(true);
+});
 
 /* ---------- іске қосу ---------- */
 (async function init(){
