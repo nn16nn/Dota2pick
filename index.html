@@ -125,10 +125,12 @@ input{font-family:inherit}
 .srch{margin:0 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
   padding:10px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
 .grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-content:start}
 .hb{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;position:relative}
-.hb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
-.hb span{display:block;font-size:11px;padding:4px 6px 6px;line-height:1.2}
+.hb img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top center;display:block;background:#0B0F18}
+.hb .hn{display:block;color:var(--txt);font-size:11.5px;font-weight:600;line-height:1.25;
+  padding:6px 6px 7px;background:var(--panel2);border-top:1px solid var(--line);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb.used{opacity:.28;pointer-events:none}
 .gh{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:12.5px;
   letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin:12px 0 -2px;padding-top:4px;
@@ -606,8 +608,10 @@ async function loadHeroes(force){
   if(!d){ d=await getJSON(API+'/heroStats'); LS.set('heroes',d); }
   HEROES=d.map(h=>{
     let p=0,w=0; for(let i=1;i<=8;i++){p+=h[i+'_pick']||0;w+=h[i+'_win']||0;}
+    const sn=h.name.replace('npc_dota_hero_','');
     return {id:h.id,name:h.name,localized_name:h.localized_name,primary_attr:h.primary_attr,
-      attack_type:h.attack_type,roles:h.roles||[],img:CDN+h.img.split('?')[0],base:p?w/p:.5};
+      attack_type:h.attack_type,roles:h.roles||[],img:CDN+h.img.split('?')[0],
+      vert:CDN+'/apps/dota2/images/heroes/'+sn+'_vert.jpg',base:p?w/p:.5};
   }).sort((a,b)=>a.localized_name.localeCompare(b.localized_name));
   BYID={}; HEROES.forEach(h=>BYID[h.id]=h);
 }
@@ -751,7 +755,8 @@ document.getElementById('shSrch').oninput=renderGrid;
 function heroBtn(h,used){
   const b=document.createElement('button');
   b.className='hb'+(used.has(h.id)?' used':'');
-  b.innerHTML=`<img src="${h.img}" alt="" loading="lazy"><span>${h.localized_name}</span>${has(FAV,h)?'<span class="st">★</span>':''}`;
+  b.innerHTML=`<img src="${h.vert}" alt="" loading="lazy" onerror="this.onerror=null;this.style.aspectRatio='16/9';this.src='${h.img}'">
+    <span class="hn">${h.localized_name}</span>${has(FAV,h)?'<span class="st">★</span>':''}`;
   b.onclick=()=>pick(h);
   let tm; b.ontouchstart=()=>{tm=setTimeout(()=>toggleFav(h),550)};
   b.ontouchend=b.ontouchmove=()=>clearTimeout(tm);
