@@ -111,19 +111,32 @@ input{font-family:inherit}
 .mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
 .mbar i{display:block;height:100%}
 
-/* picker sheet */
-.sheet{position:fixed;inset:0;z-index:60;display:none}
+/* толық экранды таңдау беті */
+.sheet{position:fixed;inset:0;z-index:60;display:none;background:var(--void)}
 .sheet.on{display:block}
-.sheet .bg{position:absolute;inset:0;background:#060910cc;backdrop-filter:blur(3px)}
-.sheet .box{position:absolute;left:0;right:0;bottom:0;top:5vh;background:var(--void);
-  border-top:2px solid var(--gold);border-radius:18px 18px 0 0;display:flex;flex-direction:column;
-  animation:up .22s cubic-bezier(.2,.8,.3,1) both}
-@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
-.sheet .hd{padding:13px 14px 8px;display:flex;align-items:center;gap:10px}
-.sheet .hd h2{font-size:15px}
-.sheet .hd .cl{margin-left:auto;color:var(--dim);font-size:22px;line-height:1;padding:2px 6px}
-.srch{margin:0 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  padding:10px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
+.sheet .bg{display:none}
+.sheet .box{position:absolute;inset:0;background:var(--void);display:flex;flex-direction:column;
+  animation:slideIn .26s cubic-bezier(.2,.8,.3,1) both}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.phd{display:flex;align-items:center;gap:11px;flex:0 0 auto;
+  padding:calc(11px + env(safe-area-inset-top)) 14px 11px;
+  background:var(--panel);border-bottom:1px solid var(--line);position:relative}
+.phd::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--gold)}
+#sheet.us .phd::before{background:linear-gradient(90deg,var(--rad),#7BD3A0)}
+#sheet.them .phd::before{background:linear-gradient(90deg,var(--dire),#EE8A7E)}
+.phd .bk{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:var(--panel2);
+  border:1px solid var(--line);color:var(--txt);font-size:19px;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.phd .tt{min-width:0}
+.phd h2{font-family:var(--disp);font-size:15px;letter-spacing:.07em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phd small{display:block;font-family:var(--body);font-size:11.5px;color:var(--dim);
+  letter-spacing:0;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phd .cnt2{margin-left:auto;flex:0 0 auto;font-family:var(--disp);font-size:13px;letter-spacing:.06em;
+  color:var(--gold);background:#241E0E;border:1px solid #3A3117;padding:4px 10px;border-radius:20px}
+.srch{margin:11px 14px 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
+.srch:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #E3B23C1f}
 .grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
   display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
   align-content:start;grid-auto-rows:max-content}
@@ -321,7 +334,11 @@ input{font-family:inherit}
 <div class="sheet" id="isheet">
   <div class="bg" data-iclose></div>
   <div class="box">
-    <div class="hd"><h2 id="isTitle">Заттары</h2><button class="cl" data-iclose>✕</button></div>
+    <div class="phd">
+      <button class="bk" data-iclose aria-label="Артқа">←</button>
+      <div class="tt"><h2 id="isTitle">Заттары</h2><small id="isSub">Қарсылас нақты не жинады</small></div>
+      <span class="cnt2" id="isCnt">0</span>
+    </div>
     <input class="srch" id="isSrch" placeholder="Зат іздеу" autocomplete="off">
     <div class="igrid" id="isGrid"></div>
   </div>
@@ -330,7 +347,11 @@ input{font-family:inherit}
 <div class="sheet" id="sheet">
   <div class="bg" data-close></div>
   <div class="box">
-    <div class="hd"><h2 id="shTitle">Герой таңдау</h2><button class="cl" data-close>✕</button></div>
+    <div class="phd">
+      <button class="bk" data-close aria-label="Артқа">←</button>
+      <div class="tt"><h2 id="shTitle">Герой таңдау</h2><small id="shSub">Портреттен немесе іздеуден таңда</small></div>
+      <span class="cnt2" id="shCnt">0/5</span>
+    </div>
     <input class="srch" id="shSrch" placeholder="Герой іздеу" autocomplete="off">
     <div class="chips" style="padding:8px 14px 0" id="shFilters"></div>
     <div class="grid" id="shGrid"></div>
@@ -338,7 +359,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='2.1';
+const V='2.2';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -872,12 +893,17 @@ function renderRecs(){
 /* ---------- герой таңдағыш ---------- */
 function openPicker(side,idx){
   shSide=side; shIdx=idx; shFilt='all';
-  document.getElementById('shTitle').textContent = side==='mine'?'Біздің геройды қосу':'Қарсылас геройын қосу';
+  const mine=side==='mine', arr=mine?S.mine:S.foe;
+  document.getElementById('shTitle').textContent = mine?'Біздің геройды қосу':'Қарсылас геройын қосу';
+  document.getElementById('shSub').textContent = (mine?'Біздің команда':'Қарсылас')+' · портреттен не іздеуден таңда';
+  document.getElementById('shCnt').textContent = arr.length+'/5';
   document.getElementById('shSrch').value='';
-  document.getElementById('sheet').classList.add('on');
+  const sh=document.getElementById('sheet');
+  sh.classList.remove('us','them'); sh.classList.add(mine?'us':'them');
+  sh.querySelector('.box').style.animation='none'; void sh.offsetWidth; sh.querySelector('.box').style.animation='';
+  document.getElementById('shGrid').scrollTop=0;
   history.pushState({sheet:1},'');
   renderGrid();
-  setTimeout(()=>document.getElementById('shSrch').focus(),120);
 }
 function closePicker(fromPop){
   document.getElementById('sheet').classList.remove('on');
@@ -952,6 +978,9 @@ function openItems(h){
   isHero=h;
   document.getElementById('isTitle').textContent=h.localized_name+' не жинады';
   document.getElementById('isSrch').value='';
+  document.getElementById('isSub').textContent = isHero.localized_name+' нақты не жинады';
+  document.getElementById('isCnt').textContent = (S.fi[isHero.id]||[]).length;
+  document.getElementById('isGrid').scrollTop=0;
   document.getElementById('isheet').classList.add('on');
   history.pushState({sheet:1},'');
   renderIGrid();
@@ -976,7 +1005,9 @@ function renderIGrid(){
       const l=S.fi[isHero.id]||[];
       const on=!l.includes(n);
       S.fi[isHero.id]=on?[...l,n]:l.filter(x=>x!==n);
-      save(); renderIGrid(); buzz(10); toast(isHero.localized_name+': '+n+(on?' ✓':' ✕'));
+      save(); renderIGrid(); buzz(10);
+      document.getElementById('isCnt').textContent=(S.fi[isHero.id]||[]).length;
+      toast(isHero.localized_name+': '+n+(on?' ✓':' ✕'));
     };
     g.appendChild(b);
   });
