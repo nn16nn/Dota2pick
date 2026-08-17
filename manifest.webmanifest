@@ -1,0 +1,16 @@
+{
+  "name": "Dota 2 Pick — таңдау көмекшісі",
+  "short_name": "Dota 2 Pick",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F1420",
+  "theme_color": "#0F1420",
+  "lang": "kk",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

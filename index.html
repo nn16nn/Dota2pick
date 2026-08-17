@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F1420">
+<title>Dota 2 Pick — таңдау көмекшісі</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;800&display=swap">
+<style>
+:root{
+  --void:#0F1420; --panel:#171E2C; --panel2:#1D2637; --line:#28324A;
+  --rad:#4FB477; --dire:#D9584A; --gold:#E3B23C;
+  --txt:#E9EDF5; --dim:#8792A6;
+  --r:14px;
+  --disp:"Oswald",Impact,"Arial Narrow",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--void)}
+body{margin:0;min-height:100dvh;background:var(--void);color:var(--txt);
+  font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));overscroll-behavior-y:contain}
+h1,h2,h3,.disp{font-family:var(--disp);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin:0}
+button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+input{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+
+/* header */
+.top{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,#0F1420 72%,#0F142000);
+  padding:calc(10px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:10px}
+.mark{width:28px;height:28px;border-radius:8px;flex:0 0 auto;object-fit:cover;display:block}
+.top h1{font-size:19px}
+.top .sub{font-family:var(--body);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-left:auto}
+
+.wrap{padding:0 14px;max-width:640px;margin:0 auto}
+.page{display:none;animation:fade .18s ease both}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* draft board */
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 10px 12px}
+.side.us{border-top:2px solid var(--rad)}
+.side.them{border-top:2px solid var(--dire)}
+.side h2{font-size:12px;letter-spacing:.14em;margin-bottom:9px}
+.side.us h2{color:var(--rad)} .side.them h2{color:var(--dire)}
+.slot{display:flex;align-items:center;gap:8px;width:100%;padding:5px;border-radius:10px;
+  background:#141A27;border:1px dashed #2A3348;margin-bottom:6px;min-height:44px;text-align:left}
+.slot:last-child{margin-bottom:0}
+.slot.full{border-style:solid;border-color:var(--line);background:var(--panel2)}
+.slot .por{width:44px;height:25px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.slot .plus{width:44px;height:25px;display:grid;place-items:center;color:#3E4A63;font-size:18px;line-height:1}
+.slot .nm{font-size:12.5px;font-weight:600;line-height:1.15;overflow:hidden}
+.slot .x{margin-left:auto;color:var(--dim);font-size:15px;padding:0 4px}
+
+.seam{position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,#0000,var(--gold),#0000);opacity:.5}
+
+/* section */
+.sec{margin:22px 0 10px;display:flex;align-items:baseline;gap:10px}
+.sec h2{font-size:15px}
+.sec .hint{font-size:11.5px;color:var(--dim);margin-left:auto}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:6px 11px;border-radius:999px;background:var(--panel);border:1px solid var(--line);
+  font-size:12.5px;color:var(--dim);white-space:nowrap}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#171203;font-weight:600}
+
+/* recommendation row — signature diverging bar */
+.rec{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--panel);
+  border:1px solid var(--line);border-left:3px solid var(--rad);border-radius:11px;margin-bottom:7px;width:100%;text-align:left}
+.rec.bad{border-left-color:var(--dire)}
+.rec .por{width:56px;height:32px;border-radius:5px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.rec .info{min-width:0;flex:1}
+.rec .nm{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec .rl{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec .bar{position:relative;height:5px;background:#222B3D;border-radius:3px;margin-top:5px;overflow:hidden}
+.rec .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--rad);border-radius:3px}
+.rec.bad .bar i{background:var(--dire)}
+.rec .val{font-family:var(--disp);font-size:19px;color:var(--rad);flex:0 0 auto;font-variant-numeric:tabular-nums}
+.rec.bad .val{color:var(--dire)}
+.rec .val small{font-size:11px;opacity:.7}
+
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--r);padding:22px 16px;text-align:center;color:var(--dim);font-size:13.5px}
+.empty b{display:block;color:var(--txt);font-family:var(--disp);font-size:15px;letter-spacing:.06em;margin-bottom:5px;text-transform:uppercase}
+
+/* cards */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px;margin-bottom:9px}
+.card h3{font-size:13.5px;margin-bottom:3px}
+.card .why{font-size:12.5px;color:var(--dim);margin:0 0 10px}
+.items{display:flex;flex-wrap:wrap;gap:7px}
+.it{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:8px;padding:4px 8px 4px 4px;font-size:12px}
+.it img{width:32px;height:24px;border-radius:3px;object-fit:cover;background:#0B0F18}
+.tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px}
+.stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+.stat .v{font-family:var(--disp);font-size:22px;margin-top:2px}
+.mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
+.mbar i{display:block;height:100%}
+
+/* picker sheet */
+.sheet{position:fixed;inset:0;z-index:60;display:none}
+.sheet.on{display:block}
+.sheet .bg{position:absolute;inset:0;background:#060910cc;backdrop-filter:blur(3px)}
+.sheet .box{position:absolute;left:0;right:0;bottom:0;top:8vh;background:var(--void);
+  border-top:2px solid var(--gold);border-radius:18px 18px 0 0;display:flex;flex-direction:column;
+  animation:up .22s cubic-bezier(.2,.8,.3,1) both}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.sheet .hd{padding:13px 14px 8px;display:flex;align-items:center;gap:10px}
+.sheet .hd h2{font-size:15px}
+.sheet .hd .cl{margin-left:auto;color:var(--dim);font-size:22px;line-height:1;padding:2px 6px}
+.srch{margin:0 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
+.grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hb{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;position:relative}
+.hb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
+.hb span{display:block;font-size:11px;padding:4px 6px 6px;line-height:1.2}
+.hb.used{opacity:.28;pointer-events:none}
+.hb .st{position:absolute;top:3px;right:5px;font-size:12px;color:var(--gold);text-shadow:0 1px 3px #000}
+
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(3,1fr);
+  background:#121826f2;border-top:1px solid var(--line);padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  backdrop-filter:blur(8px)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--disp);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:4px 0}
+.tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--gold)}
+
+.btn{display:block;width:100%;padding:12px;border-radius:11px;background:var(--panel2);border:1px solid var(--line);
+  font-size:14px;font-weight:600;margin-bottom:8px;text-align:center}
+.btn.gold{background:var(--gold);color:#171203;border-color:var(--gold)}
+.note{font-size:12px;color:var(--dim);margin:10px 2px 22px;line-height:1.6}
+.load{text-align:center;color:var(--dim);font-size:13px;padding:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img class="mark" src="icon-192.png" alt="">
+  <h1>Dota 2 Pick</h1>
+  <div class="sub">Драфт</div>
+</header>
+
+<main class="wrap">
+
+  <!-- ТАҢДАУ -->
+  <section id="p-pick" class="page on">
+    <div class="board">
+      <div class="side us"><h2>Біздің команда</h2><div id="us"></div></div>
+      <div class="side them"><h2>Қарсылас</h2><div id="them"></div></div>
+      <div class="seam"></div>
+    </div>
+
+    <div class="sec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
+    <div class="chips" id="filters"></div>
+    <div id="recs"></div>
+  </section>
+
+  <!-- ЗАТТАР -->
+  <section id="p-items" class="page">
+    <div class="sec"><h2>Қарсылас құрамы</h2></div>
+    <div id="comp"></div>
+    <div class="sec"><h2>Не сатып алу керек</h2><span class="hint">қарсыласқа қарай</span></div>
+    <div id="threats"></div>
+    <div class="sec"><h2>Менің геройымның жинағы</h2></div>
+    <div class="chips" id="myHeroes"></div>
+    <div id="build"></div>
+  </section>
+
+  <!-- БАПТАУ -->
+  <section id="p-set" class="page">
+    <div class="sec"><h2>Баптау</h2></div>
+    <button class="btn" id="bClear">Таңдауды тазалау</button>
+    <button class="btn" id="bRefresh">Деректі жаңарту</button>
+    <div class="card">
+      <h3>Дереккөз</h3>
+      <p class="why" style="margin:6px 0 0">Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.</p>
+    </div>
+    <div class="card">
+      <h3>Қалай жұмыс істейді</h3>
+      <p class="why" style="margin:6px 0 0">Заттар кеңесі 7.41e патчына (2026 ж. шілде) қарап жазылған: Shiva’s Guard енді емдеуді кеспейді, оның орнына Crella’s Crozier; сиқырға қарсы Consecrated Wraps пен Shawl; тығыз геройларға Hydra’s Breath. Дерек бір рет жүктеліп телефонда сақталады (геройлар — 7 күн, матчаптар — 3 күн), содан кейін интернетсіз де ашылады. Жұлдызша қойылған геройлар «Таңдаулы» сүзгісінен көрінеді.</p>
+    </div>
+    <div class="note" id="ver"></div>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button class="tab on" data-go="p-pick"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 14h6v6h-6zM4 20l16-16"/></svg>Таңдау</button>
+  <button class="tab" data-go="p-items"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg>Заттар</button>
+  <button class="tab" data-go="p-set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>Баптау</button>
+</nav>
+
+<div class="sheet" id="sheet">
+  <div class="bg" data-close></div>
+  <div class="box">
+    <div class="hd"><h2 id="shTitle">Герой таңдау</h2><button class="cl" data-close>✕</button></div>
+    <input class="srch" id="shSrch" placeholder="Герой іздеу" autocomplete="off">
+    <div class="chips" style="padding:8px 14px 0" id="shFilters"></div>
+    <div class="grid" id="shGrid"></div>
+  </div>
+</div>
+
+<script>
+const V='1.0';
+const CDN='https://cdn.cloudflare.steamstatic.com';
+const API='https://api.opendota.com/api';
+const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
+
+/* ---------- сақтау ---------- */
+const LS={
+  get(k,ttl){try{const o=JSON.parse(localStorage.getItem('d2pick.'+k));if(!o)return null;
+    if(ttl&&Date.now()-o.t>ttl*864e5)return null;return o.d}catch(e){return null}},
+  set(k,d){try{localStorage.setItem('d2pick.'+k,JSON.stringify({t:Date.now(),d}))}catch(e){}},
+  del(pref){Object.keys(localStorage).filter(k=>k.startsWith('d2pick.'+pref)).forEach(k=>localStorage.removeItem(k))}
+};
+
+let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
+let S = LS.get('state') || {mine:[],foe:[]};
+let FAV = LS.get('fav') || ['phantom_assassin','ursa','shadow_shaman','drow_ranger'];
+let filt='all', shFilt='all', shSide='mine', shIdx=0;
+
+const save=()=>LS.set('state',S);
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const key=h=>h.name.replace('npc_dota_hero_','');
+const has=(list,h)=>list.includes(key(h))||list.includes(slug(h.localized_name));
+
+/* ---------- қауіп белгілері (заттар үшін) ---------- */
+const THREATS=[
+ {id:'invis',ttl:'Көрінбейтіндер',why:'Жасырынып келеді — көретін зат болмаса, картаны да, өзіңді де ұстай алмайсың.',
+  items:['Sentry Ward','Dust of Appearance','Gem of True Sight'],
+  list:['riki','clinkz','bounty_hunter','nyx_assassin','weaver','templar_assassin','slark','sand_king','mirana','broodmother','treant','treant_protector','invoker']},
+ {id:'heal',ttl:'Емдеу мен қалпына келу',why:'Зиянды емдеп үлгереді — емдеуді кесетін зат керек (7.41-де Shiva\u2019s бұл қасиетін жоғалтты).',
+  items:['Spirit Vessel','Eye of Skadi',"Crella's Crozier"],
+  list:['huskar','necrolyte','necrophos','dazzle','oracle','abaddon','alchemist','undying','omniknight','warlock','chen','wisp','io','treant','treant_protector','winter_wyvern','life_stealer','lifestealer','skeleton_king','wraith_king','troll_warlord','bristleback','dawnbreaker','enchantress','marci','lycan','terrorblade','slark','shredder','timbersaw','pudge','tusk','kunkka']},
+ {id:'magic',ttl:'Сиқыр зияны көп',why:'Бір комбода алып кетеді — сиқырдан қорғаныш ерте керек.',
+  items:['Black King Bar','Pipe of Insight','Glimmer Cape','Consecrated Wraps','Shawl'],
+  list:['lina','zuus','zeus','lion','leshrac','invoker','skywrath_mage','tinker','queenofpain','storm_spirit','jakiro','warlock','witch_doctor','pugna','necrolyte','necrophos','death_prophet','ancient_apparition','crystal_maiden','grimstroke','disruptor','shadow_demon','nevermore','shadow_fiend','enigma','keeper_of_the_light','lich','obsidian_destroyer','outworld_destroyer','puck','silencer','techies','shredder','timbersaw','tiny','venomancer','viper','void_spirit','winter_wyvern','muerta','ringmaster','dark_willow','batrider','bane','sand_king','earthshaker','nyx_assassin','pudge','visage','dark_seer','phoenix','rubick','snapfire','ogre_magi']},
+ {id:'phys',ttl:'Қатты зиян (керри)',why:'Ұрысы ауыр — брон мен қалқан ұстап тұруға көмектеседі.',
+  items:['Crimson Guard','Assault Cuirass','Solar Crest','Ghost Scepter',"Crella's Crozier"],
+  list:['antimage','anti_mage','phantom_assassin','juggernaut','sven','ursa','troll_warlord','slark','morphling','faceless_void','luna','drow_ranger','sniper','gyrocopter','medusa','terrorblade','spectre','monkey_king','bloodseeker','life_stealer','lifestealer','chaos_knight','skeleton_king','wraith_king','clinkz','razor','weaver','arc_warden','meepo','naga_siren','phantom_lancer','ember_spirit','templar_assassin','riki','muerta','marci','dawnbreaker','primal_beast','kez','tiny','alchemist','huskar','lone_druid','lycan','brewmaster','slardar','night_stalker','viper','pangolier','magnataur','magnus','kunkka','tusk','mirana']},
+ {id:'illu',ttl:'Елес пен шақырылғандар',why:'Саны көп — AoE зиян бір соққыда тазалайды.',
+  items:['Mjollnir','Battle Fury','Radiance',"Shiva's Guard"],
+  list:['phantom_lancer','naga_siren','terrorblade','chaos_knight','meepo','arc_warden','broodmother','lycan','beastmaster','enigma','warlock','visage','lone_druid','undying','furion','natures_prophet','shadow_shaman','venomancer','skeleton_king','wraith_king','invoker','pugna','chen','brewmaster','juggernaut']},
+ {id:'evas',ttl:'Жалтару (miss)',why:'Соққың бос кетеді — дәлдік беретін зат керек. Butterfly не Solar Crest алғандарға да керек.',
+  items:['Monkey King Bar','Bloodthorn','Silver Edge'],
+  list:['phantom_assassin','windrunner','brewmaster','riki']},
+ {id:'brk',ttl:'Пассивке тәуелді',why:'Күші пассив қабілетінде — оны сөндірсең, әлсірейді.',
+  items:['Silver Edge','Nullifier'],
+  list:['bristleback','ursa','huskar','phantom_assassin','templar_assassin','spectre','skeleton_king','wraith_king','tidehunter','centaur','faceless_void','slark','alchemist','dragon_knight','bloodseeker','drow_ranger','sven','monkey_king','primal_beast','shredder','timbersaw','viper','night_stalker','weaver','riki','troll_warlord','sniper','phantom_lancer','dawnbreaker','kunkka','silencer','luna','medusa','life_stealer','lifestealer','pudge','razor','undying','tiny','clinkz']},
+ {id:'esc',ttl:'Қашып кететіндер',why:'Ұстамасаң өлтіре алмайсың — байлайтын зат керек.',
+  items:['Rod of Atos','Orchid Malevolence','Scythe of Vyse','Gleipnir'],
+  list:['storm_spirit','queenofpain','ember_spirit','antimage','anti_mage','puck','weaver','slark','morphling','void_spirit','mirana','nyx_assassin','riki','sand_king','monkey_king','earth_spirit','clinkz','pangolier','hoodwink','batrider','tusk','faceless_void','phoenix','wisp','io','dark_willow','kez','arc_warden','tinker','furion','natures_prophet','spirit_breaker','templar_assassin','bounty_hunter']},
+ {id:'sil',ttl:'Тыныштандыру мен қарғыс',why:'Қабілетіңді жауып тастайды — одан шығатын жол керек.',
+  items:['Manta Style',"Eul's Scepter of Divinity",'Lotus Orb','Black King Bar'],
+  list:['silencer','death_prophet','skywrath_mage','disruptor','doom_bringer','doom','riki','night_stalker','puck','obsidian_destroyer','outworld_destroyer','oracle','drow_ranger','bane','shadow_demon','enigma']},
+ {id:'lock',ttl:'Ұзақ ұстау мен бағытталған ұлт',why:'Бір ұстағанда өліп қаласың — үзетін немесе қайтаратын зат керек.',
+  items:['Black King Bar','Lotus Orb',"Eul's Scepter of Divinity",'Aeon Disk',"Linken's Sphere"],
+  list:['pudge','doom_bringer','doom','bane','shadow_shaman','witch_doctor','enigma','faceless_void','magnataur','magnus','tidehunter','warlock','crystal_maiden','sand_king','batrider','legion_commander','lion','primal_beast','kez','ringmaster','mars','earthshaker','winter_wyvern','disruptor','silencer','shadow_demon','naga_siren','chaos_knight','lich','tusk']},
+ {id:'init',ttl:'Секіріп бастама жасайтындар',why:'Бір секіргенде бүкіл команданы алады — шашылып жүр әрі шығатын зат ұста.',
+  items:['Force Staff','Glimmer Cape',"Eul's Scepter of Divinity",'Aeon Disk'],
+  list:['axe','magnataur','magnus','enigma','tidehunter','earthshaker','centaur','sand_king','rattletrap','clockwerk','spirit_breaker','legion_commander','faceless_void','mars','slardar','primal_beast','tusk','dark_seer','elder_titan','kunkka','brewmaster','doom_bringer','doom','batrider','beastmaster','pudge','night_stalker']},
+ {id:'push',ttl:'Тез итеретін құрам',why:'Сарайға ерте келеді — линия тазалайтын зат ерте керек.',
+  items:['Mjollnir','Assault Cuirass','Crimson Guard'],
+  list:['furion','natures_prophet','lycan','broodmother','death_prophet','leshrac','beastmaster','shadow_shaman','lone_druid','chen','enigma','dragon_knight','luna','shredder','timbersaw','venomancer','pugna','visage','arc_warden','meepo','naga_siren','phantom_lancer','undying','jakiro','keeper_of_the_light']},
+ {id:'tank',ttl:'Тығыз, броны көп',why:'Жай зиян өтпейді — броны түсіретін немесе өмір пайызын жейтін зат керек.',
+  items:['Desolator','Assault Cuirass',"Hydra's Breath",'Eye of Skadi'],
+  list:['dragon_knight','centaur','tidehunter','bristleback','axe','undying','abaddon','shredder','timbersaw','underlord','abyssal_underlord','primal_beast','pudge','huskar','sven','slardar','dawnbreaker','tiny','alchemist','mars','treant','treant_protector','omniknight','spirit_breaker','doom_bringer','doom','brewmaster','elder_titan','skeleton_king','wraith_king','life_stealer','lifestealer','night_stalker','magnataur','magnus','kunkka','beastmaster','lycan','io','wisp']},
+ {id:'melee',ttl:'Жақын ұрысшы керри',why:'Жақындамаса зияны жоқ — қашықтық ұстайтын зат жақсы жұмыс істейді.',
+  items:["Heaven's Halberd",'Ghost Scepter','Force Staff','Rod of Atos'],
+  list:['phantom_assassin','juggernaut','sven','ursa','troll_warlord','slark','riki','anti_mage','antimage','spectre','life_stealer','lifestealer','monkey_king','bloodseeker','chaos_knight','skeleton_king','wraith_king','marci','dawnbreaker','primal_beast','kez','tiny','alchemist','ember_spirit','pangolier','brewmaster','lone_druid','lycan','meepo','phantom_lancer','naga_siren','night_stalker','slardar','magnataur','magnus','earth_spirit','tusk','faceless_void','centaur','axe','legion_commander']}
+];
+
+const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Shard",tpscroll:'TP Scroll',
+ ward_observer:'Observer Ward',ward_sentry:'Sentry Ward',bfury:'Battle Fury',greater_crit:'Daedalus',
+ lesser_crit:'Crystalys',skadi:'Eye of Skadi',invis_sword:'Shadow Blade',sphere:"Linken's Sphere",
+ cyclone:"Eul's Scepter",sheepstick:'Scythe of Vyse',gungir:'Gleipnir',travel_boots:'Boots of Travel',
+ travel_boots_2:'Boots of Travel 2',assault:'Assault Cuirass',pipe:'Pipe of Insight',
+ shivas_guard:"Shiva's Guard",hand_of_midas:'Hand of Midas',boots:'Boots of Speed',
+ recipe_travel_boots:'Recipe',magic_wand:'Magic Wand',magic_stick:'Magic Stick',dust:'Dust of Appearance',
+ gem:'Gem of True Sight',blink:'Blink Dagger',heart:'Heart of Tarrasque',satanic:'Satanic',
+ black_king_bar:'Black King Bar',manta:'Manta Style',butterfly:'Butterfly',abyssal_blade:'Abyssal Blade',
+ orchid:'Orchid',bloodthorn:'Bloodthorn',desolator:'Desolator',nullifier:'Nullifier',
+ mask_of_madness:'Mask of Madness',power_treads:'Power Treads',phase_boots:'Phase Boots',
+ arcane_boots:'Arcane Boots',tranquil_boots:'Tranquil Boots',wraith_band:'Wraith Band',
+ null_talisman:'Null Talisman',bracer:'Bracer',flask:'Healing Salve',clarity:'Clarity',
+ tango:'Tango',branches:'Iron Branch',faerie_fire:'Faerie Fire',enchanted_mango:'Mango',
+ blood_grenade:'Blood Grenade',circlet:'Circlet',gauntlets:'Gauntlets',slippers:'Slippers',
+ mantle:'Mantle',quelling_blade:'Quelling Blade',stout_shield:'Stout Shield',
+ ring_of_protection:'Ring of Protection',ring_of_regen:'Ring of Regen',
+ crimson_guard:'Crimson Guard',solar_crest:'Solar Crest',force_staff:'Force Staff',
+ glimmer_cape:'Glimmer Cape',lotus_orb:'Lotus Orb',aeon_disk:'Aeon Disk',
+ spirit_vessel:'Spirit Vessel',urn_of_shadows:'Urn of Shadows',silver_edge:'Silver Edge',
+ monkey_king_bar:'Monkey King Bar',mjollnir:'Mjollnir',radiance:'Radiance',
+ rod_of_atos:'Rod of Atos',eternal_shroud:'Eternal Shroud',ghost:'Ghost Scepter',
+ heavens_halberd:"Heaven's Halberd",medallion_of_courage:'Medallion of Courage',
+ hurricane_pike:'Hurricane Pike',dragon_lance:'Dragon Lance',diffusal_blade:'Diffusal Blade',
+ vladmir:"Vladmir's Offering",echo_sabre:'Echo Sabre',harpoon:'Harpoon',
+ blade_mail:'Blade Mail',pers:'Perseverance',oblivion_staff:'Oblivion Staff'};
+const pretty=k=>NAMEFIX[k]||k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+
+const ROLEKK={Carry:'Керри',Support:'Қолдау',Nuker:'Зияншы',Disabler:'Тежеуші',Initiator:'Бастамашы',
+  Durable:'Мықты',Escape:'Қашқыш',Pusher:'Итеруші',Jungler:'Орманшы'};
+const ATTRKK={str:'Күш',agi:'Ептілік',int:'Ақыл',all:'Әмбебап'};
+
+/* ---------- дерек жүктеу ---------- */
+async function getJSON(url){
+  const r=await fetch(url,{cache:'no-store'});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function loadHeroes(force){
+  let d=force?null:LS.get('heroes',7);
+  if(!d){ d=await getJSON(API+'/heroStats'); LS.set('heroes',d); }
+  HEROES=d.map(h=>{
+    let p=0,w=0; for(let i=1;i<=8;i++){p+=h[i+'_pick']||0;w+=h[i+'_win']||0;}
+    return {id:h.id,name:h.name,localized_name:h.localized_name,primary_attr:h.primary_attr,
+      attack_type:h.attack_type,roles:h.roles||[],img:CDN+h.img.split('?')[0],base:p?w/p:.5};
+  }).sort((a,b)=>a.localized_name.localeCompare(b.localized_name));
+  BYID={}; HEROES.forEach(h=>BYID[h.id]=h);
+}
+async function loadMU(id,force){
+  if(MU[id]&&!force) return;
+  let d=force?null:LS.get('mu'+id,3);
+  if(!d){ d=await getJSON(API+'/heroes/'+id+'/matchups'); LS.set('mu'+id,d); }
+  MU[id]={}; d.forEach(r=>{MU[id][r.hero_id]=r});
+}
+let KEYBYNAME={};
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
+async function loadItemIds(){
+  if(ITEMIDS) return;
+  let d=LS.get('itemids',30);
+  if(!d){ d=await getJSON('https://raw.githubusercontent.com/odota/dotaconstants/master/build/item_ids.json'); LS.set('itemids',d); }
+  ITEMIDS=d; KEYBYNAME={};
+  Object.values(d).forEach(k=>{ KEYBYNAME[norm(pretty(k))]=k; KEYBYNAME[norm(k)]=k; });
+}
+// зат атауынан суреттің кілтін табады (жаңа патч заттары да жұмыс істейді)
+const ikey=label=>KEYBYNAME[norm(label)]||label.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+
+/* ---------- беттер ---------- */
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===id));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===id));
+  window.scrollTo(0,0);
+  if(id==='p-items') renderItems();
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.go));
+
+/* ---------- драфт тақтасы ---------- */
+function slots(side){
+  const box=document.getElementById(side==='mine'?'us':'them');
+  const arr=S[side==='mine'?'mine':'foe'];
+  box.innerHTML='';
+  for(let i=0;i<5;i++){
+    const h=BYID[arr[i]];
+    const b=document.createElement('button');
+    b.className='slot'+(h?' full':'');
+    b.innerHTML = h
+      ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}</span><span class="x">✕</span>`
+      : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
+    b.onclick=()=>{ if(h){ arr.splice(i,1); save(); board(); } else openPicker(side,i); };
+    box.appendChild(b);
+  }
+}
+function board(){ slots('mine'); slots('foe'); renderRecs(); }
+
+/* ---------- сүзгілер ---------- */
+const FILTS=[['all','Барлығы'],['fav','Таңдаулы'],['Carry','Керри'],['Support','Қолдау'],
+  ['Initiator','Бастамашы'],['Disabler','Тежеуші'],['Durable','Мықты'],
+  ['str','Күш'],['agi','Ептілік'],['int','Ақыл'],['all_attr','Әмбебап']];
+function chipRow(el,cur,cb){
+  el.innerHTML='';
+  FILTS.forEach(([k,t])=>{
+    const b=document.createElement('button');
+    b.className='chip'+(cur===k?' on':''); b.textContent=t;
+    b.onclick=()=>cb(k); el.appendChild(b);
+  });
+}
+function passFilter(h,f){
+  if(f==='all') return true;
+  if(f==='fav') return has(FAV,h);
+  if(f==='str'||f==='agi'||f==='int') return h.primary_attr===f;
+  if(f==='all_attr') return h.primary_attr==='all';
+  return h.roles.includes(f);
+}
+
+/* ---------- ұсыныс ---------- */
+function recommend(){
+  const used=new Set([...S.mine,...S.foe]);
+  const foes=S.foe.filter(id=>MU[id]);
+  if(!foes.length) return null;
+  const out=[];
+  for(const h of HEROES){
+    if(used.has(h.id)) continue;
+    let sum=0,n=0,det=[];
+    for(const f of foes){
+      const r=MU[f][h.id];
+      if(!r||r.games_played<50) continue;
+      const adv=(1-r.wins/r.games_played)-h.base;
+      sum+=adv; n++; det.push({id:f,adv});
+    }
+    if(!n) continue;
+    det.sort((a,b)=>b.adv-a.adv);
+    out.push({h,score:sum/n*100,det});
+  }
+  return out.sort((a,b)=>b.score-a.score);
+}
+function renderRecs(){
+  const box=document.getElementById('recs'), hint=document.getElementById('recHint');
+  chipRow(document.getElementById('filters'),filt,k=>{filt=k;renderRecs()});
+  const list=recommend();
+  if(!list){
+    hint.textContent='';
+    box.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>Оң жақтағы «Бос» орынға басып, қарсылас алған геройды қос. Әр герой қосылған сайын ұсыныс дәлдене береді.</div>';
+    return;
+  }
+  const f=list.filter(x=>passFilter(x.h,filt)).slice(0,25);
+  hint.textContent=S.foe.length+' қарсыласқа қарсы';
+  if(!f.length){ box.innerHTML='<div class="empty"><b>Бұл сүзгіде дерек жоқ</b>Басқа сүзгіні таңда.</div>'; return; }
+  const max=Math.max(...f.map(x=>Math.abs(x.score)),3);
+  box.innerHTML='';
+  f.forEach(x=>{
+    const b=document.createElement('button');
+    b.className='rec'+(x.score<0?' bad':'');
+    const top=x.det.slice(0,2).map(d=>BYID[d.id].localized_name+' '+(d.adv>0?'+':'')+(d.adv*100).toFixed(1)+'%').join(' · ');
+    b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
+      <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
+      <div class="rl">${top||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ')}</div>
+      <div class="bar"><i style="width:${Math.min(100,Math.abs(x.score)/max*100)}%"></i></div></div>
+      <div class="val">${x.score>0?'+':''}${x.score.toFixed(1)}<small>%</small></div>`;
+    b.onclick=()=>{ if(S.mine.length<5){S.mine.push(x.h.id);save();board();} };
+    box.appendChild(b);
+  });
+}
+
+/* ---------- герой таңдағыш ---------- */
+function openPicker(side,idx){
+  shSide=side; shIdx=idx; shFilt='all';
+  document.getElementById('shTitle').textContent = side==='mine'?'Біздің геройды қосу':'Қарсылас геройын қосу';
+  document.getElementById('shSrch').value='';
+  document.getElementById('sheet').classList.add('on');
+  history.pushState({sheet:1},'');
+  renderGrid();
+  setTimeout(()=>document.getElementById('shSrch').focus(),120);
+}
+function closePicker(fromPop){
+  document.getElementById('sheet').classList.remove('on');
+  if(fromPop!==true && history.state && history.state.sheet) history.back();
+}
+document.querySelectorAll('[data-close]').forEach(e=>e.onclick=()=>closePicker());
+document.getElementById('shSrch').oninput=renderGrid;
+
+function renderGrid(){
+  const q=document.getElementById('shSrch').value.trim().toLowerCase();
+  const used=new Set([...S.mine,...S.foe]);
+  chipRow(document.getElementById('shFilters'),shFilt,k=>{shFilt=k;renderGrid()});
+  const g=document.getElementById('shGrid'); g.innerHTML='';
+  HEROES.filter(h=>passFilter(h,shFilt))
+    .filter(h=>!q||h.localized_name.toLowerCase().includes(q))
+    .forEach(h=>{
+      const b=document.createElement('button');
+      b.className='hb'+(used.has(h.id)?' used':'');
+      b.innerHTML=`<img src="${h.img}" alt="" loading="lazy"><span>${h.localized_name}</span>${has(FAV,h)?'<span class="st">★</span>':''}`;
+      b.onclick=()=>pick(h);
+      let tm; b.ontouchstart=()=>{tm=setTimeout(()=>toggleFav(h),550)};
+      b.ontouchend=b.ontouchmove=()=>clearTimeout(tm);
+      g.appendChild(b);
+    });
+}
+function toggleFav(h){
+  const k=key(h);
+  if(has(FAV,h)) FAV=FAV.filter(x=>x!==k&&x!==slug(h.localized_name)); else FAV.push(k);
+  LS.set('fav',FAV); renderGrid(); if(navigator.vibrate)navigator.vibrate(15);
+}
+async function pick(h){
+  const arr = shSide==='mine'?S.mine:S.foe;
+  if(arr.length<5) arr.push(h.id);
+  save(); closePicker(); board();
+  if(shSide==='foe'){
+    document.getElementById('recs').innerHTML='<div class="load">Матчап дерегі жүктелуде…</div>';
+    try{ await loadMU(h.id); }catch(e){
+      document.getElementById('recs').innerHTML='<div class="empty"><b>Дерек жүктелмеді</b>Интернетті тексеріп, геройды қайта қос.</div>'; return;
+    }
+    renderRecs();
+  }
+}
+
+/* ---------- заттар ---------- */
+function foeHeroes(){ return S.foe.map(id=>BYID[id]).filter(Boolean); }
+async function renderItems(){
+  try{ await loadItemIds(); }catch(e){}
+  const fs=foeHeroes(), comp=document.getElementById('comp'), th=document.getElementById('threats');
+  if(!fs.length){
+    comp.innerHTML=''; th.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>«Таңдау» бетінде қарсылас геройларын қос — заттар өзі шығады.</div>';
+  } else {
+    const magic=fs.filter(h=>has(THREATS.find(t=>t.id==='magic').list,h)).length;
+    const phys=fs.filter(h=>has(THREATS.find(t=>t.id==='phys').list,h)).length;
+    const melee=fs.filter(h=>h.attack_type==='Melee').length;
+    const tot=Math.max(magic+phys,1);
+    comp.innerHTML=`<div class="split">
+      <div class="stat"><div class="k">Сиқыр / қатты зиян</div><div class="v">${magic} : ${phys}</div>
+        <div class="mbar"><i style="width:${magic/tot*100}%;background:#5B8DEF"></i><i style="width:${phys/tot*100}%;background:var(--dire)"></i></div></div>
+      <div class="stat"><div class="k">Жақын / қашық</div><div class="v">${melee} : ${fs.length-melee}</div>
+        <div class="mbar"><i style="width:${melee/fs.length*100}%;background:var(--gold)"></i><i style="width:${(1-melee/fs.length)*100}%;background:#5B8DEF"></i></div></div>
+    </div>`;
+    const hits=THREATS.map(t=>({t,who:fs.filter(h=>has(t.list,h))})).filter(x=>x.who.length)
+      .sort((a,b)=>b.who.length-a.who.length);
+    th.innerHTML = hits.length? hits.map(({t,who})=>`
+      <div class="card"><span class="tagn">${who.length}</span><h3>${t.ttl}</h3>
+        <p class="why">${who.map(h=>h.localized_name).join(', ')} — ${t.why}</p>
+        <div class="items">${t.items.map(n=>`<span class="it"><img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">${n}</span>`).join('')}</div>
+      </div>`).join('')
+      : '<div class="empty">Ерекше қауіп табылмады — әдеттегі жинақпен жүре бер.</div>';
+  }
+  const my=document.getElementById('myHeroes'), bd=document.getElementById('build');
+  my.innerHTML='';
+  if(!S.mine.length){ bd.innerHTML='<div class="empty">Өз геройыңды қосқанда, оның ең көп жиналатын заттары осында шығады.</div>'; return; }
+  S.mine.map(id=>BYID[id]).filter(Boolean).forEach(h=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=h.localized_name;
+    b.onclick=()=>{ my.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); b.classList.add('on'); showBuild(h); };
+    my.appendChild(b);
+  });
+  bd.innerHTML='<div class="empty">Герой атын басып, жинағын көр.</div>';
+}
+async function showBuild(h){
+  const bd=document.getElementById('build');
+  bd.innerHTML='<div class="load">Жүктелуде…</div>';
+  try{
+    await loadItemIds();
+    let d=LS.get('ip'+h.id,7);
+    if(!d){ d=await getJSON(API+'/heroes/'+h.id+'/itemPopularity'); LS.set('ip'+h.id,d); }
+    const grp=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n)
+      .map(([id])=>ITEMIDS[id]).filter(Boolean);
+    const rows=[['Бастапқы',grp(d.start_game_items,6)],['Ерте',grp(d.early_game_items,5)],
+      ['Орта',grp(d.mid_game_items,5)],['Кеш',grp(d.late_game_items,5)]];
+    bd.innerHTML=rows.filter(r=>r[1].length).map(([t,its])=>`
+      <div class="card"><h3>${t}</h3>
+      <div class="items" style="margin-top:8px">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}</span>`).join('')}</div></div>`).join('')
+      +`<div class="note">${h.localized_name} бойынша нақты ойындарда ең жиі жиналған заттар. Жоғарыдағы «Не сатып алу керек» бөлімі осының үстіне қосылады.</div>`;
+  }catch(e){ bd.innerHTML='<div class="empty"><b>Жинақ жүктелмеді</b>Интернетті тексеріп, қайта бас.</div>'; }
+}
+
+/* ---------- баптау ---------- */
+document.getElementById('bClear').onclick=()=>{ S={mine:[],foe:[]}; save(); board(); go('p-pick'); };
+document.getElementById('bRefresh').onclick=async e=>{
+  e.target.textContent='Жаңартылуда…';
+  LS.del('mu'); LS.del('ip'); MU={};
+  try{ await loadHeroes(true); for(const id of S.foe) await loadMU(id,true); board(); e.target.textContent='Жаңартылды ✓'; }
+  catch(err){ e.target.textContent='Жаңарту сәтсіз — интернетті тексер'; }
+  setTimeout(()=>e.target.textContent='Деректі жаңарту',2500);
+};
+document.getElementById('ver').textContent='Dota 2 Pick v'+V+' · дерек: OpenDota';
+
+/* ---------- артқа түймесі ---------- */
+window.addEventListener('popstate',()=>{ if(document.getElementById('sheet').classList.contains('on')) closePicker(true); });
+
+/* ---------- іске қосу ---------- */
+(async function init(){
+  const box=document.getElementById('recs');
+  box.innerHTML='<div class="load">Геройлар жүктелуде…</div>';
+  try{ await loadHeroes(); }
+  catch(e){
+    box.innerHTML='<div class="empty"><b>Геройлар жүктелмеді</b>Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.</div>'; return;
+  }
+  board();
+  for(const id of S.foe){ try{ await loadMU(id); }catch(e){} }
+  renderRecs();
+})();
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
