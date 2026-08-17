@@ -211,8 +211,9 @@ input{font-family:inherit}
 .amb .a3{width:44vw;height:44vw;left:22vw;bottom:-16vh;background:var(--gold);opacity:.08;animation:drift1 38s ease-in-out infinite reverse}
 @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(9vw,7vh)}}
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-11vw,-6vh)}}
-.top,.wrap,.tabs,.sheet{position:relative;z-index:2}
-.top{z-index:30}
+/* ауа-фонның үстінде тұруы керек жалғыз қабат — мазмұн.
+   .top (sticky), .tabs (fixed), .sheet (fixed) өз орналасуын сақтауы тиіс */
+.wrap{position:relative;z-index:2}
 
 #toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translate(-50%,14px);
   z-index:120;background:#1D2637f2;border:1px solid var(--line);border-left:3px solid var(--gold);
@@ -359,7 +360,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='2.3';
+const V='2.4';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
