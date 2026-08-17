@@ -125,11 +125,15 @@ input{font-family:inherit}
 .srch{margin:0 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
   padding:10px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
 .grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-content:start}
-.hb{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;position:relative}
-.hb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
-.hb .hn{display:block;color:#E9EDF5;font-size:13px;font-weight:600;line-height:1.25;
-  padding:7px 8px 8px;background:#1D2637;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  align-content:start;grid-auto-rows:max-content}
+.hb{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;text-align:left;position:relative;cursor:pointer;
+  -webkit-user-select:none;user-select:none}
+.hb img{width:100%;height:auto;min-height:74px;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
+.hb .hn{display:block;width:100%;box-sizing:border-box;color:#E9EDF5;font-family:var(--body);
+  font-size:13px;font-weight:600;line-height:1.3;min-height:32px;
+  padding:7px 9px 8px;background:#1D2637;border-top:1px solid var(--line);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb.used{opacity:.28;pointer-events:none}
 .gh{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:12.5px;
@@ -139,11 +143,13 @@ input{font-family:inherit}
 .gh i{font-style:normal;font-family:var(--body);font-size:11px;color:var(--dim);letter-spacing:0}
 .hb .st{position:absolute;top:5px;right:7px;font-size:15px;color:var(--gold);text-shadow:0 1px 3px #000}
 .igrid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(2,1fr);gap:8px;align-content:start}
+  display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+  align-content:start;grid-auto-rows:max-content}
 .ib{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
-  border-radius:10px;padding:6px;text-align:left}
+  border-radius:10px;padding:6px;text-align:left;cursor:pointer;
+  -webkit-user-select:none;user-select:none}
 .ib img{width:40px;height:30px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
-.ib span{font-size:11.5px;line-height:1.2}
+.ib span{font-size:11.5px;line-height:1.2;color:var(--txt);min-width:0;overflow:hidden}
 .ib.sel{border-color:var(--gold);background:#2A2415}
 .slot .cnt{display:inline-block;margin-left:5px;background:var(--gold);color:#171203;font-size:9.5px;
   font-weight:800;border-radius:6px;padding:0 4px;vertical-align:1px}
@@ -164,10 +170,98 @@ input{font-family:inherit}
 .btn.gold{background:var(--gold);color:#171203;border-color:var(--gold)}
 .note{font-size:12px;color:var(--dim);margin:10px 2px 22px;line-height:1.6}
 .load{text-align:center;color:var(--dim);font-size:13px;padding:14px}
+
+/* ===== бренд қабаты: ашылу экраны, ауа-фон, анимация ===== */
+#splash{position:fixed;inset:0;z-index:200;background:var(--void);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;transition:opacity .45s ease,visibility .45s}
+#splash.gone{opacity:0;visibility:hidden}
+.sp-glow{position:absolute;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,#4FB47733 0%,#D9584A22 45%,transparent 70%);filter:blur(18px);
+  animation:breathe 3.4s ease-in-out infinite}
+.sp-mask{width:118px;height:118px;border-radius:26px;position:relative;
+  animation:maskIn .8s cubic-bezier(.2,.9,.25,1) both;box-shadow:0 18px 50px #0008}
+.sp-name{font-family:var(--disp);font-size:22px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--txt);animation:fadeUp .6s .25s ease both}
+.sp-bar{width:132px;height:2px;border-radius:2px;background:#1E2637;overflow:hidden;
+  animation:fadeUp .6s .4s ease both}
+.sp-bar i{display:block;height:100%;width:40%;border-radius:2px;
+  background:linear-gradient(90deg,var(--rad),var(--gold),var(--dire));animation:load 1.1s ease-in-out infinite}
+@keyframes maskIn{from{opacity:0;transform:scale(.82) rotate(-6deg)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+@keyframes load{0%{transform:translateX(-120%)}100%{transform:translateX(330%)}}
+
+.amb{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.amb i{position:absolute;display:block;border-radius:50%;filter:blur(70px);opacity:.16}
+.amb .a1{width:60vw;height:60vw;left:-18vw;top:-12vh;background:var(--rad);animation:drift1 26s ease-in-out infinite}
+.amb .a2{width:66vw;height:66vw;right:-22vw;top:32vh;background:var(--dire);animation:drift2 31s ease-in-out infinite}
+.amb .a3{width:44vw;height:44vw;left:22vw;bottom:-16vh;background:var(--gold);opacity:.08;animation:drift1 38s ease-in-out infinite reverse}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(9vw,7vh)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-11vw,-6vh)}}
+.top,.wrap,.tabs,.sheet{position:relative;z-index:2}
+.top{z-index:30}
+
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translate(-50%,14px);
+  z-index:120;background:#1D2637f2;border:1px solid var(--line);border-left:3px solid var(--gold);
+  color:var(--txt);font-size:13px;font-weight:600;padding:9px 14px;border-radius:11px;
+  opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;backdrop-filter:blur(8px);
+  box-shadow:0 10px 30px #0007;max-width:82vw}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* толқын (ripple) */
+.rp{position:absolute;border-radius:50%;background:#E3B23C33;transform:scale(0);pointer-events:none;
+  animation:rip .5s ease-out forwards}
+@keyframes rip{to{transform:scale(2.6);opacity:0}}
+.chip,.slot,.hb,.ib,.btn,.rec,.tab{position:relative;overflow:hidden}
+.chip:active,.btn:active,.ib:active{transform:scale(.96)}
+.hb:active,.rec:active,.slot:active{transform:scale(.985)}
+.chip,.btn,.ib,.hb,.rec,.slot{transition:transform .12s ease,border-color .18s,background .18s}
+
+/* таб индикаторы */
+.tabs{overflow:hidden}
+.tabind{position:absolute;top:0;left:0;width:33.333%;height:2px;background:var(--gold);
+  transition:transform .32s cubic-bezier(.2,.8,.3,1);box-shadow:0 0 12px #E3B23C88}
+.tab svg{transition:transform .22s ease}
+.tab.on svg{transform:translateY(-1px) scale(1.08)}
+
+/* карталар мен жолдардың шығуы */
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.rec,.card,.hb,.pl{animation:pop .34s cubic-bezier(.2,.8,.3,1) both}
+.rec .bar i{transition:width .7s cubic-bezier(.2,.8,.3,1)}
+.rec .val{transition:color .3s}
+.slot.full{animation:slotIn .34s cubic-bezier(.2,.9,.25,1) both}
+@keyframes slotIn{from{opacity:0;transform:translateX(6px) scale(.96)}to{opacity:1;transform:none}}
+.side.us{box-shadow:inset 0 22px 34px -30px var(--rad)}
+.side.them{box-shadow:inset 0 22px 34px -30px var(--dire)}
+.seam{animation:seam 4.5s ease-in-out infinite}
+@keyframes seam{0%,100%{opacity:.28}50%{opacity:.7}}
+.mark{animation:markIn .6s cubic-bezier(.2,.9,.25,1) both;box-shadow:0 3px 12px #0006}
+@keyframes markIn{from{opacity:0;transform:scale(.7) rotate(-10deg)}to{opacity:1;transform:none}}
+.top h1{background:linear-gradient(92deg,var(--txt) 30%,var(--gold));-webkit-background-clip:text;
+  background-clip:text;color:transparent}
+
+/* қаңқа жүктегіш */
+.sk{height:56px;border-radius:11px;background:linear-gradient(100deg,#161D2B 30%,#212B3E 50%,#161D2B 70%);
+  background-size:220% 100%;animation:shim 1.15s linear infinite;margin-bottom:7px}
+@keyframes shim{from{background-position:120% 0}to{background-position:-20% 0}}
+.ib.sel{animation:selPop .28s ease}
+@keyframes selPop{50%{transform:scale(1.05)}}
+.tagn{animation:fadeUp .4s .1s ease both}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+
+<div id="splash">
+  <div class="sp-glow"></div>
+  <img class="sp-mask" src="icon-512.png" alt="">
+  <div class="sp-name">Dota&nbsp;2&nbsp;Pick</div>
+  <div class="sp-bar"><i></i></div>
+</div>
+
+<div class="amb" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+<div id="toast"></div>
 
 <header class="top">
   <img class="mark" src="icon-192.png" alt="">
@@ -218,7 +312,7 @@ input{font-family:inherit}
   </section>
 </main>
 
-<nav class="tabs">
+<nav class="tabs"><i class="tabind"></i>
   <button class="tab on" data-go="p-pick"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 14h6v6h-6zM4 20l16-16"/></svg>Таңдау</button>
   <button class="tab" data-go="p-items"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg>Заттар</button>
   <button class="tab" data-go="p-set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>Баптау</button>
@@ -244,7 +338,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='1.5';
+const V='2.1';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -633,14 +727,49 @@ async function loadItemIds(){
 // зат атауынан суреттің кілтін табады (жаңа патч заттары да жұмыс істейді)
 const ikey=label=>KEYBYNAME[norm(label)]||label.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 
+/* ---------- қозғалыс пен әсерлер ---------- */
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1700);
+}
+const buzz=ms=>{ try{ navigator.vibrate&&navigator.vibrate(ms) }catch(e){} };
+document.addEventListener('pointerdown',e=>{
+  if(RM) return;
+  const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab'); if(!t) return;
+  const r=t.getBoundingClientRect(), d=Math.max(r.width,r.height)*.6;
+  const sp=document.createElement('span'); sp.className='rp';
+  sp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
+  t.appendChild(sp); setTimeout(()=>sp.remove(),520);
+},{passive:true});
+// санды нөлден өсіру
+function countUp(el,to,dur){
+  if(RM){ el.innerHTML=fmtPct(to); return; }
+  const t0=performance.now();
+  const step=n=>{
+    const k=Math.min(1,(n-t0)/dur), e=1-Math.pow(1-k,3);
+    el.innerHTML=fmtPct(to*e);
+    if(k<1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const fmtPct=v=>`${v>0?'+':''}${v.toFixed(1)}<small>%</small>`;
+const skel=n=>Array.from({length:n},()=>'<div class="sk"></div>').join('');
+const stagger=(els,ms=26,max=16)=>els.forEach((el,i)=>{ el.style.animationDelay=(i<max?i*ms:0)+'ms' });
+
 /* ---------- беттер ---------- */
-function go(id){
+function go(id,i){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===id));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===id));
-  window.scrollTo(0,0);
+  const tabs=[...document.querySelectorAll('.tab')];
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.go===id));
+  moveInd(i!==undefined?i:tabs.findIndex(t=>t.dataset.go===id));
+  window.scrollTo({top:0,behavior:RM?'auto':'smooth'});
   if(id==='p-items') renderItems();
 }
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.go));
+document.querySelectorAll('.tab').forEach((t,i)=>t.onclick=()=>go(t.dataset.go,i));
+function moveInd(i){ const el=document.querySelector('.tabind'); if(el) el.style.transform=`translateX(${i*100}%)`; }
 
 /* ---------- драфт тақтасы ---------- */
 function slots(side){
@@ -656,8 +785,8 @@ function slots(side){
       ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x">✕</span>`
       : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
     if(h){
-      b.onclick=()=>{ if(side==='mine'){ arr.splice(i,1); save(); board(); } else openItems(h); };
-      b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete S.fi[h.id]; save(); board(); };
+      b.onclick=()=>{ if(side==='mine'){ arr.splice(i,1); save(); board(); buzz(8); } else openItems(h); };
+      b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete S.fi[h.id]; save(); board(); buzz(8); toast(h.localized_name+' алынды'); };
     } else b.onclick=()=>openPicker(side,i);
     box.appendChild(b);
   }
@@ -728,10 +857,15 @@ function renderRecs(){
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
       <div class="rl"><b style="color:var(--gold);font-weight:600">${posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ')}</b>${top?' — '+top:''}</div>
-      <div class="bar"><i style="width:${Math.min(100,Math.abs(x.score)/max*100)}%"></i></div></div>
-      <div class="val">${x.score>0?'+':''}${x.score.toFixed(1)}<small>%</small></div>`;
-    b.onclick=()=>{ if(S.mine.length<5){S.mine.push(x.h.id);save();board();} };
+      <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
+      <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
+    b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
     box.appendChild(b);
+  });
+  stagger([...box.children]);
+  requestAnimationFrame(()=>{
+    box.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%');
+    box.querySelectorAll('.val').forEach((v,i)=>countUp(v,+v.dataset.to,520+Math.min(i,10)*25));
   });
 }
 
@@ -753,11 +887,13 @@ document.querySelectorAll('[data-close]').forEach(e=>e.onclick=()=>closePicker()
 document.getElementById('shSrch').oninput=renderGrid;
 
 function heroBtn(h,used){
-  const b=document.createElement('button');
+  const b=document.createElement('div');
+  b.setAttribute('role','button'); b.tabIndex=0;
   b.className='hb'+(used.has(h.id)?' used':'');
   b.innerHTML=`<img src="${h.img}" alt="" loading="lazy">
     <div class="hn">${h.localized_name}</div>${has(FAV,h)?'<span class="st">★</span>':''}`;
   b.onclick=()=>pick(h);
+  b.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(h); } };
   let tm; b.ontouchstart=()=>{tm=setTimeout(()=>toggleFav(h),550)};
   b.ontouchend=b.ontouchmove=()=>clearTimeout(tm);
   return b;
@@ -783,21 +919,26 @@ function renderGrid(){
       t.innerHTML=`Басқа<i>${rest.length}</i>`; g.appendChild(t);
       rest.forEach(h=>g.appendChild(heroBtn(h,used)));
     }
+    stagger([...g.children],14,18);
     return;
   }
   list.filter(h=>passFilter(h,shFilt)).forEach(h=>g.appendChild(heroBtn(h,used)));
+  stagger([...g.children],18,14);
 }
 function toggleFav(h){
   const k=key(h);
   if(has(FAV,h)) FAV=FAV.filter(x=>x!==k&&x!==slug(h.localized_name)); else FAV.push(k);
-  LS.set('fav',FAV); renderGrid(); if(navigator.vibrate)navigator.vibrate(15);
+  LS.set('fav',FAV); renderGrid(); buzz(18);
+  toast(has(FAV,h)?h.localized_name+' — таңдаулыға қосылды':h.localized_name+' — таңдаулыдан алынды');
 }
 async function pick(h){
   const arr = shSide==='mine'?S.mine:S.foe;
-  if(arr.length<5) arr.push(h.id);
-  save(); closePicker(); board();
+  if(arr.length>=5){ toast('Бұл жақ толы'); return; }
+  arr.push(h.id);
+  save(); closePicker(); board(); buzz(14);
+  toast(h.localized_name+(shSide==='mine'?' — біздің команда':' — қарсылас'));
   if(shSide==='foe'){
-    document.getElementById('recs').innerHTML='<div class="load">Матчап дерегі жүктелуде…</div>';
+    document.getElementById('recs').innerHTML=skel(5);
     try{ await loadMU(h.id); }catch(e){
       document.getElementById('recs').innerHTML='<div class="empty"><b>Дерек жүктелмеді</b>Интернетті тексеріп, геройды қайта қос.</div>'; return;
     }
@@ -827,13 +968,15 @@ function renderIGrid(){
   const cur=S.fi[isHero.id]||[];
   const g=document.getElementById('isGrid'); g.innerHTML='';
   ITEMLIST.filter(n=>!q||n.toLowerCase().includes(q)).forEach(n=>{
-    const b=document.createElement('button');
+    const b=document.createElement('div');
+    b.setAttribute('role','button'); b.tabIndex=0;
     b.className='ib'+(cur.includes(n)?' sel':'');
     b.innerHTML=`<img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'"><span>${n}</span>`;
     b.onclick=()=>{
       const l=S.fi[isHero.id]||[];
-      S.fi[isHero.id]=l.includes(n)?l.filter(x=>x!==n):[...l,n];
-      save(); renderIGrid();
+      const on=!l.includes(n);
+      S.fi[isHero.id]=on?[...l,n]:l.filter(x=>x!==n);
+      save(); renderIGrid(); buzz(10); toast(isHero.localized_name+': '+n+(on?' ✓':' ✕'));
     };
     g.appendChild(b);
   });
@@ -891,7 +1034,7 @@ async function renderItems(){
 /* геройға арналған жоспар: қарсыласқа қарсы заттар + негізгі жинақ */
 async function showPlan(h){
   const bd=document.getElementById('build');
-  bd.innerHTML='<div class="load">Есептелуде…</div>';
+  bd.innerHTML=skel(4);
   const fs=foeHeroes();
   const kind=kindOf(h).map(k=>k==='core'?'кор':'қолдау').join('/');
   const head=`<div class="card"><h3>${h.localized_name}</h3>
@@ -948,7 +1091,7 @@ async function showPlan(h){
     ? `<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`
       + notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')
       + '</div>' : '';
-  bd.innerHTML=head+counter+noteCard+'<div class="load">Негізгі жинақ жүктелуде…</div>';
+  bd.innerHTML=head+counter+noteCard+skel(2);
 
   let core='';
   try{
@@ -985,15 +1128,20 @@ window.addEventListener('popstate',()=>{
 /* ---------- іске қосу ---------- */
 (async function init(){
   const box=document.getElementById('recs');
-  box.innerHTML='<div class="load">Геройлар жүктелуде…</div>';
+  box.innerHTML=skel(6);
   try{ await loadHeroes(); }
   catch(e){
-    box.innerHTML='<div class="empty"><b>Геройлар жүктелмеді</b>Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.</div>'; return;
+    box.innerHTML='<div class="empty"><b>Геройлар жүктелмеді</b>Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.</div>'; hideSplash(); return;
   }
   board();
+  setTimeout(hideSplash,420);
   for(const id of S.foe){ try{ await loadMU(id); }catch(e){} }
   renderRecs();
 })();
+
+function hideSplash(){ const el=document.getElementById('splash'); if(el&&!el.classList.contains('gone')) el.classList.add('gone'); }
+setTimeout(hideSplash,3200); // сақтандырғыш
+moveInd(0);
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
