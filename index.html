@@ -115,7 +115,7 @@ input{font-family:inherit}
 .sheet{position:fixed;inset:0;z-index:60;display:none}
 .sheet.on{display:block}
 .sheet .bg{position:absolute;inset:0;background:#060910cc;backdrop-filter:blur(3px)}
-.sheet .box{position:absolute;left:0;right:0;bottom:0;top:8vh;background:var(--void);
+.sheet .box{position:absolute;left:0;right:0;bottom:0;top:5vh;background:var(--void);
   border-top:2px solid var(--gold);border-radius:18px 18px 0 0;display:flex;flex-direction:column;
   animation:up .22s cubic-bezier(.2,.8,.3,1) both}
 @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
@@ -125,11 +125,11 @@ input{font-family:inherit}
 .srch{margin:0 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
   padding:10px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
 .grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-content:start}
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-content:start}
 .hb{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;position:relative}
-.hb img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top center;display:block;background:#0B0F18}
-.hb .hn{display:block;color:var(--txt);font-size:11.5px;font-weight:600;line-height:1.25;
-  padding:6px 6px 7px;background:var(--panel2);border-top:1px solid var(--line);
+.hb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
+.hb .hn{display:block;color:#E9EDF5;font-size:13px;font-weight:600;line-height:1.25;
+  padding:7px 8px 8px;background:#1D2637;border-top:1px solid var(--line);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb.used{opacity:.28;pointer-events:none}
 .gh{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:12.5px;
@@ -137,7 +137,7 @@ input{font-family:inherit}
   border-top:1px solid var(--line)}
 .gh:first-child{margin-top:2px;border-top:0;padding-top:0}
 .gh i{font-style:normal;font-family:var(--body);font-size:11px;color:var(--dim);letter-spacing:0}
-.hb .st{position:absolute;top:3px;right:5px;font-size:12px;color:var(--gold);text-shadow:0 1px 3px #000}
+.hb .st{position:absolute;top:5px;right:7px;font-size:15px;color:var(--gold);text-shadow:0 1px 3px #000}
 .igrid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
   display:grid;grid-template-columns:repeat(2,1fr);gap:8px;align-content:start}
 .ib{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
@@ -755,8 +755,8 @@ document.getElementById('shSrch').oninput=renderGrid;
 function heroBtn(h,used){
   const b=document.createElement('button');
   b.className='hb'+(used.has(h.id)?' used':'');
-  b.innerHTML=`<img src="${h.vert}" alt="" loading="lazy" onerror="this.onerror=null;this.style.aspectRatio='16/9';this.src='${h.img}'">
-    <span class="hn">${h.localized_name}</span>${has(FAV,h)?'<span class="st">★</span>':''}`;
+  b.innerHTML=`<img src="${h.img}" alt="" loading="lazy">
+    <div class="hn">${h.localized_name}</div>${has(FAV,h)?'<span class="st">★</span>':''}`;
   b.onclick=()=>pick(h);
   let tm; b.ontouchstart=()=>{tm=setTimeout(()=>toggleFav(h),550)};
   b.ontouchend=b.ontouchmove=()=>clearTimeout(tm);
