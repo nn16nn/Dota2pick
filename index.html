@@ -359,7 +359,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='2.2';
+const V='2.3';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -902,11 +902,14 @@ function openPicker(side,idx){
   sh.classList.remove('us','them'); sh.classList.add(mine?'us':'them');
   sh.querySelector('.box').style.animation='none'; void sh.offsetWidth; sh.querySelector('.box').style.animation='';
   document.getElementById('shGrid').scrollTop=0;
+  sh.classList.add('on');
+  document.body.style.overflow='hidden';
   history.pushState({sheet:1},'');
   renderGrid();
 }
 function closePicker(fromPop){
   document.getElementById('sheet').classList.remove('on');
+  document.body.style.overflow='';
   if(fromPop!==true && history.state && history.state.sheet) history.back();
 }
 document.querySelectorAll('[data-close]').forEach(e=>e.onclick=()=>closePicker());
@@ -982,11 +985,13 @@ function openItems(h){
   document.getElementById('isCnt').textContent = (S.fi[isHero.id]||[]).length;
   document.getElementById('isGrid').scrollTop=0;
   document.getElementById('isheet').classList.add('on');
+  document.body.style.overflow='hidden';
   history.pushState({sheet:1},'');
   renderIGrid();
 }
 function closeItems(fromPop){
   document.getElementById('isheet').classList.remove('on');
+  document.body.style.overflow='';
   if(fromPop!==true && history.state && history.state.sheet) history.back();
   board(); if(document.getElementById('p-items').classList.contains('on')) renderItems();
 }
