@@ -131,8 +131,8 @@ input{font-family:inherit}
   padding:calc(11px + env(safe-area-inset-top)) 14px 11px;
   background:var(--panel);border-bottom:1px solid var(--line);position:relative}
 .phd::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--gold)}
-#sheet.us .phd::before{background:linear-gradient(90deg,var(--rad),#7BD3A0)}
-#sheet.them .phd::before{background:linear-gradient(90deg,var(--dire),#EE8A7E)}
+#sheet.us .phd::before,#isheet.us .phd::before{background:linear-gradient(90deg,var(--rad),#7BD3A0)}
+#sheet.them .phd::before,#isheet.them .phd::before{background:linear-gradient(90deg,var(--dire),#EE8A7E)}
 .phd .bk{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:var(--panel2);
   border:1px solid var(--line);color:var(--txt);font-size:19px;line-height:1;
   display:flex;align-items:center;justify-content:center}
@@ -377,7 +377,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.0';
+const V='3.2';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -457,7 +457,16 @@ Object.assign(I18N.ru, {
   'Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.':'Добавить/изменить: нажми на героя соперника на странице «Пик».',
   'Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады. Заттың жанындағы кішкене портрет — сол зат қай қарсыласқа қарсы жұмыс істейтінін көрсетеді.':'Самое частое в реальных играх — предметы выше добавляются поверх этого. Маленький портрет рядом с предметом показывает, против какого соперника он работает.',
   'Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.':'Герои и проценты матчапов — открытые данные OpenDota (статистика реальных игр, все рейтинги). Преимущество = винрейт героя против этого соперника минус его общий винрейт. Матчапы меньше 50 игр не учитываются.',
-  'дерек: OpenDota':'данные: OpenDota'
+  'дерек: OpenDota':'данные: OpenDota',
+  'Қарсылас нені жинап жатыр':'Что собирает соперник','әр геройды басып белгіле':'нажми на героя и отметь',
+  'Біздің команда нені жинап жатыр':'Что собирает наша команда','қарсылас не алатынын көрсетеді':'покажет, что возьмёт соперник',
+  'Оған қарсы не аламыз':'Что берём против него','Қарсылас саған қарсы не алуы мүмкін':'Что соперник может взять против тебя',
+  'зат белгіленген':'предметов отмечено','Заты әлі белгіленбеген':'Предметы ещё не отмечены',
+  'Қолда бар — дұрыс таңдау':'Уже есть — верный выбор','Сенің жинағың':'Твой билд',
+  'Өзгерту: «Таңдау» бетінде өз геройыңды бас.':'Изменить: нажми на своего героя на странице «Пик».',
+  '«Таңдау» бетінде өз геройыңды басып, не жинағаныңды белгіле — сонда алынған заттар ұсыныстан шығып, қалғаны ғана қалады.':'На странице «Пик» нажми на своего героя и отметь, что уже собрал — купленные предметы уйдут из советов, останется только нужное.',
+  'Біздің команда · нақты не жинады':'Наша команда · что реально собрал',
+  'Қарсылас · нақты не жинады':'Соперник · что реально собрал'
 });
 
 Object.assign(I18N.en, {
@@ -515,7 +524,16 @@ Object.assign(I18N.en, {
   'Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.':'Add or edit: tap the enemy hero on the Pick page.',
   'Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады. Заттың жанындағы кішкене портрет — сол зат қай қарсыласқа қарсы жұмыс істейтінін көрсетеді.':'What players buy most in real games — the items above go on top of this. The small portrait next to an item shows which enemy it works against.',
   'Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.':'Heroes and matchup percentages come from OpenDota open data (real match statistics, all brackets). Advantage = the hero win rate against that enemy minus their overall win rate. Matchups with fewer than 50 games are ignored.',
-  'дерек: OpenDota':'data: OpenDota'
+  'дерек: OpenDota':'data: OpenDota',
+  'Қарсылас нені жинап жатыр':'What the enemy is building','әр геройды басып белгіле':'tap a hero and mark items',
+  'Біздің команда нені жинап жатыр':'What our team is building','қарсылас не алатынын көрсетеді':'shows what the enemy will buy',
+  'Оған қарсы не аламыз':'What we buy against him','Қарсылас саған қарсы не алуы мүмкін':'What the enemy may buy against you',
+  'зат белгіленген':'items marked','Заты әлі белгіленбеген':'No items marked yet',
+  'Қолда бар — дұрыс таңдау':'Already owned — good call','Сенің жинағың':'Your build',
+  'Өзгерту: «Таңдау» бетінде өз геройыңды бас.':'To edit: tap your hero on the Pick page.',
+  '«Таңдау» бетінде өз геройыңды басып, не жинағаныңды белгіле — сонда алынған заттар ұсыныстан шығып, қалғаны ғана қалады.':'On the Pick page tap your hero and mark what you already bought — those items drop out of the advice and only what you still need remains.',
+  'Біздің команда · нақты не жинады':'Our team · what was actually built',
+  'Қарсылас · нақты не жинады':'Enemy · what was actually built'
 });
 
 
@@ -763,7 +781,7 @@ let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
 let S = LS.get('state') || {mine:[],foe:[],fi:{}};
 if(!S.fi) S.fi={};
 let FAV = LS.get('fav') || ['phantom_assassin','ursa','shadow_shaman','drow_ranger'];
-let filt='all', shFilt='all', shSide='mine', shIdx=0;
+let filt='all', shFilt='all', shSide='mine', shIdx=0, isSide='foe';
 
 const save=()=>LS.set('state',S);
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
@@ -1186,6 +1204,30 @@ function foeBadges(name,max){
     +(l.length>max?`<b>+${l.length-max}</b>`:'')+'</span>';
 }
 
+/* ---------- әр геройдың жинағы және оған жауап ---------- */
+function itemChips(list){
+  return `<div class="items">${list.map(n=>`<span class="it"><img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">${n}</span>`).join('')}</div>`;
+}
+// side='foe' → бұл заттарға біз не аламыз; side='mine' → қарсылас бізге қарсы не алуы мүмкін
+function buildCard(h,side){
+  const its=S.fi[h.id]||[];
+  const ans=new Map(), notes=[];
+  its.forEach(it=>{
+    const r=IREACT[it]; if(!r) return;
+    (r.items||[]).forEach(n=>ans.set(n,1));
+    if(r.note) notes.push({it,note:r.note});
+  });
+  const lbl = side==='mine' ? 'Қарсылас саған қарсы не алуы мүмкін' : 'Оған қарсы не аламыз';
+  return `<div class="card">
+    <div class="pl"><img src="${h.img}" alt="" loading="lazy">
+      <div><div class="pn">${h.localized_name}</div>
+      <div class="pw">${its.length?its.length+' зат белгіленген':'Заты әлі белгіленбеген'}</div></div></div>
+    ${its.length?itemChips(its):''}
+    ${ans.size?`<div class="grow"><span class="gt">${lbl}</span>${itemChips([...ans.keys()])}</div>`:''}
+    ${notes.length?notes.map(n=>`<p class="why" style="margin:7px 0 0">${n.it} — ${n.note}</p>`).join(''):''}
+  </div>`;
+}
+
 /* ---------- беттер ---------- */
 let CURTAB='p-pick';
 function go(id,i,push){
@@ -1223,12 +1265,12 @@ function slots(side){
     const h=BYID[arr[i]];
     const b=document.createElement('button');
     b.className='slot'+(h?' full':'');
-    const n=h&&side!=='mine'?(S.fi[h.id]||[]).length:0;
+    const n=h?(S.fi[h.id]||[]).length:0;
     b.innerHTML = h
       ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x">✕</span>`
       : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
     if(h){
-      b.onclick=()=>{ if(side==='mine'){ arr.splice(i,1); save(); board(); buzz(8); } else openItems(h); };
+      b.onclick=()=>openItems(h,side);
       b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete S.fi[h.id]; save(); board(); buzz(8); toast(h.localized_name+' алынды'); };
     } else b.onclick=()=>openPicker(side,i);
     box.appendChild(b);
@@ -1399,11 +1441,13 @@ async function pick(h){
 
 /* ---------- қарсыластың заттарын енгізу ---------- */
 let isHero=null;
-function openItems(h){
-  isHero=h;
+function openItems(h,side){
+  isHero=h; isSide = side || (S.mine.includes(h.id)?'mine':'foe');
+  const sh=document.getElementById('isheet');
+  sh.classList.remove('us','them'); sh.classList.add(isSide==='mine'?'us':'them');
   document.getElementById('isTitle').textContent=h.localized_name+' не жинады';
   document.getElementById('isSrch').value='';
-  document.getElementById('isSub').textContent = isHero.localized_name+' нақты не жинады';
+  document.getElementById('isSub').textContent = (isSide==='mine'?'Біздің команда':'Қарсылас')+' · нақты не жинады';
   document.getElementById('isCnt').textContent = (S.fi[isHero.id]||[]).length;
   document.getElementById('isGrid').scrollTop=0;
   document.getElementById('isheet').classList.add('on');
@@ -1432,7 +1476,7 @@ function renderIGrid(){
       const l=S.fi[isHero.id]||[];
       const on=!l.includes(n);
       S.fi[isHero.id]=on?[...l,n]:l.filter(x=>x!==n);
-      save(); renderIGrid(); buzz(10);
+      save(); renderIGrid(); slots(isSide); buzz(10);
       document.getElementById('isCnt').textContent=(S.fi[isHero.id]||[]).length;
       toast(isHero.localized_name+': '+n+(on?' ✓':' ✕'));
     };
@@ -1458,11 +1502,14 @@ async function renderItems(){
       <div class="stat"><div class="k">Жақын / қашық</div><div class="v">${melee} : ${fs.length-melee}</div>
         <div class="mbar"><i style="width:${melee/fs.length*100}%;background:var(--gold)"></i><i style="width:${(1-melee/fs.length)*100}%;background:#5B8DEF"></i></div></div>
     </div>`;
-    const bought=fs.filter(f=>(S.fi[f.id]||[]).length);
-    if(bought.length) comp.innerHTML+=`<div class="card" style="margin-top:9px"><h3>Қарсылас не жинады</h3>`
-      + bought.map(f=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
-          <div><div class="pn">${f.localized_name}</div><div class="pw">${S.fi[f.id].join(' · ')}</div></div></div>`).join('')
-      + `<p class="why" style="margin:9px 0 0">Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.</p></div>`;
+    comp.innerHTML+=`<div class="sec" style="margin-top:12px"><h2>Қарсылас нені жинап жатыр</h2>
+        <span>әр геройды басып белгіле</span></div>`
+      + fs.map(f=>buildCard(f,'foe')).join('')
+      + `<p class="why" style="margin:2px 2px 4px">Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.</p>`;
+    const ourB=S.mine.map(id=>BYID[id]).filter(Boolean);
+    if(ourB.length) comp.innerHTML+=`<div class="sec" style="margin-top:12px"><h2>Біздің команда нені жинап жатыр</h2>
+        <span>қарсылас не алатынын көрсетеді</span></div>`
+      + ourB.map(f=>buildCard(f,'mine')).join('');
     const per=fs.map(f=>({f,c:HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)]})).filter(x=>x.c);
     const perCard = per.length?`<div class="card"><h3>Әр қарсыласқа қарсы зат</h3>`
       + per.map(({f,c})=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
@@ -1533,7 +1580,10 @@ async function showPlan(h){
     });
   });});
   const wt=e=>(e.hot?2:0)+(e.hero?1:0);
-  const list=[...map.values()].sort((a,b)=> wt(b)-wt(a) || b.who.size-a.who.size || b.cats.size-a.cats.size);
+  const own=S.fi[h.id]||[];
+  const all=[...map.values()].sort((a,b)=> wt(b)-wt(a) || b.who.size-a.who.size || b.cats.size-a.cats.size);
+  const list=all.filter(e=>!own.includes(e.n));
+  const have=all.filter(e=>own.includes(e.n));
   const itemRow=e=>`<div class="pl${e.hot?' hot':''}">
       <img src="${IMG(ikey(e.n))}" alt="" loading="lazy" onerror="this.style.display='none'">
       <div><div class="pn">${e.n}${foeBadges(e.n)}</div><div class="pw">${[...e.who].map(([n2,d])=>n2+(d?' '+d:'')).join(', ')}</div></div></div>`;
@@ -1545,11 +1595,17 @@ async function showPlan(h){
     + (list.length>3?`<div class="card"><h3>Жағдайға қарай</h3>
       <div class="plist">${list.slice(3).map(itemRow).join('')}</div></div>`:'');
 
+  const haveCard = have.length?`<div class="card"><span class="tagn">${have.length}</span><h3>Қолда бар — дұрыс таңдау</h3>
+      <div class="plist">${have.map(itemRow).join('')}</div></div>`:'';
+  const ownCard = own.length?`<div class="card"><h3>Сенің жинағың</h3>${itemChips(own)}
+      <p class="why" style="margin:7px 0 0">Өзгерту: «Таңдау» бетінде өз геройыңды бас.</p></div>`
+    : `<div class="card"><h3>Сенің жинағың</h3><p class="why" style="margin:6px 0 0">«Таңдау» бетінде өз геройыңды басып, не жинағаныңды белгіле — сонда алынған заттар ұсыныстан шығып, қалғаны ғана қалады.</p></div>`;
+
   const noteCard = notes.length
     ? `<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`
       + notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')
       + '</div>' : '';
-  bd.innerHTML=head+counter+noteCard+skel(2);
+  bd.innerHTML=head+ownCard+counter+haveCard+noteCard+skel(2);
 
   let core='';
   try{
@@ -1563,7 +1619,7 @@ async function showPlan(h){
       + rows.map(([t,its])=>`<div class="grow"><span class="gt">${t}</span><div class="items">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}${foeBadges(pretty(k))}</span>`).join('')}</div></div>`).join('')
       + '</div>';
   }catch(e){ core='<div class="empty">Негізгі жинақ жүктелмеді — интернетті тексер.</div>'; }
-  bd.innerHTML=head+counter+noteCard+core;
+  bd.innerHTML=head+ownCard+counter+haveCard+noteCard+core;
 }
 
 /* ---------- баптау ---------- */
