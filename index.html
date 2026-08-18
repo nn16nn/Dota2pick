@@ -360,7 +360,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='2.4';
+const V='2.5';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -782,15 +782,31 @@ const skel=n=>Array.from({length:n},()=>'<div class="sk"></div>').join('');
 const stagger=(els,ms=26,max=16)=>els.forEach((el,i)=>{ el.style.animationDelay=(i<max?i*ms:0)+'ms' });
 
 /* ---------- беттер ---------- */
-function go(id,i){
+let CURTAB='p-pick';
+function go(id,i,push){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===id));
   const tabs=[...document.querySelectorAll('.tab')];
   tabs.forEach(t=>t.classList.toggle('on',t.dataset.go===id));
   moveInd(i!==undefined?i:tabs.findIndex(t=>t.dataset.go===id));
-  window.scrollTo({top:0,behavior:RM?'auto':'smooth'});
+  CURTAB=id; LS.set('tab',id);
+  if(push!==false){
+    history.pushState({d2:'tab',tab:id},'');
+    window.scrollTo({top:0,behavior:RM?'auto':'smooth'});
+  }
   if(id==='p-items') renderItems();
 }
-document.querySelectorAll('.tab').forEach((t,i)=>t.onclick=()=>go(t.dataset.go,i));
+document.querySelectorAll('.tab').forEach((t,i)=>t.onclick=()=>{ if(t.dataset.go!==CURTAB) go(t.dataset.go,i); });
+// қай жерде тұрғанын есте сақтау (жаңартқанда сол жерге қайтамыз)
+let scrT;
+window.addEventListener('scroll',()=>{ clearTimeout(scrT);
+  scrT=setTimeout(()=>{ if(!document.getElementById('sheet').classList.contains('on')) LS.set('scroll',window.scrollY); },350);
+},{passive:true});
+function restoreView(){
+  const t=LS.get('tab')||'p-pick';
+  go(t,undefined,false);
+  const y=LS.get('scroll');
+  if(typeof y==='number'&&y>0) setTimeout(()=>window.scrollTo(0,y),80);
+}
 function moveInd(i){ const el=document.querySelector('.tabind'); if(el) el.style.transform=`translateX(${i*100}%)`; }
 
 /* ---------- драфт тақтасы ---------- */
@@ -905,13 +921,13 @@ function openPicker(side,idx){
   document.getElementById('shGrid').scrollTop=0;
   sh.classList.add('on');
   document.body.style.overflow='hidden';
-  history.pushState({sheet:1},'');
+  history.pushState({d2:'sheet',sheet:1},'');
   renderGrid();
 }
 function closePicker(fromPop){
   document.getElementById('sheet').classList.remove('on');
   document.body.style.overflow='';
-  if(fromPop!==true && history.state && history.state.sheet) history.back();
+  if(fromPop!==true && history.state && history.state.d2==='sheet') history.back();
 }
 document.querySelectorAll('[data-close]').forEach(e=>e.onclick=()=>closePicker());
 document.getElementById('shSrch').oninput=renderGrid;
@@ -987,13 +1003,13 @@ function openItems(h){
   document.getElementById('isGrid').scrollTop=0;
   document.getElementById('isheet').classList.add('on');
   document.body.style.overflow='hidden';
-  history.pushState({sheet:1},'');
+  history.pushState({d2:'sheet',sheet:1},'');
   renderIGrid();
 }
 function closeItems(fromPop){
   document.getElementById('isheet').classList.remove('on');
   document.body.style.overflow='';
-  if(fromPop!==true && history.state && history.state.sheet) history.back();
+  if(fromPop!==true && history.state && history.state.d2==='sheet') history.back();
   board(); if(document.getElementById('p-items').classList.contains('on')) renderItems();
 }
 document.querySelectorAll('[data-iclose]').forEach(e=>e.onclick=()=>closeItems());
@@ -1157,9 +1173,20 @@ document.getElementById('bRefresh').onclick=async e=>{
 document.getElementById('ver').textContent='Dota 2 Pick v'+V+' · дерек: OpenDota';
 
 /* ---------- артқа түймесі ---------- */
-window.addEventListener('popstate',()=>{
-  if(document.getElementById('sheet').classList.contains('on')) closePicker(true);
-  if(document.getElementById('isheet').classList.contains('on')) closeItems(true);
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+let exitArmed=false, exitT;
+window.addEventListener('popstate',e=>{
+  const st=e.state||{};
+  // 1) ашық бет болса — алдымен соны жабамыз
+  if(document.getElementById('sheet').classList.contains('on')){ closePicker(true); return; }
+  if(document.getElementById('isheet').classList.contains('on')){ closeItems(true); return; }
+  // 2) басқа табқа қайту
+  if(st.d2==='tab'||st.d2==='main'){ go(st.tab||'p-pick',undefined,false); return; }
+  // 3) түбірге жеттік — бір рет басқанда шықпаймыз
+  if(exitArmed){ history.go(-1); return; }
+  exitArmed=true; clearTimeout(exitT); exitT=setTimeout(()=>exitArmed=false,2200);
+  history.pushState({d2:'main',tab:CURTAB},'');
+  toast('Шығу үшін «артқа» тағы бір рет басыңыз');
 });
 
 /* ---------- іске қосу ---------- */
@@ -1171,16 +1198,54 @@ window.addEventListener('popstate',()=>{
     box.innerHTML='<div class="empty"><b>Геройлар жүктелмеді</b>Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.</div>'; hideSplash(); return;
   }
   board();
+  restoreView();
   setTimeout(hideSplash,420);
   for(const id of S.foe){ try{ await loadMU(id); }catch(e){} }
   renderRecs();
 })();
 
+// тарих: түбір + жұмыс жазбасы (артқа басқанда бірден шықпау үшін)
+history.replaceState({d2:'root'},'');
+history.pushState({d2:'main',tab:LS.get('tab')||'p-pick'},'');
+
 function hideSplash(){ const el=document.getElementById('splash'); if(el&&!el.classList.contains('gone')) el.classList.add('gone'); }
 setTimeout(hideSplash,3200); // сақтандырғыш
 moveInd(0);
 
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+/* ---------- жаңа нұсқа шыққанда автоматты жаңарту ---------- */
+if('serviceWorker' in navigator){
+  const hadCtrl = !!navigator.serviceWorker.controller;
+  let reloading=false;
+
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(reloading || !hadCtrl) return;   // алғаш орнатылғанда қайта жүктемейміз
+    reloading=true;
+    LS.set('tab',CURTAB); LS.set('scroll',window.scrollY);  // сол бетте қаламыз
+    LS.set('justUpdated',true);
+    location.reload();
+  });
+
+  navigator.serviceWorker.register('sw.js').then(reg=>{
+    function apply(w){
+      if(!w) return;
+      w.addEventListener('statechange',()=>{
+        if(w.state==='installed' && navigator.serviceWorker.controller){
+          toast('Жаңа нұсқа табылды — орнатылуда…');
+          w.postMessage({type:'SKIP_WAITING'});
+        }
+      });
+    }
+    if(reg.waiting){ toast('Жаңа нұсқа орнатылуда…'); reg.waiting.postMessage({type:'SKIP_WAITING'}); }
+    reg.addEventListener('updatefound',()=>apply(reg.installing));
+
+    const check=()=>{ try{ reg.update(); }catch(e){} };
+    check();                                   // ашылған сайын тексеру
+    setInterval(check, 15*60*1000);            // 15 минут сайын
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
+    window.addEventListener('online',check);
+  }).catch(()=>{});
+}
+if(LS.get('justUpdated')){ LS.del('justUpdated'); setTimeout(()=>toast('Жаңартылды — v'+V),900); }
 </script>
 </body>
 </html>
