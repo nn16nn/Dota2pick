@@ -111,6 +111,15 @@ input{font-family:inherit}
 .mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
 .mbar i{display:block;height:100%}
 
+.lrow{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+/* зат жанындағы «кімге қарсы» белгішелері */
+.fx{display:inline-flex;align-items:center;gap:3px;margin-left:6px;vertical-align:middle}
+.fa{width:22px;height:14px;border-radius:3px;object-fit:cover;display:block;
+  border:1px solid var(--dire);box-shadow:0 0 0 1px #0006}
+.fx b{font-size:10px;font-weight:700;color:var(--dire);line-height:1}
+.pl .fx{margin-left:5px}
+.it{display:inline-flex;align-items:center}
+
 /* толық экранды таңдау беті */
 .sheet{position:fixed;inset:0;z-index:60;display:none;background:var(--void)}
 .sheet.on{display:block}
@@ -312,6 +321,14 @@ input{font-family:inherit}
   <!-- БАПТАУ -->
   <section id="p-set" class="page">
     <div class="sec"><h2>Баптау</h2></div>
+    <div class="card" id="langCard">
+      <h3>Тіл</h3>
+      <div class="lrow">
+        <button class="chip" data-lang="kk">Қазақша</button>
+        <button class="chip" data-lang="ru">Русский</button>
+        <button class="chip" data-lang="en">English</button>
+      </div>
+    </div>
     <button class="btn" id="bClear">Таңдауды тазалау</button>
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
@@ -360,7 +377,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='2.5';
+const V='3.0';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -372,6 +389,375 @@ const LS={
   set(k,d){try{localStorage.setItem('d2pick.'+k,JSON.stringify({t:Date.now(),d}))}catch(e){}},
   del(pref){Object.keys(localStorage).filter(k=>k.startsWith('d2pick.'+pref)).forEach(k=>localStorage.removeItem(k))}
 };
+
+
+/* ================= үш тіл: қазақша / орысша / ағылшынша =================
+   Бет қазақша жазылған, аудармасы осы сөздік арқылы қолданылады.
+   Кілт — экрандағы қазақша мәтін (немесе оның бөлігі). */
+let LANG = LS.get('lang') || 'kk';
+const I18N = { ru:{}, en:{} };
+
+Object.assign(I18N.ru, {
+  // тақырыптар мен таб
+  'Драфт':'Драфт','Таңдау':'Пик','Заттар':'Предметы','Баптау':'Настройки',
+  'Кімді алу керек':'Кого брать','Біздің команда':'Наша команда','Қарсылас':'Соперник',
+  'басып таңда':'нажми и выбери','Қарсылас құрамы':'Состав соперника',
+  'Жалпы қауіптер':'Общие угрозы','бүкіл команда үшін':'для всей команды',
+  'Менің геройым':'Мой герой','Герой таңдау':'Выбор героя','Заттары':'Предметы',
+  'Портреттен немесе іздеуден таңда':'Выбери по портрету или через поиск',
+  'Қарсылас нақты не жинады':'Что реально собрал соперник',
+  'Тіл':'Язык','Дереккөз':'Источник','Қалай жұмыс істейді':'Как это работает',
+  'Таңдауды тазалау':'Очистить выбор','Деректі жаңарту':'Обновить данные',
+  'Герой іздеу':'Поиск героя','Зат іздеу':'Поиск предмета',
+  // сүзгілер
+  'Барлығы':'Все','Таңдаулы':'Избранные','Керри':'Керри','Мидер':'Мидер',
+  'Хард линия':'Хардлейн','Қолдау':'Саппорт','Күш':'Сила','Ептілік':'Ловкость',
+  'Ақыл':'Интеллект','Әмбебап':'Универсал','Бастамашы':'Инициатор','Зияншы':'Дамагер',
+  'Итеруші':'Пушер','Тежеуші':'Дизейблер','Орманшы':'Лесник','Қашқыш':'Побегушки',
+  'Мықты':'Дюрабл','Басқа':'Другие','Бос':'Пусто',
+  // әрекеттер мен хабарламалар
+  'Біздің геройды қосу':'Добавить нашего героя','Қарсылас геройын қосу':'Добавить героя соперника',
+  'портреттен не іздеуден таңда':'выбери по портрету или поиском',
+  'командаға қосылды':'добавлен в команду','— біздің команда':'— наша команда',
+  '— қарсылас':'— соперник','— таңдаулыға қосылды':'— в избранное',
+  '— таңдаулыдан алынды':'— убран из избранного','алынды':'убран',
+  'Команда толы':'Команда заполнена','Бұл жақ толы':'Эта сторона заполнена',
+  'Шығу үшін «артқа» тағы бір рет басыңыз':'Нажми «назад» ещё раз, чтобы выйти',
+  'Жаңа нұсқа табылды — орнатылуда…':'Найдена новая версия — устанавливается…',
+  'Жаңа нұсқа орнатылуда…':'Устанавливается новая версия…',
+  'Жаңартылды — v':'Обновлено — v','Жаңартылуда…':'Обновление…','Жаңартылды ✓':'Обновлено ✓',
+  'Жаңарту сәтсіз — интернетті тексер':'Не удалось обновить — проверь интернет',
+  // карталар
+  'Негізгі жинақ':'Основной билд','Қарсылас не жинады':'Что собрал соперник',
+  'Қарсыластың заттарына қарсы амал':'Ответ на предметы соперника',
+  'Әр қарсыласқа қарсы зат':'Предметы против каждого','Бірінші кезекте':'В первую очередь',
+  'Жағдайға қарай':'По ситуации','Геройға қарсы':'Против героя',
+  'Қарсыластың заты':'Предмет соперника','нақты не жинады':'что реально собрал',
+  'не жинады':'что собрал','қарсыласқа қарсы':'против соперников',
+  'Бастапқы':'Старт','Ерте':'Ранние','Орта':'Средние','Кеш':'Поздние',
+  'Сиқыр / қатты зиян':'Магия / физика','Жақын / қашық':'Ближний / дальний',
+  '· жақын ·':'· ближний ·','· қашық ·':'· дальний ·',
+  'кор/қолдау заттары бойынша сұрыпталды':'отсортировано под кор/саппорт предметы',
+  'кор заттары бойынша сұрыпталды':'отсортировано под кор-предметы',
+  'қолдау заттары бойынша сұрыпталды':'отсортировано под саппорт-предметы',
+  // бос күйлер мен түсініктемелер
+  'Бұл сүзгіде дерек жоқ':'По этому фильтру пусто','Басқа сүзгіні таңда.':'Выбери другой фильтр.',
+  'Геройлар жүктелмеді':'Герои не загрузились',
+  'Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.':'При первом запуске нужен интернет. Подключись и открой страницу заново.',
+  'Дерек жүктелмеді':'Данные не загрузились',
+  'Интернетті тексеріп, геройды қайта қос.':'Проверь интернет и добавь героя заново.',
+  'Қарсылас әлі бос':'Соперник ещё пуст',
+  '«Таңдау» бетінде қарсылас геройларын қос. Герой суретін бассаң — оның не жинағанын белгілей аласың.':'На странице «Пик» добавь героев соперника. Нажми на портрет героя — отметишь, что он собрал.',
+  'Оң жақтағы «Бос» орынға басып, қарсылас алған геройды қос. Әр герой қосылған сайын ұсыныс дәлдене береді.':'Нажми на пустой слот справа и добавь героя соперника. С каждым героем совет становится точнее.',
+  'Өз геройың әлі жоқ':'Своего героя ещё нет',
+  '«Таңдау» бетінде өз геройыңды қос — сол геройға арналған, дәл осы қарсыласқа қарсы жинақ шығады.':'На странице «Пик» добавь своего героя — получишь билд именно под него и против этого соперника.',
+  'Бұл геройға қосымша қарсы зат қажет емес — әдеттегі жинақпен жүре бер.':'Этому герою отдельные контр-предметы не нужны — иди по обычному билду.',
+  'Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.':'Добавь героев соперника — здесь появятся предметы именно против них.',
+  'Негізгі жинақ жүктелмеді — интернетті тексер.':'Основной билд не загрузился — проверь интернет.',
+  'Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.':'Добавить/изменить: нажми на героя соперника на странице «Пик».',
+  'Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады. Заттың жанындағы кішкене портрет — сол зат қай қарсыласқа қарсы жұмыс істейтінін көрсетеді.':'Самое частое в реальных играх — предметы выше добавляются поверх этого. Маленький портрет рядом с предметом показывает, против какого соперника он работает.',
+  'Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.':'Герои и проценты матчапов — открытые данные OpenDota (статистика реальных игр, все рейтинги). Преимущество = винрейт героя против этого соперника минус его общий винрейт. Матчапы меньше 50 игр не учитываются.',
+  'дерек: OpenDota':'данные: OpenDota'
+});
+
+Object.assign(I18N.en, {
+  'Драфт':'Draft','Таңдау':'Pick','Заттар':'Items','Баптау':'Settings',
+  'Кімді алу керек':'Who to pick','Біздің команда':'Our team','Қарсылас':'Enemy',
+  'басып таңда':'tap to pick','Қарсылас құрамы':'Enemy lineup',
+  'Жалпы қауіптер':'Overall threats','бүкіл команда үшін':'for the whole team',
+  'Менің геройым':'My hero','Герой таңдау':'Pick a hero','Заттары':'Items',
+  'Портреттен немесе іздеуден таңда':'Pick by portrait or search',
+  'Қарсылас нақты не жинады':'What the enemy actually built',
+  'Тіл':'Language','Дереккөз':'Data source','Қалай жұмыс істейді':'How it works',
+  'Таңдауды тазалау':'Clear draft','Деректі жаңарту':'Refresh data',
+  'Герой іздеу':'Search hero','Зат іздеу':'Search item',
+  'Барлығы':'All','Таңдаулы':'Favorites','Керри':'Carry','Мидер':'Mid',
+  'Хард линия':'Offlane','Қолдау':'Support','Күш':'Strength','Ептілік':'Agility',
+  'Ақыл':'Intelligence','Әмбебап':'Universal','Бастамашы':'Initiator','Зияншы':'Nuker',
+  'Итеруші':'Pusher','Тежеуші':'Disabler','Орманшы':'Jungler','Қашқыш':'Escape',
+  'Мықты':'Durable','Басқа':'Others','Бос':'Empty',
+  'Біздің геройды қосу':'Add our hero','Қарсылас геройын қосу':'Add enemy hero',
+  'портреттен не іздеуден таңда':'pick by portrait or search',
+  'командаға қосылды':'added to the team','— біздің команда':'— our team',
+  '— қарсылас':'— enemy','— таңдаулыға қосылды':'— added to favorites',
+  '— таңдаулыдан алынды':'— removed from favorites','алынды':'removed',
+  'Команда толы':'Team is full','Бұл жақ толы':'This side is full',
+  'Шығу үшін «артқа» тағы бір рет басыңыз':'Press back again to exit',
+  'Жаңа нұсқа табылды — орнатылуда…':'New version found — installing…',
+  'Жаңа нұсқа орнатылуда…':'Installing new version…',
+  'Жаңартылды — v':'Updated — v','Жаңартылуда…':'Updating…','Жаңартылды ✓':'Updated ✓',
+  'Жаңарту сәтсіз — интернетті тексер':'Update failed — check your connection',
+  'Негізгі жинақ':'Core build','Қарсылас не жинады':'Enemy build',
+  'Қарсыластың заттарына қарсы амал':'Answer to enemy items',
+  'Әр қарсыласқа қарсы зат':'Items against each enemy','Бірінші кезекте':'First priority',
+  'Жағдайға қарай':'Situational','Геройға қарсы':'Vs hero',
+  'Қарсыластың заты':'Enemy item','нақты не жинады':'actually built',
+  'не жинады':'built','қарсыласқа қарсы':'enemies covered',
+  'Бастапқы':'Starting','Ерте':'Early','Орта':'Mid','Кеш':'Late',
+  'Сиқыр / қатты зиян':'Magic / physical','Жақын / қашық':'Melee / ranged',
+  '· жақын ·':'· melee ·','· қашық ·':'· ranged ·',
+  'кор/қолдау заттары бойынша сұрыпталды':'sorted for core/support items',
+  'кор заттары бойынша сұрыпталды':'sorted for core items',
+  'қолдау заттары бойынша сұрыпталды':'sorted for support items',
+  'Бұл сүзгіде дерек жоқ':'Nothing in this filter','Басқа сүзгіні таңда.':'Try another filter.',
+  'Геройлар жүктелмеді':'Heroes failed to load',
+  'Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.':'The first launch needs internet. Connect and reopen the page.',
+  'Дерек жүктелмеді':'Data failed to load',
+  'Интернетті тексеріп, геройды қайта қос.':'Check your connection and add the hero again.',
+  'Қарсылас әлі бос':'No enemies yet',
+  '«Таңдау» бетінде қарсылас геройларын қос. Герой суретін бассаң — оның не жинағанын белгілей аласың.':'Add enemy heroes on the Pick page. Tap a hero portrait to mark what they built.',
+  'Оң жақтағы «Бос» орынға басып, қарсылас алған геройды қос. Әр герой қосылған сайын ұсыныс дәлдене береді.':'Tap an empty slot on the right and add an enemy hero. Every hero you add makes the advice sharper.',
+  'Өз геройың әлі жоқ':'No hero of yours yet',
+  '«Таңдау» бетінде өз геройыңды қос — сол геройға арналған, дәл осы қарсыласқа қарсы жинақ шығады.':'Add your hero on the Pick page — you will get a build made for that hero against this exact enemy.',
+  'Бұл геройға қосымша қарсы зат қажет емес — әдеттегі жинақпен жүре бер.':'This hero needs no extra counter items — stick to the usual build.',
+  'Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.':'Add enemy heroes and the items against them will show up here.',
+  'Негізгі жинақ жүктелмеді — интернетті тексер.':'Core build failed to load — check your connection.',
+  'Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.':'Add or edit: tap the enemy hero on the Pick page.',
+  'Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады. Заттың жанындағы кішкене портрет — сол зат қай қарсыласқа қарсы жұмыс істейтінін көрсетеді.':'What players buy most in real games — the items above go on top of this. The small portrait next to an item shows which enemy it works against.',
+  'Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.':'Heroes and matchup percentages come from OpenDota open data (real match statistics, all brackets). Advantage = the hero win rate against that enemy minus their overall win rate. Matchups with fewer than 50 games are ignored.',
+  'дерек: OpenDota':'data: OpenDota'
+});
+
+
+/* --- қауіп санаттары, герой әлсіздіктері, зат кеңестері --- */
+Object.assign(I18N.ru, {
+ 'Көрінбейтіндер':'Невидимки','Жасырынып келеді — көретін зат болмаса, картаны да, өзіңді де ұстай алмайсың.':'Заходят из инвиза — без детекта не удержишь ни карту, ни себя.',
+ 'Емдеу мен қалпына келу':'Лечение и реген','Зиянды емдеп үлгереді — емдеуді кесетін зат керек (7.41-де Shiva’s бұл қасиетін жоғалтты).':'Успевает отхиливать урон — нужен предмет, режущий лечение (в 7.41 Shiva’s это свойство потерял).',
+ 'Сиқыр зияны көп':'Много магического урона','Бір комбода алып кетеді — сиқырдан қорғаныш ерте керек.':'Убивают одной комбой — магическая защита нужна рано.',
+ 'Қатты зиян (керри)':'Физический урон (керри)','Ұрысы ауыр — брон мен қалқан ұстап тұруға көмектеседі.':'Бьют больно — броня и щиты помогут выстоять.',
+ 'Елес пен шақырылғандар':'Иллюзии и саммоны','Саны көп — AoE зиян бір соққыда тазалайды.':'Их много — AoE-урон чистит их разом.',
+ 'Жалтару (miss)':'Уворот (мисс)','Соққың бос кетеді — дәлдік беретін зат керек. Butterfly не Solar Crest алғандарға да керек.':'Атаки уходят в мисс — нужен предмет на точность. Он же нужен против Butterfly и Solar Crest.',
+ 'Пассивке тәуелді':'Зависят от пассивки','Күші пассив қабілетінде — оны сөндірсең, әлсірейді.':'Сила в пассивной способности — отключишь её, и герой слабеет.',
+ 'Қашып кететіндер':'Убегающие','Ұстамасаң өлтіре алмайсың — байлайтын зат керек.':'Не поймаешь — не убьёшь: нужен предмет, который держит.',
+ 'Тыныштандыру мен қарғыс':'Сайленс и проклятия','Қабілетіңді жауып тастайды — одан шығатын жол керек.':'Закрывают твои способности — нужен способ выйти из этого.',
+ 'Ұзақ ұстау мен бағытталған ұлт':'Долгий контроль и таргет-ульта','Бір ұстағанда өліп қаласың — үзетін немесе қайтаратын зат керек.':'Один контроль — и ты мёртв: нужен предмет, который прервёт или отразит.',
+ 'Секіріп бастама жасайтындар':'Инициация с прыжка','Бір секіргенде бүкіл команданы алады — шашылып жүр әрі шығатын зат ұста.':'Одним прыжком забирает всю команду — держись врозь и имей выход.',
+ 'Тез итеретін құрам':'Быстрый пуш','Сарайға ерте келеді — линия тазалайтын зат ерте керек.':'Рано приходят к трону — предмет на зачистку линии нужен рано.',
+ 'Тығыз, броны көп':'Танки с бронёй','Жай зиян өтпейді — броны түсіретін немесе өмір пайызын жейтін зат керек.':'Обычный урон не проходит — нужен минус к броне или урон по проценту здоровья.',
+ 'Жақын ұрысшы керри':'Ближний керри','Жақындамаса зияны жоқ — қашықтық ұстайтын зат жақсы жұмыс істейді.':'Без ближнего боя урона нет — предметы на дистанцию работают отлично.',
+ // герой әлсіздіктері
+ 'Ancient Seal + сиқыр':'Ancient Seal + магия','Astral + таза зиян':'Astral + чистый урон','Ball Lightning — мана':'Ball Lightning — мана',
+ 'Blink + сиқыр':'Blink + магия','Bristleback + регені':'Bristleback + реген','Call BKB-дан өтеді':'Call проходит сквозь BKB',
+ 'Doom BKB-дан өтеді':'Doom проходит сквозь BKB','Duel BKB-дан өтеді':'Duel проходит сквозь BKB','Dragon Blood брон':'Dragon Blood, броня',
+ 'Drunken Brawler + панда':'Drunken Brawler + панды','Exorcism рухтары':'духи Exorcism','Firestorm аурасы':'аура Firestorm','Guardian Angel + емдеу':'Guardian Angel + лечение',
+ 'Headshot, қашықтық':'Headshot, дистанция','Ice Blast емдеуді жабады':'Ice Blast закрывает лечение','Laguna жарылысы':'взрыв Laguna',
+ 'Living Armor + жасырыну':'Living Armor + инвиз','Luminosity емдеуі':'лечение Luminosity','Mana Shield — мана жеу':'Mana Shield — выкачка маны',
+ 'Omnislash пен емдеу ыдысы':'Omnislash и сосуд лечения','Rearm — тыныштандыру':'Rearm — сайленс','Reincarnation, қаңқа':'Reincarnation, скелеты',
+ 'Shackles + вард':'Shackles + вард','Tempest Double, сплит':'Tempest Double, сплит','Tether емдеуі':'лечение Tether',
+ 'Track пен көрінбеу':'Track и инвиз','Windrun жалтаруы':'уворот Windrun','Fervor + вампиризм':'Fervor + вампиризм',
+ 'Аю':'Медведь','аз өмір = көп зиян':'мало HP = больше урона','аңдар + Roar':'звери + Roar','блинк, мана жеу':'блинк, выкачка маны',
+ 'екі стойка, жақын зиян':'две стойки, ближний урон','елес + Song':'иллюзии + Song','елес + крит':'иллюзии + крит',
+ 'елес лашыны':'ястреб и иллюзии','елес пен Sunder':'иллюзии и Sunder','жалтару + крит':'уворот + крит','жасырын шабуыл':'скрытая атака',
+ 'комбо сиқыр':'комбо-магия','көп дене':'много тел','көрінбеу + Backstab':'инвиз + Backstab','мина мен көрінбейтін зиян':'мины и невидимый урон',
+ 'орман жаны + емдеу':'лесной дух + лечение','таза сиқыр зияны':'чистый магический урон','тас домалату':'катящийся камень',
+ 'телепорт, сплит':'телепорт, сплит','түнгі күші':'сила ночью','у мен вард':'яд и варды','қасқыр + Howl':'волки + Howl',
+ 'ұстап тұратын ұлт':'ульта с контролем','өрмекшілер':'пауки'
+});
+Object.assign(I18N.en, {
+ 'Көрінбейтіндер':'Invisible heroes','Жасырынып келеді — көретін зат болмаса, картаны да, өзіңді де ұстай алмайсың.':'They come from invis — without detection you hold neither the map nor yourself.',
+ 'Емдеу мен қалпына келу':'Healing and regen','Зиянды емдеп үлгереді — емдеуді кесетін зат керек (7.41-де Shiva’s бұл қасиетін жоғалтты).':'They out-heal your damage — you need healing reduction (in 7.41 Shiva’s lost that effect).',
+ 'Сиқыр зияны көп':'Heavy magic damage','Бір комбода алып кетеді — сиқырдан қорғаныш ерте керек.':'They kill in one combo — get magic protection early.',
+ 'Қатты зиян (керри)':'Physical damage (carry)','Ұрысы ауыр — брон мен қалқан ұстап тұруға көмектеседі.':'They hit hard — armor and shields keep you alive.',
+ 'Елес пен шақырылғандар':'Illusions and summons','Саны көп — AoE зиян бір соққыда тазалайды.':'There are many of them — AoE damage clears them at once.',
+ 'Жалтару (miss)':'Evasion (miss)','Соққың бос кетеді — дәлдік беретін зат керек. Butterfly не Solar Crest алғандарға да керек.':'Your attacks miss — you need true strike. Same goes against Butterfly or Solar Crest.',
+ 'Пассивке тәуелді':'Passive-dependent','Күші пассив қабілетінде — оны сөндірсең, әлсірейді.':'Their power sits in a passive — break it and they fall off.',
+ 'Қашып кететіндер':'Escape heroes','Ұстамасаң өлтіре алмайсың — байлайтын зат керек.':'If you cannot catch them you cannot kill them — bring a lockdown item.',
+ 'Тыныштандыру мен қарғыс':'Silence and curses','Қабілетіңді жауып тастайды — одан шығатын жол керек.':'They shut down your spells — you need a way out.',
+ 'Ұзақ ұстау мен бағытталған ұлт':'Long lockdown and targeted ults','Бір ұстағанда өліп қаласың — үзетін немесе қайтаратын зат керек.':'One catch and you are dead — bring something to break or reflect it.',
+ 'Секіріп бастама жасайтындар':'Jump-in initiators','Бір секіргенде бүкіл команданы алады — шашылып жүр әрі шығатын зат ұста.':'One jump can take the whole team — spread out and keep an escape.',
+ 'Тез итеретін құрам':'Fast pushing lineup','Сарайға ерте келеді — линия тазалайтын зат ерте керек.':'They reach your base early — get wave clear early.',
+ 'Тығыз, броны көп':'Tanky, high armor','Жай зиян өтпейді — броны түсіретін немесе өмір пайызын жейтін зат керек.':'Plain damage bounces off — you need armor reduction or percent-health damage.',
+ 'Жақын ұрысшы керри':'Melee carry','Жақындамаса зияны жоқ — қашықтық ұстайтын зат жақсы жұмыс істейді.':'No damage without getting close — items that keep distance work great.',
+ 'Ancient Seal + сиқыр':'Ancient Seal + magic','Astral + таза зиян':'Astral + pure damage','Ball Lightning — мана':'Ball Lightning — mana',
+ 'Blink + сиқыр':'Blink + magic','Bristleback + регені':'Bristleback + regen','Call BKB-дан өтеді':'Call pierces BKB',
+ 'Doom BKB-дан өтеді':'Doom pierces BKB','Duel BKB-дан өтеді':'Duel pierces BKB','Dragon Blood брон':'Dragon Blood armor',
+ 'Drunken Brawler + панда':'Drunken Brawler + pandas','Exorcism рухтары':'Exorcism spirits','Firestorm аурасы':'Firestorm aura','Guardian Angel + емдеу':'Guardian Angel + healing',
+ 'Headshot, қашықтық':'Headshot, range','Ice Blast емдеуді жабады':'Ice Blast blocks healing','Laguna жарылысы':'Laguna burst',
+ 'Living Armor + жасырыну':'Living Armor + invis','Luminosity емдеуі':'Luminosity healing','Mana Shield — мана жеу':'Mana Shield — mana burn',
+ 'Omnislash пен емдеу ыдысы':'Omnislash and healing ward','Rearm — тыныштандыру':'Rearm — silence','Reincarnation, қаңқа':'Reincarnation, skeletons',
+ 'Shackles + вард':'Shackles + ward','Tempest Double, сплит':'Tempest Double, split push','Tether емдеуі':'Tether healing',
+ 'Track пен көрінбеу':'Track and invis','Windrun жалтаруы':'Windrun evasion','Fervor + вампиризм':'Fervor + lifesteal',
+ 'Аю':'Bear','аз өмір = көп зиян':'low HP = more damage','аңдар + Roar':'beasts + Roar','блинк, мана жеу':'blink, mana burn',
+ 'екі стойка, жақын зиян':'two stances, melee damage','елес + Song':'illusions + Song','елес + крит':'illusions + crit',
+ 'елес лашыны':'hawk and illusions','елес пен Sunder':'illusions and Sunder','жалтару + крит':'evasion + crit','жасырын шабуыл':'stealth attack',
+ 'комбо сиқыр':'magic combo','көп дене':'many bodies','көрінбеу + Backstab':'invis + Backstab','мина мен көрінбейтін зиян':'mines and invisible damage',
+ 'орман жаны + емдеу':'forest spirit + healing','таза сиқыр зияны':'pure magic damage','тас домалату':'rolling boulder',
+ 'телепорт, сплит':'teleport, split push','түнгі күші':'night power','у мен вард':'poison and wards','қасқыр + Howl':'wolves + Howl',
+ 'ұстап тұратын ұлт':'ult with lockdown','өрмекшілер':'spiders'
+});
+
+
+/* --- қарсыластың заттарына берілетін кеңестер --- */
+Object.assign(I18N.ru, {
+ 'Жалтаруын тек дәлдік беретін зат бұзады.':'Уворот ломает только предмет на точность.',
+ 'Қаруыңды алып тастайды — BKB қосып тұрып ұр.':'Обезоруживает — бей под включённым BKB.',
+ 'BKB қосулы кезде заклинание өтпейді: Abyssal басы иммунитеттен өтеді, қалғанын күтіп ұр.':'Под BKB заклинания не проходят: стан Abyssal пробивает иммунитет, остальное — переждать.',
+ 'Жарқырап тұрғанда бүкіл зияның өзіңе қайтады — 5 секунд тимей тұр.':'Пока горит, весь урон возвращается тебе — 5 секунд не трогай.',
+ 'Регенін Silver Edge сөндіреді, емдеу кесетін зат азайтады.':'Реген выключает Silver Edge, а режущий лечение предмет его срезает.',
+ 'Қосқанда өзін толық емдейді — емдеу кесу міндетті.':'При активации хилит себя полностью — резать лечение обязательно.',
+ 'Бүкіл командасына вампиризм — емдеу кесу жақсы жұмыс істейді.':'Вампиризм на всю команду — резать лечение работает отлично.',
+ 'Ұрыс ортасында бәрін емдейді — Vessel сол сәтті бұзады.':'В середине боя хилит всех — Vessel ломает этот момент.',
+ 'Заклинание қосқан сайын емделеді.':'Лечится с каждого заклинания.',
+ 'Жанында тұрған сайын күйесің — қашықтық ұста.':'Рядом с ним ты горишь — держи дистанцию.',
+ 'Root тұрғанда блинк жұмыс істемейді. Ұрыс алдында бір рет тисең, блинк 3 секундқа өшеді.':'В руте блинк не работает. Ударь один раз перед боем — блинк отключится на 3 секунды.',
+ 'Көрінбей келеді — картаңа вард қой.':'Заходит из инвиза — ставь варды.',
+ 'Көрінбей келіп пассивіңді сөндіреді.':'Заходит из инвиза и выключает твою пассивку.',
+ 'Елесімен байлауыңнан құтылады — AoE зиян елесті тазалайды.':'Уходит из контроля через иллюзии — AoE-урон их чистит.',
+ 'Алдымен арзан заклинание не жай соққымен сфераны сындыр, содан кейін негізгісін қос.':'Сначала сбей сферу дешёвым заклинанием или атакой, потом кидай основное.',
+ 'Бір нысанға арналған заклинаниең өзіңе қайтады — алдымен сол қалқанды түсір не күт.':'Одиночные заклинания возвращаются тебе — сначала сбей щит или переждди.',
+ 'Бір жарылыспен өлмейді — екінші толқын зиян не тыныштандыру керек.':'Одним бёрстом не убить — нужна вторая волна урона или сайленс.',
+ 'Сиқыр зияны нашарлайды — қатты зиянға ауыс.':'Магический урон слабеет — переходи на физику.',
+ 'Сиқырмен ұрсаң, ол емделеді — физика жақсырақ.':'От магии он лечится — физика лучше.',
+ 'Сиқырға қарсылығы өседі.':'Растёт сопротивление магии.',
+ 'Қалқан жай соққыны жұтады — броны түсіретін не пайызбен жейтін зат.':'Щит съедает обычные атаки — нужен минус к броне или урон по проценту HP.',
+ 'Броны көп — түсіріп ал.':'Много брони — сбивай её.',
+ 'Брон мен шабуыл жылдамдығына әсер етеді.':'Влияет на броню и скорость атаки.',
+ 'Nullifier аруақ күйін сыпырып тастайды.':'Nullifier снимает эфирную форму.',
+ 'Аруақ күйін Nullifier алып тастайды, әрі емдеуіңді кеседі.':'Эфирную форму снимает Nullifier, заодно режет лечение.',
+ 'Қойға айналдырады — BKB не сфера ұста.':'Превращает в овцу — держи BKB или сферу.',
+ 'Тыныштандырады — Manta дispel жасайды.':'Сайленсит — Manta делает диспел.',
+ 'Тыныштық + крит — BKB мен Manta құтқарады.':'Сайленс + крит — спасают BKB и Manta.',
+ 'Заттарыңды құлыптайды — сфера бірінші соққыны жұтады.':'Блокирует твои предметы — сфера съест первый каст.',
+ 'Басы BKB-дан өтеді — жақындатпау керек.':'Стан проходит сквозь BKB — не подпускай близко.',
+ 'Ұрып тұрып қатырады — қашықтық ұста.':'Станит во время атак — держи дистанцию.',
+ 'Броныңды түсіреді — брон қосатын зат ал.':'Снижает твою броню — возьми предмет на броню.',
+ 'Жалтаруың пайдасыз болды — брон мен өмірге ауыс.':'Уворот больше не помогает — переходи на броню и HP.',
+ 'Манаңды жейді — Manta слоуын сыпырады.':'Выкачивает ману — Manta снимает слоу.',
+ 'Манаңды жеп, баяулатады.':'Выкачивает ману и замедляет.',
+ 'Жарылыс сиқыры — сиқырға қарсылық қос.':'Бёрст магии — добавь сопротивление магии.',
+ 'Сиқыр зияны күшейеді — BKB ерте керек.':'Магический урон растёт — BKB нужен рано.',
+ 'Қосқанда броны түседі — сол сәтте жарылт.':'При активации броня падает — бёрсти именно в этот момент.',
+ 'Аспанға көтеріліп қашады — тыныштандыр не хекс.':'Улетает вверх и уходит — сайленс или хекс.',
+ 'Өзіне тартып алады — шығатын зат ұста.':'Притягивает к себе — держи предмет на выход.',
+ 'Ұлтын екі рет қосады — екінші комбоға да дайын тұр.':'Кастует ульту дважды — будь готов ко второй комбе.',
+ 'Ұлты күшейді — қауіп деңгейін көтер.':'Ульта усилилась — повышай уровень угрозы.',
+ 'Бір соққымен өлтіреді — тимеу керек, өлтірсең рапира түседі.':'Убивает с одного удара — не лезь, но если убьёшь, рапира выпадет.',
+ 'Бөлек итеріп жүреді — линияны бақыла, бір өзін ұстап ал.':'Пушит отдельно — следи за линиями и лови его один на один.',
+ 'Ерте қысым жаса — уақыт өтсе, ол күшейеді.':'Дави рано — со временем он становится сильнее.',
+ 'Максимал өміріңнің пайызын жейді.':'Съедает процент максимального здоровья.',
+ 'Броныңды түсіреді.':'Снижает твою броню.',
+ 'Заклинаниелерін жиі қосады.':'Кастует заклинания чаще.',
+ 'Каналды заклинание — үзіп жіберуге болады.':'Заклинание с каналом — его можно прервать.',
+ 'Заклинаниеден кейінгі соққысы қатты.':'Удар после заклинания очень сильный.',
+ 'Ұзақ баяулатады — дispel не BKB.':'Долгий слоу — диспел или BKB.',
+ 'Крит қатты — брон мен қалқан.':'Крит болезненный — броня и щиты.',
+ 'Линияны тез тазалайды.':'Быстро чистит линию.',
+ 'Елестерің мен саппорттарыңды тез тазалайды.':'Быстро чистит твои иллюзии и саппортов.',
+ 'Емдеуің кесіледі — регенге сенбе.':'Твоё лечение режется — не рассчитывай на реген.',
+ 'Итеріп қашады — байлайтын зат керек.':'Отталкивает и убегает — нужен предмет на контроль.',
+ 'Көрінбей қалады — Dust ұста.':'Уходит в инвиз — держи Dust.',
+ 'Циклонмен құтылады.':'Спасается циклоном.',
+ 'Күй қарсылығы өседі — ұзақ ұстайтын зат керек.':'Растёт сопротивление контролю — нужен длинный контроль.',
+ 'Күй қарсылығы мен сиқыры күшейеді.':'Растут сопротивление контролю и магия.',
+ 'Екі соққымен баяулатып ұстайды.':'Двумя ударами замедляет и держит.',
+ 'Сиқыр қарсылығыңды түсіреді.':'Снижает твоё сопротивление магии.',
+ 'Сиқырға қарсылығы мен қалқаны бар — физика жақсырақ.':'Есть сопротивление магии и щит — физика лучше.'
+});
+Object.assign(I18N.en, {
+ 'Жалтаруын тек дәлдік беретін зат бұзады.':'Only a true strike item beats evasion.',
+ 'Қаруыңды алып тастайды — BKB қосып тұрып ұр.':'It disarms you — attack under BKB.',
+ 'BKB қосулы кезде заклинание өтпейді: Abyssal басы иммунитеттен өтеді, қалғанын күтіп ұр.':'Spells do not land through BKB: Abyssal stun pierces immunity, wait the rest out.',
+ 'Жарқырап тұрғанда бүкіл зияның өзіңе қайтады — 5 секунд тимей тұр.':'While it glows all your damage bounces back — do not touch him for 5 seconds.',
+ 'Регенін Silver Edge сөндіреді, емдеу кесетін зат азайтады.':'Silver Edge disables the regen, healing reduction cuts it down.',
+ 'Қосқанда өзін толық емдейді — емдеу кесу міндетті.':'On activation it fully heals him — healing reduction is a must.',
+ 'Бүкіл командасына вампиризм — емдеу кесу жақсы жұмыс істейді.':'Lifesteal for his whole team — healing reduction works well.',
+ 'Ұрыс ортасында бәрін емдейді — Vessel сол сәтті бұзады.':'It heals everyone mid-fight — Vessel ruins that moment.',
+ 'Заклинание қосқан сайын емделеді.':'He heals with every spell cast.',
+ 'Жанында тұрған сайын күйесің — қашықтық ұста.':'Standing near him burns you — keep your distance.',
+ 'Root тұрғанда блинк жұмыс істемейді. Ұрыс алдында бір рет тисең, блинк 3 секундқа өшеді.':'Blink does not work while rooted. Land one hit before the fight and blink is down for 3 seconds.',
+ 'Көрінбей келеді — картаңа вард қой.':'He comes in invisible — ward the map.',
+ 'Көрінбей келіп пассивіңді сөндіреді.':'He comes from invis and breaks your passive.',
+ 'Елесімен байлауыңнан құтылады — AoE зиян елесті тазалайды.':'He escapes lockdown with illusions — AoE damage clears them.',
+ 'Алдымен арзан заклинание не жай соққымен сфераны сындыр, содан кейін негізгісін қос.':'Pop the sphere with a cheap spell or an attack first, then cast the real one.',
+ 'Бір нысанға арналған заклинаниең өзіңе қайтады — алдымен сол қалқанды түсір не күт.':'Single-target spells come back at you — break that shield first or wait.',
+ 'Бір жарылыспен өлмейді — екінші толқын зиян не тыныштандыру керек.':'One burst will not kill him — you need a second wave of damage or a silence.',
+ 'Сиқыр зияны нашарлайды — қатты зиянға ауыс.':'Magic damage falls off — switch to physical.',
+ 'Сиқырмен ұрсаң, ол емделеді — физика жақсырақ.':'Magic damage heals him — physical is better.',
+ 'Сиқырға қарсылығы өседі.':'His magic resistance grows.',
+ 'Қалқан жай соққыны жұтады — броны түсіретін не пайызбен жейтін зат.':'The shield eats plain attacks — use armor reduction or percent-health damage.',
+ 'Броны көп — түсіріп ал.':'High armor — strip it.',
+ 'Брон мен шабуыл жылдамдығына әсер етеді.':'It affects armor and attack speed.',
+ 'Nullifier аруақ күйін сыпырып тастайды.':'Nullifier removes the ghost form.',
+ 'Аруақ күйін Nullifier алып тастайды, әрі емдеуіңді кеседі.':'Nullifier strips the ghost form and cuts healing too.',
+ 'Қойға айналдырады — BKB не сфера ұста.':'It hexes you — carry BKB or a sphere.',
+ 'Тыныштандырады — Manta дispel жасайды.':'It silences — Manta dispels it.',
+ 'Тыныштық + крит — BKB мен Manta құтқарады.':'Silence plus crit — BKB and Manta save you.',
+ 'Заттарыңды құлыптайды — сфера бірінші соққыны жұтады.':'It locks your items — a sphere eats the first cast.',
+ 'Басы BKB-дан өтеді — жақындатпау керек.':'The stun pierces BKB — do not let him close in.',
+ 'Ұрып тұрып қатырады — қашықтық ұста.':'He stuns while attacking — keep your distance.',
+ 'Броныңды түсіреді — брон қосатын зат ал.':'It reduces your armor — buy armor.',
+ 'Жалтаруың пайдасыз болды — брон мен өмірге ауыс.':'Your evasion is useless now — go armor and HP.',
+ 'Манаңды жейді — Manta слоуын сыпырады.':'It burns your mana — Manta dispels the slow.',
+ 'Манаңды жеп, баяулатады.':'It burns mana and slows you.',
+ 'Жарылыс сиқыры — сиқырға қарсылық қос.':'Magic burst — add magic resistance.',
+ 'Сиқыр зияны күшейеді — BKB ерте керек.':'His magic damage grows — BKB is needed early.',
+ 'Қосқанда броны түседі — сол сәтте жарылт.':'On activation his armor drops — burst him right then.',
+ 'Аспанға көтеріліп қашады — тыныштандыр не хекс.':'He flies up and escapes — silence or hex him.',
+ 'Өзіне тартып алады — шығатын зат ұста.':'It drags you in — keep an escape item.',
+ 'Ұлтын екі рет қосады — екінші комбоға да дайын тұр.':'He casts his ult twice — be ready for the second combo.',
+ 'Ұлты күшейді — қауіп деңгейін көтер.':'His ult got stronger — raise the threat level.',
+ 'Бір соққымен өлтіреді — тимеу керек, өлтірсең рапира түседі.':'He one-shots you — stay away, but killing him drops the rapier.',
+ 'Бөлек итеріп жүреді — линияны бақыла, бір өзін ұстап ал.':'He split pushes — watch the lanes and catch him alone.',
+ 'Ерте қысым жаса — уақыт өтсе, ол күшейеді.':'Pressure him early — he only gets stronger with time.',
+ 'Максимал өміріңнің пайызын жейді.':'It eats a percent of your max health.',
+ 'Броныңды түсіреді.':'It reduces your armor.',
+ 'Заклинаниелерін жиі қосады.':'He casts his spells more often.',
+ 'Каналды заклинание — үзіп жіберуге болады.':'A channeled spell — you can interrupt it.',
+ 'Заклинаниеден кейінгі соққысы қатты.':'His attack right after a spell hits hard.',
+ 'Ұзақ баяулатады — дispel не BKB.':'A long slow — dispel or BKB.',
+ 'Крит қатты — брон мен қалқан.':'The crit hurts — armor and shields.',
+ 'Линияны тез тазалайды.':'He clears waves fast.',
+ 'Елестерің мен саппорттарыңды тез тазалайды.':'He wipes your illusions and supports fast.',
+ 'Емдеуің кесіледі — регенге сенбе.':'Your healing is cut — do not rely on regen.',
+ 'Итеріп қашады — байлайтын зат керек.':'He pushes away and escapes — you need lockdown.',
+ 'Көрінбей қалады — Dust ұста.':'He goes invisible — carry Dust.',
+ 'Циклонмен құтылады.':'He escapes with a cyclone.',
+ 'Күй қарсылығы өседі — ұзақ ұстайтын зат керек.':'His status resistance grows — you need longer lockdown.',
+ 'Күй қарсылығы мен сиқыры күшейеді.':'His status resistance and magic both grow.',
+ 'Екі соққымен баяулатып ұстайды.':'Two hits slow and hold you.',
+ 'Сиқыр қарсылығыңды түсіреді.':'It lowers your magic resistance.',
+ 'Сиқырға қарсылығы мен қалқаны бар — физика жақсырақ.':'He has magic resistance and a shield — physical is better.'
+});
+
+const I18MAP={}, I18RE={};
+function trStr(t){
+  if(LANG==='kk'||!I18N[LANG]) return t;
+  const d=I18MAP[LANG]||(I18MAP[LANG]=new Map(Object.entries(I18N[LANG])));
+  const k=t.trim();
+  if(d.has(k)) return t.replace(k,d.get(k));
+  if(!/[\u0400-\u04FF\u04A0-\u04BB]/.test(t)) return t;
+  const re=I18RE[LANG]||(I18RE[LANG]=new RegExp([...d.keys()]
+    .sort((a,b)=>b.length-a.length)
+    .map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'));
+  return t.replace(re,m=>d.has(m)?d.get(m):m);
+}
+const I18ORIG=new WeakMap();
+function localize(root){
+  root=root||document.body;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+  const nodes=[]; let n; while(n=w.nextNode()) nodes.push(n);
+  nodes.forEach(node=>{
+    let src=I18ORIG.get(node);
+    if(src===undefined){
+      src=node.nodeValue;
+      if(!/[\u0400-\u04FF]/.test(src)) return;
+      I18ORIG.set(node,src);
+    }
+    const out=trStr(src);
+    if(node.nodeValue!==out) node.nodeValue=out;
+  });
+  root.querySelectorAll('[placeholder]').forEach(el=>{
+    let src=I18ORIG.get(el);
+    if(src===undefined){ src=el.getAttribute('placeholder'); I18ORIG.set(el,src); }
+    el.setAttribute('placeholder',trStr(src));
+  });
+  document.documentElement.lang=LANG;
+}
+function setLang(l){
+  LANG=l; LS.set('lang',l);
+  document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===l));
+  localize();
+}
 
 let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
 let S = LS.get('state') || {mine:[],foe:[],fi:{}};
@@ -781,6 +1167,25 @@ const fmtPct=v=>`${v>0?'+':''}${v.toFixed(1)}<small>%</small>`;
 const skel=n=>Array.from({length:n},()=>'<div class="sk"></div>').join('');
 const stagger=(els,ms=26,max=16)=>els.forEach((el,i)=>{ el.style.animationDelay=(i<max?i*ms:0)+'ms' });
 
+/* ---------- зат кімге қарсы: кішкене герой белгішелері ---------- */
+function foesOf(name){
+  const out=new Map();
+  foeHeroes().forEach(f=>{
+    const c=HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)];
+    if(c&&c.i.includes(name)) out.set(f.id,f);
+    (S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&(r.items||[]).includes(name)) out.set(f.id,f); });
+    THREATS.forEach(t=>{ if(t.items.includes(name)&&has(t.list,f)) out.set(f.id,f); });
+  });
+  return [...out.values()];
+}
+function foeBadges(name,max){
+  max=max||3;
+  const l=foesOf(name); if(!l.length) return '';
+  return '<span class="fx">'+l.slice(0,max).map(f=>
+    `<img class="fa" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">`).join('')
+    +(l.length>max?`<b>+${l.length-max}</b>`:'')+'</span>';
+}
+
 /* ---------- беттер ---------- */
 let CURTAB='p-pick';
 function go(id,i,push){
@@ -1068,7 +1473,7 @@ async function renderItems(){
     th.innerHTML = perCard + (hits.length? hits.map(({t,who})=>`
       <div class="card"><span class="tagn">${who.length}</span><h3>${t.ttl}</h3>
         <p class="why">${who.map(h=>h.localized_name).join(', ')} — ${t.why}</p>
-        <div class="items">${t.items.map(n=>`<span class="it"><img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">${n}</span>`).join('')}</div>
+        <div class="items">${t.items.map(n=>`<span class="it"><img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">${n}${foeBadges(n)}</span>`).join('')}</div>
       </div>`).join('')
       : '');
   }
@@ -1131,7 +1536,7 @@ async function showPlan(h){
   const list=[...map.values()].sort((a,b)=> wt(b)-wt(a) || b.who.size-a.who.size || b.cats.size-a.cats.size);
   const itemRow=e=>`<div class="pl${e.hot?' hot':''}">
       <img src="${IMG(ikey(e.n))}" alt="" loading="lazy" onerror="this.style.display='none'">
-      <div><div class="pn">${e.n}</div><div class="pw">${[...e.who].map(([n2,d])=>n2+(d?' '+d:'')).join(', ')}</div></div></div>`;
+      <div><div class="pn">${e.n}${foeBadges(e.n)}</div><div class="pw">${[...e.who].map(([n2,d])=>n2+(d?' '+d:'')).join(', ')}</div></div></div>`;
   let counter;
   if(!fs.length) counter='<div class="empty">Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.</div>';
   else if(!list.length) counter='<div class="empty">Бұл геройға қосымша қарсы зат қажет емес — әдеттегі жинақпен жүре бер.</div>';
@@ -1154,8 +1559,8 @@ async function showPlan(h){
     const grp=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([id])=>ITEMIDS[id]).filter(Boolean);
     const rows=[['Бастапқы',grp(d.start_game_items,6)],['Ерте',grp(d.early_game_items,5)],
       ['Орта',grp(d.mid_game_items,5)],['Кеш',grp(d.late_game_items,5)]].filter(r=>r[1].length);
-    core=`<div class="card"><h3>Негізгі жинақ</h3><p class="why">Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады.</p>`
-      + rows.map(([t,its])=>`<div class="grow"><span class="gt">${t}</span><div class="items">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}</span>`).join('')}</div></div>`).join('')
+    core=`<div class="card"><h3>Негізгі жинақ</h3><p class="why">Нақты ойындарда ең жиі жиналғаны — жоғарыдағы заттар осының үстіне қосылады. Заттың жанындағы кішкене портрет — сол зат қай қарсыласқа қарсы жұмыс істейтінін көрсетеді.</p>`
+      + rows.map(([t,its])=>`<div class="grow"><span class="gt">${t}</span><div class="items">${its.map(k=>`<span class="it"><img src="${IMG(k)}" alt="" loading="lazy" onerror="this.style.display='none'">${pretty(k)}${foeBadges(pretty(k))}</span>`).join('')}</div></div>`).join('')
       + '</div>';
   }catch(e){ core='<div class="empty">Негізгі жинақ жүктелмеді — интернетті тексер.</div>'; }
   bd.innerHTML=head+counter+noteCard+core;
@@ -1207,6 +1612,17 @@ window.addEventListener('popstate',e=>{
 // тарих: түбір + жұмыс жазбасы (артқа басқанда бірден шықпау үшін)
 history.replaceState({d2:'root'},'');
 history.pushState({d2:'main',tab:LS.get('tab')||'p-pick'},'');
+
+/* тіл түймелері мен автоаударма бақылаушысы */
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));
+let locT, locBusy=false;
+new MutationObserver(()=>{
+  if(locBusy) return;
+  clearTimeout(locT);
+  locT=setTimeout(()=>{ locBusy=true; try{ localize(); }catch(e){} locBusy=false; },40);
+}).observe(document.body,{childList:true,subtree:true,characterData:true});
+localize();
 
 function hideSplash(){ const el=document.getElementById('splash'); if(el&&!el.classList.contains('gone')) el.classList.add('gone'); }
 setTimeout(hideSplash,3200); // сақтандырғыш
