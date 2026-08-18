@@ -111,6 +111,8 @@ input{font-family:inherit}
 .mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
 .mbar i{display:block;height:100%}
 
+.gsep{grid-column:1/-1;font-family:var(--disp);font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gold);padding:12px 2px 3px;border-top:1px solid var(--line);margin-top:6px}
 .lrow{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
 /* зат жанындағы «кімге қарсы» белгішелері */
 .fx{display:inline-flex;align-items:center;gap:3px;margin-left:6px;vertical-align:middle}
@@ -377,7 +379,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.2';
+const V='3.3';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -466,7 +468,8 @@ Object.assign(I18N.ru, {
   'Өзгерту: «Таңдау» бетінде өз геройыңды бас.':'Изменить: нажми на своего героя на странице «Пик».',
   '«Таңдау» бетінде өз геройыңды басып, не жинағаныңды белгіле — сонда алынған заттар ұсыныстан шығып, қалғаны ғана қалады.':'На странице «Пик» нажми на своего героя и отметь, что уже собрал — купленные предметы уйдут из советов, останется только нужное.',
   'Біздің команда · нақты не жинады':'Наша команда · что реально собрал',
-  'Қарсылас · нақты не жинады':'Соперник · что реально собрал'
+  'Қарсылас · нақты не жинады':'Соперник · что реально собрал',
+  'Доталағы қалған заттар':'Остальные предметы Dota'
 });
 
 Object.assign(I18N.en, {
@@ -533,7 +536,8 @@ Object.assign(I18N.en, {
   'Өзгерту: «Таңдау» бетінде өз геройыңды бас.':'To edit: tap your hero on the Pick page.',
   '«Таңдау» бетінде өз геройыңды басып, не жинағаныңды белгіле — сонда алынған заттар ұсыныстан шығып, қалғаны ғана қалады.':'On the Pick page tap your hero and mark what you already bought — those items drop out of the advice and only what you still need remains.',
   'Біздің команда · нақты не жинады':'Our team · what was actually built',
-  'Қарсылас · нақты не жинады':'Enemy · what was actually built'
+  'Қарсылас · нақты не жинады':'Enemy · what was actually built',
+  'Доталағы қалған заттар':'All other Dota items'
 });
 
 
@@ -778,6 +782,7 @@ function setLang(l){
 }
 
 let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
+let ITEMDATA=null, DN2KEY={}, ITEMPOOL=[];
 let S = LS.get('state') || {mine:[],foe:[],fi:{}};
 if(!S.fi) S.fi={};
 let FAV = LS.get('fav') || ['phantom_assassin','ursa','shadow_shaman','drow_ranger'];
@@ -875,7 +880,7 @@ function fits(name,h){
 }
 
 /* қарсылас сатып алатын маңызды заттар (таңдау терезесі үшін) */
-const ITEMLIST=['Black King Bar','Blade Mail','Butterfly','Heart of Tarrasque','Satanic','Radiance',
+const ITEMLIST=[...new Set(['Black King Bar','Blade Mail','Butterfly','Heart of Tarrasque','Satanic','Radiance',
  'Blink Dagger','Manta Style','Silver Edge','Shadow Blade','Desolator','Monkey King Bar','Assault Cuirass',
  'Crimson Guard','Pipe of Insight',"Shiva's Guard",'Lotus Orb',"Linken's Sphere",'Aeon Disk',
  "Eul's Scepter of Divinity",'Force Staff','Glimmer Cape','Ghost Scepter','Scythe of Vyse','Orchid Malevolence',
@@ -884,7 +889,21 @@ const ITEMLIST=['Black King Bar','Blade Mail','Butterfly','Heart of Tarrasque','
  'Spirit Vessel',"Heaven's Halberd",'Guardian Greaves','Mask of Madness','Diffusal Blade','Disperser',
  'Dagon','Veil of Discord','Bloodstone','Eternal Shroud','Mage Slayer','Parasma','Wind Waker','Harpoon',
  'Echo Sabre','Battle Fury','Mjollnir','Boots of Travel','Hand of Midas','Sange and Yasha','Kaya and Sange',
- 'Meteor Hammer','Khanda',"Hydra's Breath","Crella's Crozier",'Consecrated Wraps',"Specialist's Array"];
+ 'Meteor Hammer','Khanda',"Hydra's Breath","Crella's Crozier",'Consecrated Wraps',"Specialist's Array",
+ // аяқ киім
+ 'Power Treads','Phase Boots','Arcane Boots','Tranquil Boots','Boots of Speed','Boots of Bearing',
+ 'Overwhelming Blink','Arcane Blink','Swift Blink',
+ // жиі кездесетін негізгі заттар
+ 'Armlet of Mordiggian','Maelstrom','Basher','Sange','Yasha','Kaya','Yasha and Kaya','Sange and Kaya',
+ 'Dragon Lance','Hurricane Pike','Witch Blade','Falcon Blade','Orb of Corrosion','Blight Stone',
+ 'Urn of Shadows','Medallion of Courage','Mekansm','Holy Locket','Aether Lens','Moon Shard',
+ 'Bloodstone','Ethereal Blade','Shadow Blade','Silver Edge','Nemesis Curse','Revenant\'s Brooch',
+ "Aghanim's Shard",'Helm of the Overlord','Helm of the Dominator','Vanguard','Crimson Guard',
+ 'Black Dragon Hide','Heart of Tarrasque','Assault Cuirass','Abyssal Blade','Bloodthorn',
+ // шығын заттары мен вардтар
+ 'Dust of Appearance','Sentry Ward','Observer Ward','Gem of True Sight','Smoke of Deceit',
+ 'Quelling Blade','Tango','Magic Wand','Wind Lace','Infused Raindrop'])];
+
 
 /* қарсылас сол затты алса — не істеу керек */
 const IREACT={
@@ -1110,8 +1129,19 @@ const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Sh
  heavens_halberd:"Heaven's Halberd",medallion_of_courage:'Medallion of Courage',
  hurricane_pike:'Hurricane Pike',dragon_lance:'Dragon Lance',diffusal_blade:'Diffusal Blade',
  vladmir:"Vladmir's Offering",echo_sabre:'Echo Sabre',harpoon:'Harpoon',
- blade_mail:'Blade Mail',pers:'Perseverance',oblivion_staff:'Oblivion Staff'};
-const pretty=k=>NAMEFIX[k]||k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+ blade_mail:'Blade Mail',pers:'Perseverance',oblivion_staff:'Oblivion Staff',
+ cyclone:"Eul's Scepter of Divinity",rapier:'Divine Rapier',basher:'Skull Basher',
+ orchid:'Orchid Malevolence',refresher:'Refresher Orb',travel_boots:'Boots of Travel',
+ travel_boots_2:'Boots of Travel 2',boots:'Boots of Speed',dust:'Dust of Appearance',
+ ward_sentry:'Sentry Ward',ward_observer:'Observer Ward',gem:'Gem of True Sight',
+ armlet:'Armlet of Mordiggian',greater_crit:'Daedalus',lesser_crit:'Crystalys',
+ sphere:"Linken's Sphere",skadi:'Eye of Skadi',bfury:'Battle Fury',sheepstick:'Scythe of Vyse',
+ invis_sword:'Shadow Blade',ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Shard",
+ shivas_guard:"Shiva's Guard",manta:'Manta Style',blink:'Blink Dagger',pipe:'Pipe of Insight',
+ heart:'Heart of Tarrasque',assault:'Assault Cuirass',gungir:'Gleipnir',
+ yasha_and_kaya:'Yasha and Kaya',sange_and_kaya:'Sange and Kaya',
+ boots_of_bearing:'Boots of Bearing',helm_of_the_overlord:'Helm of the Overlord'};
+const pretty=k=>(ITEMDATA&&ITEMDATA[k]&&ITEMDATA[k].n)||NAMEFIX[k]||k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 
 const ROLEKK={Carry:'Керри',Support:'Қолдау',Nuker:'Зияншы',Disabler:'Тежеуші',Initiator:'Бастамашы',
   Durable:'Мықты',Escape:'Қашқыш',Pusher:'Итеруші',Jungler:'Орманшы'};
@@ -1143,6 +1173,28 @@ async function loadMU(id,force){
 }
 let KEYBYNAME={};
 const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
+async function loadItems(){
+  if(ITEMDATA) return;
+  let d=LS.get('itemsdb',30);
+  if(!d){
+    const raw=await getJSON('https://raw.githubusercontent.com/odota/dotaconstants/master/build/items.json');
+    d={};
+    Object.entries(raw).forEach(([k,v])=>{
+      if(!v||!v.dname||k.startsWith('recipe_')) return;
+      d[k]={n:v.dname,c:v.cost||0,q:v.qual||''};
+    });
+    LS.set('itemsdb',d);
+  }
+  ITEMDATA=d; DN2KEY={};
+  Object.entries(d).forEach(([k,v])=>{ DN2KEY[norm(v.n)]=k; });
+  const cur=new Set(ITEMLIST.map(norm));
+  const rest=Object.entries(d)
+    .filter(([k,v])=>v.c>0 && !cur.has(norm(v.n)))
+    .sort((a,b)=>b[1].c-a[1].c || a[1].n.localeCompare(b[1].n))
+    .map(([,v])=>v.n);
+  ITEMPOOL=[...ITEMLIST,...rest];
+}
+
 async function loadItemIds(){
   if(ITEMIDS) return;
   let d=LS.get('itemids',30);
@@ -1151,7 +1203,7 @@ async function loadItemIds(){
   Object.values(d).forEach(k=>{ KEYBYNAME[norm(pretty(k))]=k; KEYBYNAME[norm(k)]=k; });
 }
 // зат атауынан суреттің кілтін табады (жаңа патч заттары да жұмыс істейді)
-const ikey=label=>KEYBYNAME[norm(label)]||label.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const ikey=label=>DN2KEY[norm(label)]||KEYBYNAME[norm(label)]||label.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
 
 /* ---------- қозғалыс пен әсерлер ---------- */
 const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -1454,6 +1506,7 @@ function openItems(h,side){
   document.body.style.overflow='hidden';
   history.pushState({d2:'sheet',sheet:1},'');
   renderIGrid();
+  Promise.all([loadItems(),loadItemIds()]).then(()=>renderIGrid()).catch(()=>{});
 }
 function closeItems(fromPop){
   document.getElementById('isheet').classList.remove('on');
@@ -1467,7 +1520,14 @@ function renderIGrid(){
   const q=document.getElementById('isSrch').value.trim().toLowerCase();
   const cur=S.fi[isHero.id]||[];
   const g=document.getElementById('isGrid'); g.innerHTML='';
-  ITEMLIST.filter(n=>!q||n.toLowerCase().includes(q)).forEach(n=>{
+  const pool=ITEMPOOL.length?ITEMPOOL:ITEMLIST;
+  const shown=pool.filter(n=>!q||n.toLowerCase().includes(q));
+  let sepDone=q?true:false;
+  shown.forEach((n,idx)=>{
+    if(!sepDone && idx>=ITEMLIST.length){
+      const sep=document.createElement('div'); sep.className='gsep';
+      sep.textContent='Доталағы қалған заттар'; g.appendChild(sep); sepDone=true;
+    }
     const b=document.createElement('div');
     b.setAttribute('role','button'); b.tabIndex=0;
     b.className='ib'+(cur.includes(n)?' sel':'');
@@ -1487,7 +1547,7 @@ function renderIGrid(){
 /* ---------- заттар ---------- */
 function foeHeroes(){ return S.foe.map(id=>BYID[id]).filter(Boolean); }
 async function renderItems(){
-  try{ await loadItemIds(); }catch(e){}
+  try{ await Promise.all([loadItemIds(),loadItems()]); }catch(e){}
   const fs=foeHeroes(), comp=document.getElementById('comp'), th=document.getElementById('threats');
   if(!fs.length){
     comp.innerHTML=''; th.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>«Таңдау» бетінде қарсылас геройларын қос. Герой суретін бассаң — оның не жинағанын белгілей аласың.</div>';
@@ -1609,7 +1669,7 @@ async function showPlan(h){
 
   let core='';
   try{
-    await loadItemIds();
+    await Promise.all([loadItemIds(),loadItems()]);
     let d=LS.get('ip'+h.id,7);
     if(!d){ d=await getJSON(API+'/heroes/'+h.id+'/itemPopularity'); LS.set('ip'+h.id,d); }
     const grp=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([id])=>ITEMIDS[id]).filter(Boolean);
