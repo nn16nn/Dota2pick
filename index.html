@@ -88,8 +88,7 @@ input{font-family:inherit}
 .rec .val{font-family:var(--disp);font-size:19px;color:var(--rad);flex:0 0 auto;font-variant-numeric:tabular-nums}
 .rec.bad .val{color:var(--dire)}
 .rec .val small{font-size:11px;opacity:.7}
-.rec .add{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
-  background:#4FB4772a;color:#8FE0B0;font-size:18px;line-height:1;font-weight:600}
+
 
 .empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--r);padding:22px 16px;text-align:center;color:var(--dim);font-size:13.5px}
 .empty b{display:block;color:var(--txt);font-family:var(--disp);font-size:15px;letter-spacing:.06em;margin-bottom:5px;text-transform:uppercase}
@@ -102,6 +101,7 @@ input{font-family:inherit}
 .it{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
   border-radius:8px;padding:4px 8px 4px 4px;font-size:12px}
 .it img{width:32px;height:24px;border-radius:3px;object-fit:cover;background:#0B0F18}
+.mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
 .pl{display:flex;gap:9px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
@@ -118,21 +118,6 @@ input{font-family:inherit}
 .mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
 .mbar i{display:block;height:100%}
 
-.addrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0}
-.addb{display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;border-radius:12px;
-  font-weight:700;font-size:14px;border:1px solid;transition:transform .12s ease,opacity .18s}
-.addb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;flex:0 0 auto}
-.addb.us{color:#8FE0B0;background:#4FB47722;border-color:#4FB47770}
-.addb.them{color:#F4A094;background:#D9584A22;border-color:#D9584A70}
-.addb:disabled{opacity:.38}
-.addb:active{transform:scale(.97)}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 14px 0;padding:4px;
-  background:var(--panel);border:1px solid var(--line);border-radius:13px}
-.seg button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 6px;
-  border-radius:10px;font-weight:700;font-size:13.5px;color:var(--dim);transition:background .18s,color .18s}
-.seg button b{font-family:var(--disp);font-size:12px;letter-spacing:.06em;opacity:.8;font-weight:600}
-.seg button.on.us{background:#4FB47726;color:#8FE0B0;box-shadow:inset 0 0 0 1px #4FB47790}
-.seg button.on.them{background:#D9584A26;color:#F4A094;box-shadow:inset 0 0 0 1px #D9584A90}
 .gsep{grid-column:1/-1;font-family:var(--disp);font-size:11.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gold);padding:12px 2px 3px;border-top:1px solid var(--line);margin-top:6px}
 .lrow{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
@@ -259,7 +244,7 @@ input{font-family:inherit}
 .rp{position:absolute;border-radius:50%;background:#E3B23C33;transform:scale(0);pointer-events:none;
   animation:rip .5s ease-out forwards}
 @keyframes rip{to{transform:scale(2.6);opacity:0}}
-.chip,.slot,.hb,.ib,.btn,.rec,.tab,.addb,.seg button{position:relative;overflow:hidden}
+.chip,.slot,.hb,.ib,.btn,.rec,.tab{position:relative;overflow:hidden}
 .chip:active,.btn:active,.ib:active{transform:scale(.96)}
 .hb:active,.rec:active,.slot:active{transform:scale(.985)}
 .chip,.btn,.ib,.hb,.rec,.slot{transition:transform .12s ease,border-color .18s,background .18s}
@@ -326,14 +311,15 @@ input{font-family:inherit}
       <div class="seam"></div>
     </div>
 
-    <div class="addrow">
-      <button class="addb us" id="addUs"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Командама</button>
-      <button class="addb them" id="addThem"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Қарсыласқа</button>
-    </div>
-
     <div class="sec" id="recsec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
     <div class="chips" id="filters"></div>
     <div id="recs"></div>
+    <button class="btn" id="recMore" style="display:none"></button>
+
+    <div class="sec" id="itsec"><h2>Бір зат — көп геройға</h2><span class="hint" id="itHint"></span></div>
+    <div id="itTop"></div>
+    <div class="sec"><h2>Командаға зат</h2><span class="hint" id="tmHint"></span></div>
+    <div id="itTeam"></div>
   </section>
 
   <!-- ЗАТТАР -->
@@ -362,7 +348,7 @@ input{font-family:inherit}
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
       <h3>Дереккөз</h3>
-      <p class="why" style="margin:6px 0 0">Геройлар мен матчап пайызы — OpenDota ашық дерегі (нақты ойындар статистикасы, барлық рейтинг қоса). Артықшылық = геройдың сол қарсыласқа қарсы жеңіс пайызы минус өзінің жалпы жеңіс пайызы. 50 ойыннан аз матчаптар есепке алынбайды.</p>
+      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.</p>
     </div>
     <div class="card">
       <h3>Қалай жұмыс істейді</h3>
@@ -396,12 +382,8 @@ input{font-family:inherit}
   <div class="box">
     <div class="phd">
       <button class="bk" data-close aria-label="Артқа">←</button>
-      <div class="tt"><h2 id="shTitle">Герой қосу</h2><small id="shSub">Геройды біздің командаға қосады</small></div>
+      <div class="tt"><h2 id="shTitle">Герой таңдау</h2><small id="shSub">Портреттен немесе іздеуден таңда</small></div>
       <span class="cnt2" id="shCnt">0/5</span>
-    </div>
-    <div class="seg" id="shSeg">
-      <button class="us" data-side="mine">Командама <b id="sgUs">0/5</b></button>
-      <button class="them" data-side="foe">Қарсыласқа <b id="sgThem">0/5</b></button>
     </div>
     <input class="srch" id="shSrch" placeholder="Герой іздеу" autocomplete="off">
     <div class="chips" style="padding:8px 14px 0" id="shFilters"></div>
@@ -410,7 +392,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.5';
+const V='3.6';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -772,20 +754,8 @@ Object.assign(I18N.en, {
  'Сиқырға қарсылығы мен қалқаны бар — физика жақсырақ.':'He has magic resistance and a shield — physical is better.'
 });
 
-Object.assign(I18N.ru, {
-  'Командама':'В мою команду','Қарсыласқа':'Сопернику','Герой қосу':'Добавить героя',
-  'Геройды біздің командаға қосады':'Герой добавится в нашу команду',
-  'Геройды қарсыластарға қосады':'Герой добавится к соперникам',
-  'Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.':'Нажми «Сопернику» и добавь героя соперника. С каждым героем контрпик становится точнее.',
-  'басып командаға қос':'нажми — в команду'
-});
-Object.assign(I18N.en, {
-  'Командама':'My team','Қарсыласқа':'Enemy','Герой қосу':'Add a hero',
-  'Геройды біздің командаға қосады':'Hero goes to our team',
-  'Геройды қарсыластарға қосады':'Hero goes to the enemy',
-  'Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.':'Tap “Enemy” and add an enemy hero. Every hero makes the counterpick sharper.',
-  'басып командаға қос':'tap to add to team'
-});
+Object.assign(I18N.ru,{"Бір зат — көп геройға": "Один предмет — против многих", "Командаға зат": "Предметы команде", "Тағы көрсету": "Показать ещё", "Азырақ көрсету": "Свернуть", "Қарсылас бос": "Соперник пуст", "Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.": "Добавь героев — здесь появится предмет сразу против нескольких.", "Бұл құрамға ортақ зат табылмады.": "Общего предмета для этого состава не нашлось.", "бүкіл команда": "вся команда", "команда бос": "команда пуста", "команда": "команда", "Қосымша зат қажет емес — әдеттегі жинақпен жүре бер.": "Доп. предметы не нужны — играй обычную сборку.", "Контрпик екі деректі біріктіреді:": "Контрпик объединяет два источника:", "Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады.": "Если выбранный герой проигрывает сопернику — появится ⚠.", "Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.": "У обоих сайтов метод один (разница винрейта); открытых данных dotapuls найти не удалось.", "(1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады).": "(1) Dotabuff — разница винрейта у 8 лучших героев против каждого героя (десятки тысяч игр, окт. 2026); (2) OpenDota — живые матчапы (выборка мала, поэтому берутся с малым весом)."});
+Object.assign(I18N.en,{"Бір зат — көп геройға": "One item vs many", "Командаға зат": "Team items", "Тағы көрсету": "Show more", "Азырақ көрсету": "Show less", "Қарсылас бос": "Enemy empty", "Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.": "Add heroes — an item against several at once appears here.", "Бұл құрамға ортақ зат табылмады.": "No shared item found for this lineup.", "бүкіл команда": "whole team", "команда бос": "team empty", "команда": "team", "Қосымша зат қажет емес — әдеттегі жинақпен жүре бер.": "No extra items needed — play your normal build.", "Контрпик екі деректі біріктіреді:": "Counterpick merges two sources:", "Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады.": "If the picked hero loses to an enemy, ⚠ is shown.", "Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.": "Both sites use the same method (win-rate difference); no open dotapuls data was found.", "(1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады).": "(1) Dotabuff — win-rate difference of the 8 best heroes against each hero (tens of thousands of games, Oct 2026); (2) OpenDota — live matchups (small sample, so given low weight)."});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1269,7 +1239,7 @@ function toast(msg){
 const buzz=ms=>{ try{ navigator.vibrate&&navigator.vibrate(ms) }catch(e){} };
 document.addEventListener('pointerdown',e=>{
   if(RM) return;
-  const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab,.addb,.seg button'); if(!t) return;
+  const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab'); if(!t) return;
   const r=t.getBoundingClientRect(), d=Math.max(r.width,r.height)*.6;
   const sp=document.createElement('span'); sp.className='rp';
   sp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
@@ -1383,11 +1353,10 @@ function slots(side){
     box.appendChild(b);
   }
   document.getElementById(mineSide?'cUs':'cThem').textContent=arr.filter(id=>BYID[id]).length+'/5';
-  document.getElementById(mineSide?'addUs':'addThem').disabled = arr.length>=5;
 }
 // бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
 function board(){
-  [()=>slots('mine'),()=>slots('foe'),renderRecs].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+  [()=>slots('mine'),()=>slots('foe'),renderRecs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
 }
 
 /* ---------- сүзгілер ---------- */
@@ -1413,49 +1382,193 @@ function passFilter(h,f){
 const posOf=h=>Object.keys(POS).filter(p=>has(POS[p],h)).map(p=>POSKK[p]);
 
 /* ---------- ұсыныс ---------- */
+/* Dotabuff counters: кім қай геройға қарсы жақсы (жеңіс айырмасы ×10, ≥1500 матч) */
+const DBC={"Abaddon":"Anti-Mage~27|Outworld Destroyer~25|Undying~20|Ancient Apparition~20|Pangolier~19|Monkey King~19|Nyx Assassin~19|Slark~18",
+"Alchemist":"Slark~26|Huskar~19|Slardar~18|Terrorblade~16|Monkey King~14|Ancient Apparition~14|Doom~13|Timbersaw~12",
+"Ancient Apparition":"Brewmaster~35|Arc Warden~34|Phantom Lancer~33|Lycan~32|Spectre~27|Puck~26|Storm Spirit~23|Void Spirit~22",
+"Anti-Mage":"Huskar~64|Meepo~59|Axe~53|Slardar~38|Ursa~35|Troll Warlord~34|Lone Druid~31|Legion Commander~31",
+"Arc Warden":"Broodmother~84|Meepo~74|Lycan~51|Marci~39|Batrider~37|Phantom Lancer~32|Lone Druid~30|Beastmaster~30",
+"Axe":"Lifestealer~34|Timbersaw~26|Tiny~25|Spectre~22|Lone Druid~22|Abaddon~22|Venomancer~21|Ember Spirit~20",
+"Bane":"Meepo~50|Naga Siren~31|Ursa~27|Chaos Knight~26|Beastmaster~26|Visage~26|Chen~24|Lycan~22",
+"Batrider":"Slark~26|Weaver~24|Viper~24|Drow Ranger~22|Windranger~20|Venomancer~20|Terrorblade~19|Ogre Magi~18",
+"Beastmaster":"Medusa~50|Sand King~33|Bristleback~30|Warlock~29|Rubick~24|Earthshaker~23|Jakiro~23|Shadow Fiend~20",
+"Bloodseeker":"Medusa~54|Nature's Prophet~31|Bristleback~25|Sniper~24|Ogre Magi~24|Naga Siren~23|Chen~22|Witch Doctor~22",
+"Bounty Hunter":"Meepo~40|Naga Siren~38|Marci~29|Beastmaster~28|Slark~27|Chaos Knight~25|Abaddon~23|Shadow Shaman~22",
+"Brewmaster":"Phantom Lancer~35|Puck~34|Weaver~32|Anti-Mage~30|Slark~27|Broodmother~26|Legion Commander~25|Storm Spirit~24",
+"Bristleback":"Slark~69|Viper~44|Legion Commander~38|Primal Beast~33|Anti-Mage~28|Hoodwink~27|Nyx Assassin~26|Necrophos~26",
+"Broodmother":"Earthshaker~96|Sand King~54|Spirit Breaker~52|Necrophos~45|Axe~37|Beastmaster~37|Crystal Maiden~37|Jakiro~32",
+"Centaur Warrunner":"Lifestealer~48|Chen~27|Ember Spirit~24|Tinker~22|Dazzle~22|Templar Assassin~21|Undying~19|Huskar~18",
+"Chaos Knight":"Naga Siren~62|Phantom Lancer~50|Sand King~50|Timbersaw~47|Underlord~33|Tidehunter~31|Meepo~29|Warlock~27",
+"Chen":"Windranger~29|Earthshaker~25|Anti-Mage~22|Enigma~21|Marci~19|Nature's Prophet~19|Phantom Lancer~18",
+"Clinkz":"Phantom Lancer~50|Broodmother~44|Naga Siren~40|Chaos Knight~34|Arc Warden~33|Meepo~32|Wraith King~31|Bristleback~30",
+"Clockwerk":"Broodmother~28|Beastmaster~25|Phantom Lancer~22|Anti-Mage~21|Huskar~19|Outworld Destroyer~18|Queen of Pain~17|Terrorblade~16",
+"Crystal Maiden":"Rubick~26|Juggernaut~25|Enigma~22|Pudge~21|Kez~20|Puck~20|Dawnbreaker~19|Pugna~17",
+"Dark Seer":"Faceless Void~38|Sven~38|Oracle~32|Ursa~30|Lone Druid~30|Bloodseeker~28|Weaver~28|Largo~28",
+"Dark Willow":"Juggernaut~26|Elder Titan~20|Puck~19|Phantom Lancer~17|Beastmaster~17|Techies~17|Naga Siren~16|Enigma~16",
+"Dawnbreaker":"Winter Wyvern~32|Silencer~31|Morphling~26|Nyx Assassin~24|Elder Titan~24|Faceless Void~23|Dark Willow~22|Timbersaw~20",
+"Dazzle":"Ancient Apparition~35|Gyrocopter~25|Weaver~24|Monkey King~20|Batrider~20|Razor~19|Axe~19|Slark~18",
+"Death Prophet":"Terrorblade~28|Sniper~25|Medusa~24|Elder Titan~20|Drow Ranger~20|Ancient Apparition~19|Spectre~19|Keeper of the Light~17",
+"Disruptor":"Sniper~25|Bloodseeker~19|Nature's Prophet~19|Shadow Demon~18|Clinkz~18|Chen~18|Viper~16|Arc Warden~14",
+"Doom":"Arc Warden~36|Medusa~33|Lone Druid~28|Nature's Prophet~26|Terrorblade~25|Wraith King~21|Broodmother~20|Clinkz~20",
+"Dragon Knight":"Viper~46|Huskar~37|Necrophos~30|Enigma~23|Witch Doctor~21|Venomancer~20|Timbersaw~20|Slark~19",
+"Drow Ranger":"Mars~31|Spectre~23|Sniper~23|Earth Spirit~22|Centaur Warrunner~22|Zeus~19|Tiny~18|Magnus~18",
+"Earth Spirit":"Huskar~30|Tidehunter~28|Kez~24|Troll Warlord~24|Enigma~21|Batrider~21|Death Prophet~21|Abaddon~21",
+"Earthshaker":"Templar Assassin~26|Viper~22|Huskar~22|Sniper~20|Clinkz~18|Tiny~18|Alchemist~16|Timbersaw~16",
+"Elder Titan":"Visage~40|Broodmother~39|Troll Warlord~37|Brewmaster~37|Phantom Assassin~36|Alchemist~28|Beastmaster~26|Templar Assassin~24",
+"Ember Spirit":"Oracle~60|Slark~60|Huskar~47|Troll Warlord~42|Monkey King~38|Largo~34|Muerta~27|Lone Druid~26",
+"Enchantress":"Crystal Maiden~30|Batrider~25|Phantom Assassin~25|Marci~25|Pudge~24|Bristleback~21|Weaver~20|Primal Beast~19",
+"Enigma":"Bristleback~48|Rubick~48|Medusa~37|Sniper~36|Wraith King~30|Clinkz~30|Sand King~28|Phantom Assassin~26",
+"Faceless Void":"Doom~27|Lone Druid~27|Night Stalker~24|Huskar~24|Chaos Knight~20|Lion~20|Slark~20|Legion Commander~19",
+"Grimstroke":"Clinkz~26|Spectre~26|Lycan~26|Gyrocopter~25|Chen~23|Arc Warden~22|Sniper~22|Shadow Demon~21",
+"Gyrocopter":"Meepo~23|Lifestealer~17|Phantom Lancer~16|Viper~16|Venomancer~15|Sniper~13|Terrorblade~12|Spectre~11",
+"Hoodwink":"Timbersaw~19|Primal Beast~14|Spirit Breaker~13|Mars~12|Windranger~10|Beastmaster~8",
+"Huskar":"Viper~61|Ancient Apparition~52|Necrophos~38|Phantom Assassin~32|Phantom Lancer~32|Windranger~30|Terrorblade~23|Chaos Knight~21",
+"Invoker":"Puck~37|Kez~28|Void Spirit~26|Pangolier~24|Enchantress~23|Templar Assassin~20|Broodmother~20|Nature's Prophet~19",
+"Io":"Underlord~28|Ancient Apparition~26|Troll Warlord~26|Kez~21|Marci~18|Muerta~18|Monkey King~18|Sven~17",
+"Jakiro":"Rubick~28|Sniper~15|Slark~14|Juggernaut~13|Legion Commander~12|Bane~11|Pugna~10|Pangolier~10",
+"Juggernaut":"Omniknight~32|Huskar~27|Lone Druid~26|Death Prophet~24|Riki~24|Razor~24|Morphling~24|Night Stalker~24",
+"Keeper of the Light":"Storm Spirit~28|Anti-Mage~28|Slardar~27|Batrider~24|Faceless Void~24|Weaver~23|Queen of Pain~22|Meepo~22",
+"Kez":"Medusa~23|Muerta~21|Legion Commander~21|Necrophos~21|Drow Ranger~19|Tidehunter~18|Shadow Shaman~17|Vengeful Spirit~17",
+"Kunkka":"Lifestealer~36|Timbersaw~26|Juggernaut~22|Phoenix~21|Faceless Void~21|Huskar~18|Necrophos~17|Tinker~17",
+"Largo":"Faceless Void~47|Marci~34|Huskar~31|Anti-Mage~30|Bloodseeker~23|Puck~20|Morphling~19|Weaver~19",
+"Legion Commander":"Winter Wyvern~40|Shadow Demon~36|Omniknight~33|Tusk~27|Dawnbreaker~27|Chaos Knight~24|Timbersaw~22|Tiny~22",
+"Leshrac":"Undying~33|Medusa~32|Clinkz~26|Bristleback~25|Muerta~23|Outworld Destroyer~23|Sniper~20|Silencer~20",
+"Lich":"Bristleback~22|Lycan~21|Shadow Demon~20|Pugna~19|Anti-Mage~18|Pangolier~18|Weaver~18|Enigma~15",
+"Lifestealer":"Enigma~38|Slardar~37|Doom~36|Razor~36|Broodmother~35|Nature's Prophet~33|Morphling~33|Bane~30",
+"Lina":"Templar Assassin~17|Axe~16|Clinkz~14|Drow Ranger~11|Windranger~10|Shadow Demon~10|Puck~10|Weaver~9",
+"Lion":"Tiny~21|Templar Assassin~17|Rubick~16|Beastmaster~15|Shadow Demon~15|Gyrocopter~15|Nature's Prophet~14|Drow Ranger~13",
+"Lone Druid":"Underlord~41|Slardar~32|Batrider~32|Nature's Prophet~22|Beastmaster~21|Dawnbreaker~21|Tusk~20|Chaos Knight~18",
+"Luna":"Drow Ranger~21|Bristleback~18|Kunkka~18|Nyx Assassin~16|Medusa~15|Zeus~15|Elder Titan~14|Underlord~14",
+"Lycan":"Earthshaker~42|Naga Siren~38|Phantom Lancer~37|Necrophos~31|Weaver~31|Bristleback~28|Timbersaw~27|Pangolier~26",
+"Magnus":"Ember Spirit~22|Earthshaker~19|Clockwerk~19|Enigma~18|Puck~16|Faceless Void~16|Wraith King~15|Juggernaut~15",
+"Marci":"Troll Warlord~44|Winter Wyvern~24|Magnus~24|Kunkka~22|Batrider~22|Techies~21|Windranger~19|Phantom Assassin~19",
+"Mars":"Phantom Lancer~30|Lifestealer~29|Chen~24|Queen of Pain~23|Faceless Void~22|Void Spirit~21|Riki~20|Storm Spirit~18",
+"Medusa":"Anti-Mage~111|Nyx Assassin~64|Sniper~58|Centaur Warrunner~54|Dark Seer~51|Slark~46|Monkey King~46|Alchemist~40",
+"Meepo":"Winter Wyvern~85|Earthshaker~84|Elder Titan~84|Underlord~78|Shadow Fiend~51|Techies~49|Sven~49|Jakiro~48",
+"Mirana":"Meepo~27|Puck~27|Naga Siren~21|Treant Protector~20|Chen~18|Bounty Hunter~17|Lone Druid~16|Phantom Lancer~15",
+"Monkey King":"Muerta~37|Techies~24|Venomancer~21|Zeus~20|Batrider~18|Terrorblade~18|Windranger~16|Ancient Apparition~15",
+"Morphling":"Nyx Assassin~41|Axe~37|Anti-Mage~34|Outworld Destroyer~32|Lion~31|Doom~29|Bane~29|Night Stalker~24",
+"Muerta":"Spectre~31|Axe~28|Wraith King~27|Bane~26|Lina~25|Nyx Assassin~24|Beastmaster~24|Invoker~23",
+"Naga Siren":"Sand King~57|Timbersaw~56|Underlord~52|Axe~51|Tidehunter~47|Luna~42|Sven~38|Earthshaker~38",
+"Nature's Prophet":"Dawnbreaker~22|Phantom Assassin~21|Templar Assassin~18|Shadow Fiend~13|Kez~12|Spectre~11|Terrorblade~10|Broodmother~10",
+"Necrophos":"Muerta~51|Ancient Apparition~47|Keeper of the Light~40|Skywrath Mage~37|Leshrac~37|Tinker~34|Medusa~34|Doom~33",
+"Night Stalker":"Terrorblade~43|Naga Siren~43|Lycan~42|Troll Warlord~42|Broodmother~40|Meepo~35|Huskar~34|Beastmaster~32",
+"Nyx Assassin":"Beastmaster~34|Meepo~28|Templar Assassin~27|Elder Titan~27|Juggernaut~26|Ember Spirit~21|Ursa~20|Night Stalker~20",
+"Ogre Magi":"Naga Siren~36|Phantom Lancer~34|Anti-Mage~28|Meepo~24|Chaos Knight~23|Beastmaster~20|Chen~18|Broodmother~16",
+"Omniknight":"Muerta~37|Beastmaster~37|Huskar~28|Drow Ranger~24|Warlock~24|Razor~23|Venomancer~22|Necrophos~22",
+"Oracle":"Razor~36|Chen~34|Marci~33|Lycan~32|Anti-Mage~32|Elder Titan~29|Undying~28|Shadow Demon~25",
+"Outworld Destroyer":"Nyx Assassin~55|Beastmaster~45|Lycan~38|Phantom Lancer~37|Naga Siren~35|Broodmother~35|Chaos Knight~33|Chen~32",
+"Pangolier":"Huskar~52|Bloodseeker~51|Monkey King~50|Clinkz~40|Meepo~30|Terrorblade~28|Grimstroke~26|Dragon Knight~25",
+"Phantom Assassin":"Axe~35|Bristleback~30|Pudge~30|Templar Assassin~27|Pangolier~24|Troll Warlord~21|Ogre Magi~19|Wraith King~18",
+"Phantom Lancer":"Underlord~60|Leshrac~57|Tidehunter~57|Axe~55|Sand King~51|Timbersaw~50|Warlock~46|Sven~45",
+"Phoenix":"Bloodseeker~36|Juggernaut~34|Marci~33|Morphling~33|Lina~32|Huskar~28|Skywrath Mage~28|Chen~27",
+"Primal Beast":"Faceless Void~31|Lone Druid~29|Gyrocopter~26|Underlord~25|Lion~24|Sven~24|Queen of Pain~22|Grimstroke~22",
+"Puck":"Night Stalker~53|Broodmother~50|Riki~40|Huskar~32|Medusa~29|Dragon Knight~29|Muerta~28|Tiny~28",
+"Pudge":"Timbersaw~37|Ursa~28|Pangolier~27|Kez~27|Monkey King~26|Terrorblade~26|Weaver~25|Beastmaster~22",
+"Pugna":"Batrider~31|Anti-Mage~29|Huskar~29|Primal Beast~28|Pudge~24|Nyx Assassin~21|Night Stalker~20|Marci~19",
+"Queen of Pain":"Medusa~35|Puck~32|Huskar~28|Ember Spirit~25|Riki~18|Faceless Void~17|Pugna~17|Witch Doctor~16",
+"Razor":"Morphling~38|Anti-Mage~35|Terrorblade~31|Muerta~23|Nature's Prophet~23|Storm Spirit~23|Queen of Pain~22|Primal Beast~22",
+"Riki":"Naga Siren~44|Meepo~41|Broodmother~36|Underlord~35|Bloodseeker~32|Drow Ranger~26|Chen~25|Bristleback~23",
+"Ringmaster":"Bloodseeker~28|Bristleback~18|Phantom Assassin~17|Pangolier~17|Shadow Demon~17|Batrider~16|Dazzle~14|Oracle~14",
+"Rubick":"Huskar~21|Templar Assassin~20|Nature's Prophet~20|Elder Titan~20|Shadow Demon~18|Clinkz~18|Tinker~16|Storm Spirit~16",
+"Sand King":"Zeus~42|Lifestealer~33|Centaur Warrunner~30|Bristleback~26|Phoenix~24|Faceless Void~22|Queen of Pain~22|Timbersaw~19",
+"Shadow Demon":"Timbersaw~38|Lycan~34|Riki~27|Anti-Mage~25|Naga Siren~25|Weaver~22|Chaos Knight~22|Puck~20",
+"Shadow Fiend":"Medusa~20|Mars~19|Shadow Demon~18|Terrorblade~15|Templar Assassin~14|Dark Seer~13|Drow Ranger~11|Gyrocopter~10",
+"Shadow Shaman":"Phantom Lancer~32|Meepo~30|Spectre~26|Naga Siren~22|Terrorblade~22|Medusa~22|Dark Seer~21|Omniknight~19",
+"Silencer":"Phantom Lancer~35|Lycan~33|Arc Warden~31|Broodmother~26|Tidehunter~23|Abaddon~23|Razor~22|Naga Siren~19",
+"Skywrath Mage":"Lycan~31|Templar Assassin~23|Medusa~22|Bristleback~20|Lone Druid~20|Nature's Prophet~17|Tidehunter~16|Shadow Demon~16",
+"Slardar":"Terrorblade~43|Phantom Lancer~33|Juggernaut~28|Luna~27|Naga Siren~27|Tidehunter~25|Muerta~24|Chaos Knight~22",
+"Slark":"Grimstroke~48|Disruptor~44|Techies~42|Mars~38|Night Stalker~34|Tiny~30|Outworld Destroyer~27|Invoker~26",
+"Snapfire":"Lifestealer~16|Ursa~15|Clinkz~14|Windranger~13|Silencer~13|Batrider~13|Puck~12|Juggernaut~12",
+"Sniper":"Storm Spirit~44|Morphling~34|Spectre~34|Centaur Warrunner~26|Pudge~25|Earth Spirit~23|Mars~22|Void Spirit~22",
+"Spectre":"Undying~52|Meepo~44|Lycan~40|Io~39|Primal Beast~39|Chen~37|Enchantress~36|Naga Siren~32",
+"Spirit Breaker":"Underlord~46|Tiny~31|Clockwerk~28|Mars~25|Timbersaw~24|Largo~22|Necrophos~22|Jakiro~22",
+"Storm Spirit":"Anti-Mage~36|Riki~33|Meepo~26|Night Stalker~26|Huskar~25|Shadow Shaman~25|Troll Warlord~24|Lion~23",
+"Sven":"Templar Assassin~47|Troll Warlord~30|Batrider~26|Lifestealer~23|Shadow Shaman~22|Timbersaw~22|Clinkz~22|Enchantress~22",
+"Techies":"Templar Assassin~36|Lifestealer~33|Bristleback~29|Tinker~29|Medusa~28|Nyx Assassin~18|Leshrac~18|Juggernaut~17",
+"Templar Assassin":"Phoenix~37|Spectre~37|Phantom Lancer~33|Terrorblade~31|Dragon Knight~28|Dark Seer~26|Sand King~25|Batrider~24",
+"Terrorblade":"Axe~48|Dark Seer~44|Phantom Lancer~41|Sand King~36|Warlock~33|Phoenix~31|Winter Wyvern~30|Brewmaster~28",
+"Tidehunter":"Elder Titan~49|Chen~38|Pugna~35|Timbersaw~34|Razor~33|Muerta~32|Leshrac~32|Juggernaut~31",
+"Timbersaw":"Outworld Destroyer~34|Silencer~33|Chen~33|Pugna~33|Grimstroke~31|Tinker~31|Faceless Void~30|Doom~30",
+"Tinker":"Anti-Mage~39|Chen~27|Silencer~21|Batrider~21|Shadow Shaman~20|Visage~20|Chaos Knight~20|Pudge~19",
+"Tiny":"Lifestealer~34|Necrophos~25|Undying~19|Timbersaw~19|Underlord~18|Ogre Magi~14|Viper~14|Venomancer~14",
+"Treant Protector":"Phoenix~34|Batrider~25|Necrophos~23|Brewmaster~20|Ursa~14|Venomancer~14|Alchemist~14|Death Prophet~13",
+"Troll Warlord":"Muerta~38|Slark~36|Axe~35|Razor~35|Winter Wyvern~26|Ogre Magi~24|Outworld Destroyer~23|Ancient Apparition~22",
+"Tusk":"Underlord~27|Timbersaw~25|Terrorblade~25|Batrider~24|Ember Spirit~22|Dark Seer~19|Winter Wyvern~19|Phoenix~14",
+"Underlord":"Rubick~82|Lifestealer~41|Juggernaut~39|Morphling~24|Tinker~19|Earth Spirit~19|Doom~18|Oracle~15",
+"Undying":"Medusa~47|Luna~32|Pangolier~24|Marci~23|Monkey King~22|Meepo~21|Morphling~19|Timbersaw~19",
+"Ursa":"Wraith King~34|Weaver~30|Spectre~28|Slardar~25|Ogre Magi~25|Phantom Lancer~25|Templar Assassin~23|Shadow Shaman~23",
+"Vengeful Spirit":"Phantom Lancer~34|Underlord~25|Terrorblade~21|Winter Wyvern~21|Dark Seer~18|Dark Willow~17|Muerta~17|Sand King~17",
+"Venomancer":"Phantom Lancer~38|Slark~28|Storm Spirit~25|Legion Commander~22|Weaver~19|Morphling~18|Juggernaut~18|Pudge~15",
+"Viper":"Phantom Lancer~50|Arc Warden~36|Terrorblade~34|Naga Siren~33|Morphling~33|Chaos Knight~27|Dark Seer~26|Weaver~25",
+"Visage":"Bristleback~39|Riki~33|Phantom Lancer~31|Gyrocopter~30|Enchantress~29|Batrider~28|Venomancer~27|Sand King~26",
+"Void Spirit":"Meepo~55|Broodmother~28|Ember Spirit~28|Huskar~28|Night Stalker~27|Troll Warlord~26|Oracle~24|Lycan~23",
+"Warlock":"Slark~23|Sand King~22|Weaver~22|Largo~21|Bristleback~19|Sven~18|Tidehunter~18|Phantom Assassin~17",
+"Weaver":"Faceless Void~42|Phantom Lancer~30|Rubick~25|Naga Siren~23|Morphling~23|Drow Ranger~22|Shadow Shaman~20|Riki~19",
+"Windranger":"Centaur Warrunner~22|Shadow Demon~22|Axe~20|Mars~20|Nature's Prophet~18|Faceless Void~17|Queen of Pain~17|Puck~14",
+"Winter Wyvern":"Timbersaw~28|Sand King~28|Necrophos~28|Anti-Mage~28|Pugna~26|Leshrac~26|Ancient Apparition~25|Tinker~22",
+"Witch Doctor":"Medusa~34|Broodmother~20|Faceless Void~20|Pangolier~18|Muerta~18|Riki~17|Morphling~17|Nature's Prophet~16",
+"Wraith King":"Phantom Lancer~48|Warlock~46|Underlord~46|Naga Siren~41|Alchemist~39|Anti-Mage~38|Undying~36|Necrophos~36",
+"Zeus":"Meepo~26|Lycan~24|Storm Spirit~24|Enchantress~22|Chen~22|Huskar~22|Broodmother~19|Chaos Knight~17"};
+
+const CTR={};
+function ctr(name){
+  if(CTR[name]) return CTR[name];
+  const m=new Map(); (DBC[name]||'').split('|').forEach(x=>{ if(!x) return; const i=x.lastIndexOf('~'); m.set(x.slice(0,i),+x.slice(i+1)/10); });
+  return CTR[name]=m;
+}
+/* ұсыныс: Dotabuff (үлкен іріктеме) + OpenDota (тірі, аз іріктеме — әлсіретілген) + «өзін жеңетін қарсылас» айыбы */
 function recommend(){
   const used=new Set([...S.mine,...S.foe]);
-  const foes=S.foe.filter(id=>MU[id]);
-  if(!foes.length) return null;
+  const fs=S.foe.map(id=>BYID[id]).filter(Boolean);
+  if(!fs.length) return null;
   const out=[];
   for(const h of HEROES){
     if(used.has(h.id)) continue;
-    let sum=0,n=0,det=[];
-    for(const f of foes){
-      const r=MU[f][h.id];
-      if(!r||r.games_played<50) continue;
-      const adv=(1-r.wins/r.games_played)-h.base;
-      sum+=adv; n++; det.push({id:f,adv});
+    const hn=h.localized_name, mine=ctr(hn);
+    let sum=0; const det=[];
+    for(const f of fs){
+      const st=ctr(f.localized_name).get(hn)||0;   // h қарсыласты жеңеді
+      const back=mine.get(f.localized_name)||0;      // қарсылас h-ты жеңеді
+      let live=0; const r=MU[f.id]&&MU[f.id][h.id];
+      if(r&&r.games_played>=20) live=((1-r.wins/r.games_played)-h.base)*100*r.games_played/(r.games_played+120);
+      const c=(st-back)*.7+live*.3;
+      sum+=c; det.push({f,c,back});
     }
-    if(!n) continue;
-    det.sort((a,b)=>b.adv-a.adv);
-    out.push({h,score:sum/n*100,det});
+    det.sort((x,y)=>y.c-x.c);
+    out.push({h,score:sum/fs.length,det});
   }
   return out.sort((a,b)=>b.score-a.score);
 }
+let recAll=false;
+document.getElementById('recMore').onclick=()=>{ recAll=!recAll; renderRecs(); };
 function renderRecs(){
-  const box=document.getElementById('recs'), hint=document.getElementById('recHint');
+  const box=document.getElementById('recs'), hint=document.getElementById('recHint'), more=document.getElementById('recMore');
   chipRow(document.getElementById('filters'),filt,k=>{filt=k;renderRecs()});
   const list=recommend();
   if(!list){
-    hint.textContent='';
-    box.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.</div>';
+    hint.textContent=''; more.style.display='none';
+    box.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>Оң жақтағы «Бос» орынға басып, қарсылас алған геройды қос. Әр герой қосылған сайын ұсыныс дәлдене береді.</div>';
     return;
   }
-  const f=list.filter(x=>passFilter(x.h,filt)).slice(0,25);
+  const all=list.filter(x=>passFilter(x.h,filt));
+  const f=all.slice(0,recAll?25:8);
   hint.textContent=S.foe.length+' қарсыласқа қарсы';
+  more.style.display=all.length>8?'':'none'; more.textContent=recAll?'Азырақ көрсету':'Тағы көрсету';
   if(!f.length){ box.innerHTML='<div class="empty"><b>Бұл сүзгіде дерек жоқ</b>Басқа сүзгіні таңда.</div>'; return; }
   const max=Math.max(...f.map(x=>Math.abs(x.score)),3);
   box.innerHTML='';
   f.forEach(x=>{
     const b=document.createElement('button');
     b.className='rec'+(x.score<0?' bad':'');
-    const top=x.det.slice(0,2).map(d=>BYID[d.id].localized_name+' '+(d.adv>0?'+':'')+(d.adv*100).toFixed(1)+'%').join(' · ');
+    const good=x.det.filter(d=>d.c>=0.8).slice(0,2).map(d=>d.f.localized_name+' +'+d.c.toFixed(1)).join(' · ');
+    const warn=x.det.filter(d=>d.back>=1).slice(0,1).map(d=>' · ⚠ '+d.f.localized_name).join('');
+    const pos=posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ');
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
-      <div class="rl"><b style="color:var(--gold);font-weight:600">${posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ')}</b>${top?' — '+top:''}</div>
+      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${warn}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
-      <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div><span class="add" aria-hidden="true">+</span>`;
+      <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
     box.appendChild(b);
   });
@@ -1466,23 +1579,85 @@ function renderRecs(){
   });
 }
 
-/* ---------- герой таңдағыш ---------- */
-function setPickSide(side){
-  shSide=side;
-  const mine=side==='mine', arr=mine?S.mine:S.foe;
-  const sh=document.getElementById('sheet');
-  sh.classList.remove('us','them'); sh.classList.add(mine?'us':'them');
-  document.querySelectorAll('#shSeg button').forEach(b=>b.classList.toggle('on',b.dataset.side===side));
-  document.getElementById('sgUs').textContent=S.mine.length+'/5';
-  document.getElementById('sgThem').textContent=S.foe.length+'/5';
-  document.getElementById('shCnt').textContent=arr.length+'/5';
-  document.getElementById('shSub').textContent = mine?'Геройды біздің командаға қосады':'Геройды қарсыластарға қосады';
+/* ---------- бір зат — көп геройға / команда заттары ---------- */
+const heroBadges=(list,max)=>{
+  max=max||4; if(!list.length) return '';
+  return '<span class="fx">'+list.slice(0,max).map(f=>`<img class="fa" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">`).join('')
+    +(list.length>max?`<b>+${list.length-max}</b>`:'')+'</span>';
+};
+const itemIcon=n=>`<img src="${IMG(ikey(n))}" alt="" loading="lazy" onerror="this.style.display='none'">`;
+function topItems(){
+  const fs=foeHeroes(); if(!fs.length) return [];
+  const names=new Set();
+  THREATS.forEach(t=>t.items.forEach(n=>names.add(n)));
+  Object.values(HCOUNTER).forEach(c=>c.i.forEach(n=>names.add(n)));
+  Object.values(IREACT).forEach(r=>(r.items||[]).forEach(n=>names.add(n)));
+  const res=[];
+  names.forEach(n=>{
+    const who=foesOf(n); if(!who.length) return;
+    const why=[]; THREATS.forEach(t=>{ if(t.items.includes(n)&&who.some(f=>has(t.list,f))) why.push(t.ttl); });
+    if(!why.length){ const c=HCOUNTER[key(who[0])]||HCOUNTER[slug(who[0].localized_name)]; if(c&&c.w) why.push(c.w); }
+    res.push({n,who,why:why.slice(0,2)});
+  });
+  return res.sort((a,b)=>b.who.length-a.who.length||b.why.length-a.why.length).slice(0,3);
 }
+function teamItems(){
+  const fs=foeHeroes(); if(!fs.length) return [];
+  const me=S.mine.map(id=>BYID[id]).filter(Boolean), m=new Map();
+  const add=(n,w,why,fit)=>{
+    const e=m.get(n)||{n,w:0,why:new Set(),fit:new Map(),hot:0}; e.w+=w; e.why.add(why); fit.forEach(h=>e.fit.set(h.id,h)); m.set(n,e); return e;
+  };
+  THREATS.forEach(t=>{
+    const who=fs.filter(f=>has(t.list,f)); if(!who.length) return;
+    t.items.forEach((n,i)=>{
+      const fit=me.length?me.filter(h=>fits(n,h)):[]; if(me.length&&!fit.length) return;
+      add(n,who.length*(1-i*.08),t.ttl,fit);
+    });
+  });
+  fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{
+    const r=IREACT[it]; if(!r) return;
+    (r.items||[]).forEach(n=>{
+      const fit=me.length?me.filter(h=>fits(n,h)):[]; if(me.length&&!fit.length) return;
+      add(n,2.5,'→ '+it,fit).hot=1;
+    });
+  }));
+  const own=h=>(S.fi[h.id]||[]);
+  return [...m.values()].filter(e=>!(e.fit.size&&[...e.fit.values()].every(h=>own(h).includes(e.n))))
+    .sort((a,b)=>b.w-a.w).slice(0,4);
+}
+function renderPickItems(){
+  const t=document.getElementById('itTop'), tm=document.getElementById('itTeam');
+  const fs=foeHeroes();
+  if(!fs.length){
+    document.getElementById('itHint').textContent=''; document.getElementById('tmHint').textContent='';
+    t.innerHTML='<div class="empty"><b>Қарсылас бос</b>Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.</div>';
+    tm.innerHTML=''; return;
+  }
+  const tops=topItems();
+  document.getElementById('itHint').textContent=fs.length+' қарсыласқа қарсы';
+  t.innerHTML=tops.length?`<div class="card"><div class="plist">${tops.map(x=>`<div class="pl">${itemIcon(x.n)}
+    <div><div class="pn">${x.n} <span class="mc">${x.who.length}/${fs.length}</span>${heroBadges(x.who,5)}</div>
+    <div class="pw">${x.why.join(' · ')}</div></div></div>`).join('')}</div></div>`:'<div class="empty">Бұл құрамға ортақ зат табылмады.</div>';
+  const team=teamItems(), me=S.mine.map(id=>BYID[id]).filter(Boolean);
+  document.getElementById('tmHint').textContent=me.length?me.length+'/5 команда':'команда бос';
+  tm.innerHTML=team.length?`<div class="card"><div class="plist">${team.map(e=>{
+    const fit=[...e.fit.values()];
+    const who=!me.length?'':fit.length===me.length&&me.length>1?'<span class="mc">бүкіл команда</span>':heroBadges(fit,4);
+    return `<div class="pl${e.hot?' hot':''}">${itemIcon(e.n)}<div><div class="pn">${e.n}${who}</div>
+      <div class="pw">${[...e.why].slice(0,2).join(' · ')}</div></div></div>`;}).join('')}</div></div>`
+    :'<div class="empty">Қосымша зат қажет емес — әдеттегі жинақпен жүре бер.</div>';
+}
+
+/* ---------- герой таңдағыш ---------- */
 function openPicker(side){
-  shFilt='all';
+  shSide=side; shFilt='all';
+  const mine=side==='mine', arr=mine?S.mine:S.foe;
+  document.getElementById('shTitle').textContent = mine?'Біздің геройды қосу':'Қарсылас геройын қосу';
+  document.getElementById('shSub').textContent = (mine?'Біздің команда':'Қарсылас')+' · портреттен не іздеуден таңда';
+  document.getElementById('shCnt').textContent = arr.length+'/5';
   document.getElementById('shSrch').value='';
   const sh=document.getElementById('sheet');
-  setPickSide(side);
+  sh.classList.remove('us','them'); sh.classList.add(mine?'us':'them');
   sh.querySelector('.box').style.animation='none'; void sh.offsetWidth; sh.querySelector('.box').style.animation='';
   document.getElementById('shGrid').scrollTop=0;
   sh.classList.add('on');
@@ -1490,12 +1665,6 @@ function openPicker(side){
   history.pushState({d2:'sheet',sheet:1},'');
   renderGrid();
 }
-document.querySelectorAll('#shSeg button').forEach(b=>b.onclick=()=>{
-  if(b.dataset.side===shSide) return;
-  setPickSide(b.dataset.side); document.getElementById('shGrid').scrollTop=0; renderGrid(); buzz(8);
-});
-document.getElementById('addUs').onclick=()=>{ if(S.mine.length>=5) toast('Команда толы'); else openPicker('mine'); };
-document.getElementById('addThem').onclick=()=>{ if(S.foe.length>=5) toast('Бұл жақ толы'); else openPicker('foe'); };
 function closePicker(fromPop){
   document.getElementById('sheet').classList.remove('on');
   document.body.style.overflow='';
@@ -1556,14 +1725,10 @@ async function pick(h){
   save(); closePicker(); board(); buzz(14);
   toast(h.localized_name+(shSide==='mine'?' — біздің команда':' — қарсылас'));
   if(shSide==='foe'){
-    document.getElementById('recs').innerHTML=skel(5);
-    try{ await loadMU(h.id); }catch(e){
-      document.getElementById('recs').innerHTML='<div class="empty"><b>Дерек жүктелмеді</b>Интернетті тексеріп, геройды қайта қос.</div>'; return;
-    }
-    renderRecs();
-    // контрпик бірден көрінуі үшін: тізім экраннан төмен қалса — жоғары көтереміз
+    // контрпик бірден көрінеді (Dotabuff дерегі қолда), тірі дерек жүктелгенде қайта есептеледі
     const rs=document.getElementById('recsec').getBoundingClientRect();
     if(rs.top>innerHeight*0.62) window.scrollBy({top:rs.top-innerHeight*0.38,behavior:RM?'auto':'smooth'});
+    loadMU(h.id).then(()=>{ if(S.foe.includes(h.id)) renderRecs(); }).catch(()=>{});
   }
 }
 
