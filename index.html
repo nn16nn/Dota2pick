@@ -42,20 +42,25 @@ input{font-family:inherit}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* draft board */
-.board{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
-.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 10px 12px}
+.board{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;position:relative}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:9px 9px 10px}
 .side.us{border-top:2px solid var(--rad)}
 .side.them{border-top:2px solid var(--dire)}
-.side h2{font-size:12px;letter-spacing:.14em;margin-bottom:9px}
+.side h2{display:flex;align-items:baseline;justify-content:space-between;gap:6px;font-size:12px;letter-spacing:.07em;
+  margin-bottom:8px;white-space:nowrap}
+.side h2 span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.side h2 em{font-style:normal;font-family:var(--disp);font-size:12px;letter-spacing:.06em;opacity:.7}
 .side.us h2{color:var(--rad)} .side.them h2{color:var(--dire)}
-.slot{display:flex;align-items:center;gap:8px;width:100%;padding:5px;border-radius:10px;
-  background:#141A27;border:1px dashed #2A3348;margin-bottom:6px;min-height:44px;text-align:left}
+.slot{display:flex;align-items:center;gap:8px;width:100%;padding:4px 5px;border-radius:10px;
+  background:#141A27;border:1px dashed #2A3348;margin-bottom:5px;min-height:36px;text-align:left}
 .slot:last-child{margin-bottom:0}
-.slot.full{border-style:solid;border-color:var(--line);background:var(--panel2)}
-.slot .por{width:44px;height:25px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
-.slot .plus{width:44px;height:25px;display:grid;place-items:center;color:#3E4A63;font-size:18px;line-height:1}
-.slot .nm{font-size:12.5px;font-weight:600;line-height:1.15;overflow:hidden}
-.slot .x{margin-left:auto;color:var(--dim);font-size:15px;padding:0 4px}
+.slot.full{border-style:solid;border-color:var(--line);background:var(--panel2);min-height:40px}
+.slot .por{width:46px;height:26px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.slot .plus{width:46px;height:20px;display:grid;place-items:center;color:#3E4A63;font-size:18px;line-height:1}
+.slot .nm{font-size:12px;font-weight:600;line-height:1.15;overflow:hidden;min-width:0;flex:1}
+.slot .x{margin-left:auto;margin-right:-3px;display:grid;place-items:center;width:30px;height:30px;
+  color:var(--dim);font-size:14px;border-radius:8px;flex:0 0 auto}
+.slot .x:active{background:#ffffff14;color:var(--txt)}
 
 .seam{position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,#0000,var(--gold),#0000);opacity:.5}
 
@@ -73,7 +78,7 @@ input{font-family:inherit}
 .rec{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--panel);
   border:1px solid var(--line);border-left:3px solid var(--rad);border-radius:11px;margin-bottom:7px;width:100%;text-align:left}
 .rec.bad{border-left-color:var(--dire)}
-.rec .por{width:56px;height:32px;border-radius:5px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
+.rec .por{width:62px;height:35px;border-radius:5px;object-fit:cover;flex:0 0 auto;background:#0B0F18}
 .rec .info{min-width:0;flex:1}
 .rec .nm{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rec .rl{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -83,6 +88,8 @@ input{font-family:inherit}
 .rec .val{font-family:var(--disp);font-size:19px;color:var(--rad);flex:0 0 auto;font-variant-numeric:tabular-nums}
 .rec.bad .val{color:var(--dire)}
 .rec .val small{font-size:11px;opacity:.7}
+.rec .add{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:#4FB4772a;color:#8FE0B0;font-size:18px;line-height:1;font-weight:600}
 
 .empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--r);padding:22px 16px;text-align:center;color:var(--dim);font-size:13.5px}
 .empty b{display:block;color:var(--txt);font-family:var(--disp);font-size:15px;letter-spacing:.06em;margin-bottom:5px;text-transform:uppercase}
@@ -111,37 +118,21 @@ input{font-family:inherit}
 .mbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;display:flex;margin-top:8px}
 .mbar i{display:block;height:100%}
 
-.photo-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 4px}
-.pbtn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 8px;border-radius:12px;
-  background:linear-gradient(180deg,#F0C14F,#E3B23C);color:#171203;font-weight:700;font-size:13.5px;
-  border:1px solid #E3B23C;box-shadow:0 6px 18px -8px #E3B23C99}
-.pbtn.alt{background:var(--panel);color:var(--txt);border-color:var(--line);box-shadow:none}
-.pbtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.keyst{margin-left:auto;font-size:12px;color:var(--dim);align-self:center}
-.keyst.ok{color:var(--rad)}
-#psheet .box{background:var(--void)}
-.pbody{flex:1;overflow-y:auto;padding:12px 14px 16px;-webkit-overflow-scrolling:touch}
-.pfoot{flex:0 0 auto;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:var(--panel);
-  border-top:1px solid var(--line)}
-.pfoot .btn{margin-bottom:8px}.pfoot .btn:last-child{margin-bottom:0}
-.pprev{width:100%;max-height:34vh;object-fit:contain;border-radius:12px;background:#0B0F18;border:1px solid var(--line);display:block}
-.pst{display:flex;align-items:center;gap:10px;margin:12px 2px;font-size:13.5px;color:var(--dim)}
-.pst i{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold);animation:spin .8s linear infinite;flex:0 0 auto}
-@keyframes spin{to{transform:rotate(360deg)}}
-.pcol{margin-top:12px}
-.pcol h4{font-family:var(--disp);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 7px;display:flex;align-items:center;gap:8px}
-.pcol.us h4{color:var(--rad)}.pcol.them h4{color:var(--dire)}
-.pcol h4 small{font-family:var(--body);font-size:11px;letter-spacing:0;color:var(--dim);text-transform:none}
-.ph{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px 10px 5px 5px;margin-bottom:6px}
-.pcol.us .ph{border-left:3px solid var(--rad)}.pcol.them .ph{border-left:3px solid var(--dire)}
-.ph img{width:58px;height:33px;object-fit:cover;border-radius:6px;background:#0B0F18;flex:0 0 auto}
-.ph b{font-size:13.5px;font-weight:600;flex:1;min-width:0}
-.ph em{font-style:normal;font-size:11px;color:var(--dim)}
-.ph .rm{color:var(--dim);font-size:18px;line-height:1;padding:4px 6px}
-.perr{background:#2A1614;border:1px solid #5A2A24;color:#F0A89F;border-radius:10px;padding:11px 12px;font-size:13px;line-height:1.5;margin-top:10px}
-.pits{display:inline-flex;gap:3px;margin-top:4px;flex-wrap:wrap}
-.pits img{width:27px;height:20px;border-radius:3px;object-fit:cover;background:#0B0F18}
-.pmiss{font-size:12px;color:var(--dim);margin:8px 2px 0;line-height:1.5}
+.addrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0}
+.addb{display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;border-radius:12px;
+  font-weight:700;font-size:14px;border:1px solid;transition:transform .12s ease,opacity .18s}
+.addb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;flex:0 0 auto}
+.addb.us{color:#8FE0B0;background:#4FB47722;border-color:#4FB47770}
+.addb.them{color:#F4A094;background:#D9584A22;border-color:#D9584A70}
+.addb:disabled{opacity:.38}
+.addb:active{transform:scale(.97)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 14px 0;padding:4px;
+  background:var(--panel);border:1px solid var(--line);border-radius:13px}
+.seg button{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 6px;
+  border-radius:10px;font-weight:700;font-size:13.5px;color:var(--dim);transition:background .18s,color .18s}
+.seg button b{font-family:var(--disp);font-size:12px;letter-spacing:.06em;opacity:.8;font-weight:600}
+.seg button.on.us{background:#4FB47726;color:#8FE0B0;box-shadow:inset 0 0 0 1px #4FB47790}
+.seg button.on.them{background:#D9584A26;color:#F4A094;box-shadow:inset 0 0 0 1px #D9584A90}
 .gsep{grid-column:1/-1;font-family:var(--disp);font-size:11.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gold);padding:12px 2px 3px;border-top:1px solid var(--line);margin-top:6px}
 .lrow{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
@@ -180,15 +171,15 @@ input{font-family:inherit}
   padding:11px 12px;color:var(--txt);font-size:15px;width:calc(100% - 28px)}
 .srch:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #E3B23C1f}
 .grid{flex:1;overflow-y:auto;padding:10px 14px calc(20px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
   align-content:start;grid-auto-rows:max-content}
 .hb{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;
   overflow:hidden;text-align:left;position:relative;cursor:pointer;
   -webkit-user-select:none;user-select:none}
-.hb img{width:100%;height:auto;min-height:74px;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
+.hb img{width:100%;height:auto;min-height:56px;aspect-ratio:16/9;object-fit:cover;display:block;background:#0B0F18}
 .hb .hn{display:block;width:100%;box-sizing:border-box;color:#E9EDF5;font-family:var(--body);
-  font-size:13px;font-weight:600;line-height:1.3;min-height:32px;
-  padding:7px 9px 8px;background:#1D2637;border-top:1px solid var(--line);
+  font-size:11.5px;font-weight:600;line-height:1.3;min-height:28px;
+  padding:6px 7px 7px;background:#1D2637;border-top:1px solid var(--line);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb.used{opacity:.28;pointer-events:none}
 .gh{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:12.5px;
@@ -268,7 +259,7 @@ input{font-family:inherit}
 .rp{position:absolute;border-radius:50%;background:#E3B23C33;transform:scale(0);pointer-events:none;
   animation:rip .5s ease-out forwards}
 @keyframes rip{to{transform:scale(2.6);opacity:0}}
-.chip,.slot,.hb,.ib,.btn,.rec,.tab{position:relative;overflow:hidden}
+.chip,.slot,.hb,.ib,.btn,.rec,.tab,.addb,.seg button{position:relative;overflow:hidden}
 .chip:active,.btn:active,.ib:active{transform:scale(.96)}
 .hb:active,.rec:active,.slot:active{transform:scale(.985)}
 .chip,.btn,.ib,.hb,.rec,.slot{transition:transform .12s ease,border-color .18s,background .18s}
@@ -330,19 +321,17 @@ input{font-family:inherit}
   <!-- ТАҢДАУ -->
   <section id="p-pick" class="page on">
     <div class="board">
-      <div class="side us"><h2>Біздің команда</h2><div id="us"></div></div>
-      <div class="side them"><h2>Қарсылас</h2><div id="them"></div></div>
+      <div class="side us"><h2><span>Біздің команда</span><em id="cUs">0/5</em></h2><div id="us"></div></div>
+      <div class="side them"><h2><span>Қарсылас</span><em id="cThem">0/5</em></h2><div id="them"></div></div>
       <div class="seam"></div>
     </div>
 
-    <div class="photo-row">
-      <button class="pbtn" id="bCam"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg>Камерамен түсіру</button>
-      <button class="pbtn alt" id="bGal"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.6 4 3.4 3-2.4 4 3.6"/></svg>Галерея</button>
+    <div class="addrow">
+      <button class="addb us" id="addUs"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Командама</button>
+      <button class="addb them" id="addThem"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Қарсыласқа</button>
     </div>
-    <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
-    <input type="file" id="fGal" accept="image/*" hidden>
 
-    <div class="sec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
+    <div class="sec" id="recsec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
     <div class="chips" id="filters"></div>
     <div id="recs"></div>
   </section>
@@ -369,16 +358,6 @@ input{font-family:inherit}
         <button class="chip" data-lang="en">English</button>
       </div>
     </div>
-    <div class="card" id="keyCard">
-      <h3>Фотодан оқу — Claude кілті</h3>
-      <p class="why" style="margin:6px 0 9px">Камерадағы суреттен геройды тану үшін өз Anthropic API кілтің керек (console.anthropic.com → API Keys). Кілт тек осы телефонда сақталады, GitHub-қа түспейді. Сурет тек танытуға жіберіледі.</p>
-      <input class="srch" id="apiKey" type="password" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" spellcheck="false" style="margin:0;width:100%">
-      <div class="lrow">
-        <button class="chip on" id="keySave">Сақтау</button>
-        <button class="chip" id="keyClear">Өшіру</button>
-        <span class="keyst" id="keySt"></span>
-      </div>
-    </div>
     <button class="btn" id="bClear">Таңдауды тазалау</button>
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
@@ -399,20 +378,6 @@ input{font-family:inherit}
   <button class="tab" data-go="p-set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>Баптау</button>
 </nav>
 
-<div class="sheet" id="psheet">
-  <div class="box">
-    <div class="phd">
-      <button class="bk" data-pclose aria-label="Артқа">←</button>
-      <div class="tt"><h2>Фотодан оқу</h2><small id="phSub">Геройларды іздеп жатыр…</small></div>
-    </div>
-    <div class="pbody" id="phBody"></div>
-    <div class="pfoot" id="phFoot" hidden>
-      <button class="btn" id="phSwap">⇄ Жақтарды ауыстыру</button>
-      <button class="btn gold" id="phApply">Қолдану</button>
-    </div>
-  </div>
-</div>
-
 <div class="sheet" id="isheet">
   <div class="bg" data-iclose></div>
   <div class="box">
@@ -431,8 +396,12 @@ input{font-family:inherit}
   <div class="box">
     <div class="phd">
       <button class="bk" data-close aria-label="Артқа">←</button>
-      <div class="tt"><h2 id="shTitle">Герой таңдау</h2><small id="shSub">Портреттен немесе іздеуден таңда</small></div>
+      <div class="tt"><h2 id="shTitle">Герой қосу</h2><small id="shSub">Геройды біздің командаға қосады</small></div>
       <span class="cnt2" id="shCnt">0/5</span>
+    </div>
+    <div class="seg" id="shSeg">
+      <button class="us" data-side="mine">Командама <b id="sgUs">0/5</b></button>
+      <button class="them" data-side="foe">Қарсыласқа <b id="sgThem">0/5</b></button>
     </div>
     <input class="srch" id="shSrch" placeholder="Герой іздеу" autocomplete="off">
     <div class="chips" style="padding:8px 14px 0" id="shFilters"></div>
@@ -441,7 +410,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.4';
+const V='3.5';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -804,72 +773,18 @@ Object.assign(I18N.en, {
 });
 
 Object.assign(I18N.ru, {
-  'Камерамен түсіру':'Снять камерой',
-  'Галерея':'Галерея',
-  'Фотодан оқу':'Чтение с фото',
-  'Фотодан оқу — Claude кілті':'Чтение с фото — ключ Claude',
-  'Камерадағы суреттен геройды тану үшін өз Anthropic API кілтің керек (console.anthropic.com → API Keys). Кілт тек осы телефонда сақталады, GitHub-қа түспейді. Сурет тек танытуға жіберіледі.':'Чтобы распознавать героев по фото с камеры, нужен твой ключ Anthropic API (console.anthropic.com → API Keys). Ключ хранится только на этом телефоне и не попадает в GitHub. Фото отправляется только для распознавания.',
-  'Сақтау':'Сохранить',
-  'Өшіру':'Удалить',
-  'Сақталған ✓':'Сохранён ✓',
-  'Кілт жоқ':'Ключа нет',
-  'Геройларды іздеп жатыр…':'Ищу героев…',
-  'Сурет дайындалуда…':'Подготовка фото…',
-  'Жақтарды ауыстыру':'Поменять стороны',
-  'Қолдану':'Применить',
-  'Танылды:':'Распознано:',
-  'Герой танылмады':'Герои не распознаны',
-  'Қате шықты':'Произошла ошибка',
-  'Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз, тік ұстап қайта түсір.':'Не удалось прочитать героев с фото. Снимай экран ближе, без бликов и ровно.',
-  'сол / жоғарғы жақ':'левая / верхняя сторона',
-  'оң / төменгі жақ':'правая / нижняя сторона',
-  'Танылмаған:':'Не распознано:',
-  'Қате герой болса ✕ басып алып таста; жетпегенін «Таңдау» бетінде өзің қос. Жақтар қате болса «Жақтарды ауыстыру» бас.':'Если герой определён неверно, нажми ✕ и убери его; недостающих добавь вручную на странице «Пик». Если стороны перепутаны, нажми «Поменять стороны».',
-  'Claude кілті қате немесе жарамсыз. Баптауда қайта енгіз.':'Ключ Claude неверный или недействителен. Введи заново в настройках.',
-  'Сұрау тым жиі. Бір минуттан кейін қайталап көр.':'Слишком много запросов. Повтори через минуту.',
-  'Anthropic шотында қаражат жоқ (console.anthropic.com → Billing).':'На счёте Anthropic нет средств (console.anthropic.com → Billing).',
-  'Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз түсіріп көр.':'Не удалось прочитать героев с фото. Попробуй снять экран ближе и без бликов.',
-  'Модель қолжетімсіз. Кейінірек қайталап көр.':'Модель недоступна. Попробуй позже.',
-  'Интернет жоқ немесе сұрау бұғатталды.':'Нет интернета или запрос заблокирован.',
-  'Алдымен Баптауда Claude кілтін енгіз':'Сначала введи ключ Claude в настройках',
-  'Кілт «sk-ant-» деп басталуы керек':'Ключ должен начинаться с «sk-ant-»',
-  'Кілт сақталды':'Ключ сохранён',
-  'Кілт өшірілді':'Ключ удалён',
-  'Драфт жаңартылды ✓':'Драфт обновлён ✓'
+  'Командама':'В мою команду','Қарсыласқа':'Сопернику','Герой қосу':'Добавить героя',
+  'Геройды біздің командаға қосады':'Герой добавится в нашу команду',
+  'Геройды қарсыластарға қосады':'Герой добавится к соперникам',
+  'Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.':'Нажми «Сопернику» и добавь героя соперника. С каждым героем контрпик становится точнее.',
+  'басып командаға қос':'нажми — в команду'
 });
 Object.assign(I18N.en, {
-  'Камерамен түсіру':'Take a photo',
-  'Галерея':'Gallery',
-  'Фотодан оқу':'Read from photo',
-  'Фотодан оқу — Claude кілті':'Read from photo — Claude key',
-  'Камерадағы суреттен геройды тану үшін өз Anthropic API кілтің керек (console.anthropic.com → API Keys). Кілт тек осы телефонда сақталады, GitHub-қа түспейді. Сурет тек танытуға жіберіледі.':'To recognize heroes from a camera photo you need your own Anthropic API key (console.anthropic.com → API Keys). The key is stored only on this phone and never goes to GitHub. The photo is sent only for recognition.',
-  'Сақтау':'Save',
-  'Өшіру':'Delete',
-  'Сақталған ✓':'Saved ✓',
-  'Кілт жоқ':'No key',
-  'Геройларды іздеп жатыр…':'Looking for heroes…',
-  'Сурет дайындалуда…':'Preparing photo…',
-  'Жақтарды ауыстыру':'Swap sides',
-  'Қолдану':'Apply',
-  'Танылды:':'Recognized:',
-  'Герой танылмады':'No heroes recognized',
-  'Қате шықты':'An error occurred',
-  'Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз, тік ұстап қайта түсір.':'I could not read the heroes from the photo. Retake it closer, without glare and held straight.',
-  'сол / жоғарғы жақ':'left / top side',
-  'оң / төменгі жақ':'right / bottom side',
-  'Танылмаған:':'Not recognized:',
-  'Қате герой болса ✕ басып алып таста; жетпегенін «Таңдау» бетінде өзің қос. Жақтар қате болса «Жақтарды ауыстыру» бас.':'If a hero is wrong, tap ✕ to remove it; add missing ones manually on the Pick page. If the sides are mixed up, tap “Swap sides”.',
-  'Claude кілті қате немесе жарамсыз. Баптауда қайта енгіз.':'The Claude key is wrong or invalid. Enter it again in Settings.',
-  'Сұрау тым жиі. Бір минуттан кейін қайталап көр.':'Too many requests. Try again in a minute.',
-  'Anthropic шотында қаражат жоқ (console.anthropic.com → Billing).':'The Anthropic account has no funds (console.anthropic.com → Billing).',
-  'Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз түсіріп көр.':'I could not read the heroes from the photo. Try shooting the screen closer and without glare.',
-  'Модель қолжетімсіз. Кейінірек қайталап көр.':'The model is unavailable. Try again later.',
-  'Интернет жоқ немесе сұрау бұғатталды.':'No internet, or the request was blocked.',
-  'Алдымен Баптауда Claude кілтін енгіз':'First enter your Claude key in Settings',
-  'Кілт «sk-ant-» деп басталуы керек':'The key must start with “sk-ant-”',
-  'Кілт сақталды':'Key saved',
-  'Кілт өшірілді':'Key deleted',
-  'Драфт жаңартылды ✓':'Draft updated ✓'
+  'Командама':'My team','Қарсыласқа':'Enemy','Герой қосу':'Add a hero',
+  'Геройды біздің командаға қосады':'Hero goes to our team',
+  'Геройды қарсыластарға қосады':'Hero goes to the enemy',
+  'Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.':'Tap “Enemy” and add an enemy hero. Every hero makes the counterpick sharper.',
+  'басып командаға қос':'tap to add to team'
 });
 
 const I18MAP={}, I18RE={};
@@ -914,10 +829,17 @@ function setLang(l){
 
 let HEROES=[], BYID={}, MU={}, ITEMIDS=null;
 let ITEMDATA=null, DN2KEY={}, ITEMPOOL=[];
-let S = LS.get('state') || {mine:[],foe:[],fi:{}};
-if(!S.fi) S.fi={};
+let S = LS.get('state') || {};
+// сақталған күй бүлінсе де (мысалы fi жоқ) бет құламауы үшін
+function normState(){
+  if(!S||typeof S!=='object') S={};
+  ['mine','foe'].forEach(k=>{ if(!Array.isArray(S[k])) S[k]=[]; });
+  if(!S.fi||typeof S.fi!=='object') S.fi={};
+}
+normState();
+LS.del('apikey'); // бұрынғы Claude кілті телефоннан өшіріледі
 let FAV = LS.get('fav') || ['phantom_assassin','ursa','shadow_shaman','drow_ranger'];
-let filt='all', shFilt='all', shSide='mine', shIdx=0, isSide='foe';
+let filt='all', shFilt='all', shSide='mine', isSide='foe';
 
 const save=()=>LS.set('state',S);
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
@@ -1347,7 +1269,7 @@ function toast(msg){
 const buzz=ms=>{ try{ navigator.vibrate&&navigator.vibrate(ms) }catch(e){} };
 document.addEventListener('pointerdown',e=>{
   if(RM) return;
-  const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab'); if(!t) return;
+  const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab,.addb,.seg button'); if(!t) return;
   const r=t.getBoundingClientRect(), d=Math.max(r.width,r.height)*.6;
   const sp=document.createElement('span'); sp.className='rp';
   sp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
@@ -1441,25 +1363,32 @@ function moveInd(i){ const el=document.querySelector('.tabind'); if(el) el.style
 
 /* ---------- драфт тақтасы ---------- */
 function slots(side){
-  const box=document.getElementById(side==='mine'?'us':'them');
-  const arr=S[side==='mine'?'mine':'foe'];
+  const mineSide=side==='mine';
+  const box=document.getElementById(mineSide?'us':'them');
+  const arr=mineSide?S.mine:S.foe;
+  const fi=S.fi||(S.fi={});
   box.innerHTML='';
   for(let i=0;i<5;i++){
     const h=BYID[arr[i]];
     const b=document.createElement('button');
     b.className='slot'+(h?' full':'');
-    const n=h?(S.fi[h.id]||[]).length:0;
+    const n=h?(fi[h.id]||[]).length:0;
     b.innerHTML = h
-      ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x">✕</span>`
+      ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x" role="button" aria-label="✕">✕</span>`
       : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
     if(h){
       b.onclick=()=>openItems(h,side);
-      b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete S.fi[h.id]; save(); board(); buzz(8); toast(h.localized_name+' алынды'); };
-    } else b.onclick=()=>openPicker(side,i);
+      b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete fi[h.id]; save(); board(); buzz(8); toast(h.localized_name+' алынды'); };
+    } else b.onclick=()=>openPicker(side);
     box.appendChild(b);
   }
+  document.getElementById(mineSide?'cUs':'cThem').textContent=arr.filter(id=>BYID[id]).length+'/5';
+  document.getElementById(mineSide?'addUs':'addThem').disabled = arr.length>=5;
 }
-function board(){ slots('mine'); slots('foe'); renderRecs(); }
+// бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
+function board(){
+  [()=>slots('mine'),()=>slots('foe'),renderRecs].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+}
 
 /* ---------- сүзгілер ---------- */
 const FILTS=[['all','Барлығы'],['carry','Керри'],['mid','Мидер'],['off','Хард линия'],
@@ -1510,7 +1439,7 @@ function renderRecs(){
   const list=recommend();
   if(!list){
     hint.textContent='';
-    box.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>Оң жақтағы «Бос» орынға басып, қарсылас алған геройды қос. Әр герой қосылған сайын ұсыныс дәлдене береді.</div>';
+    box.innerHTML='<div class="empty"><b>Қарсылас әлі бос</b>Төмендегі «Қарсыласқа» батырмасын басып, қарсылас геройын қос. Әр геройдан кейін контрпик дәлірек болады.</div>';
     return;
   }
   const f=list.filter(x=>passFilter(x.h,filt)).slice(0,25);
@@ -1526,7 +1455,7 @@ function renderRecs(){
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
       <div class="rl"><b style="color:var(--gold);font-weight:600">${posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ')}</b>${top?' — '+top:''}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
-      <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
+      <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div><span class="add" aria-hidden="true">+</span>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
     box.appendChild(b);
   });
@@ -1538,15 +1467,22 @@ function renderRecs(){
 }
 
 /* ---------- герой таңдағыш ---------- */
-function openPicker(side,idx){
-  shSide=side; shIdx=idx; shFilt='all';
+function setPickSide(side){
+  shSide=side;
   const mine=side==='mine', arr=mine?S.mine:S.foe;
-  document.getElementById('shTitle').textContent = mine?'Біздің геройды қосу':'Қарсылас геройын қосу';
-  document.getElementById('shSub').textContent = (mine?'Біздің команда':'Қарсылас')+' · портреттен не іздеуден таңда';
-  document.getElementById('shCnt').textContent = arr.length+'/5';
-  document.getElementById('shSrch').value='';
   const sh=document.getElementById('sheet');
   sh.classList.remove('us','them'); sh.classList.add(mine?'us':'them');
+  document.querySelectorAll('#shSeg button').forEach(b=>b.classList.toggle('on',b.dataset.side===side));
+  document.getElementById('sgUs').textContent=S.mine.length+'/5';
+  document.getElementById('sgThem').textContent=S.foe.length+'/5';
+  document.getElementById('shCnt').textContent=arr.length+'/5';
+  document.getElementById('shSub').textContent = mine?'Геройды біздің командаға қосады':'Геройды қарсыластарға қосады';
+}
+function openPicker(side){
+  shFilt='all';
+  document.getElementById('shSrch').value='';
+  const sh=document.getElementById('sheet');
+  setPickSide(side);
   sh.querySelector('.box').style.animation='none'; void sh.offsetWidth; sh.querySelector('.box').style.animation='';
   document.getElementById('shGrid').scrollTop=0;
   sh.classList.add('on');
@@ -1554,6 +1490,12 @@ function openPicker(side,idx){
   history.pushState({d2:'sheet',sheet:1},'');
   renderGrid();
 }
+document.querySelectorAll('#shSeg button').forEach(b=>b.onclick=()=>{
+  if(b.dataset.side===shSide) return;
+  setPickSide(b.dataset.side); document.getElementById('shGrid').scrollTop=0; renderGrid(); buzz(8);
+});
+document.getElementById('addUs').onclick=()=>{ if(S.mine.length>=5) toast('Команда толы'); else openPicker('mine'); };
+document.getElementById('addThem').onclick=()=>{ if(S.foe.length>=5) toast('Бұл жақ толы'); else openPicker('foe'); };
 function closePicker(fromPop){
   document.getElementById('sheet').classList.remove('on');
   document.body.style.overflow='';
@@ -1619,6 +1561,9 @@ async function pick(h){
       document.getElementById('recs').innerHTML='<div class="empty"><b>Дерек жүктелмеді</b>Интернетті тексеріп, геройды қайта қос.</div>'; return;
     }
     renderRecs();
+    // контрпик бірден көрінуі үшін: тізім экраннан төмен қалса — жоғары көтереміз
+    const rs=document.getElementById('recsec').getBoundingClientRect();
+    if(rs.top>innerHeight*0.62) window.scrollBy({top:rs.top-innerHeight*0.38,behavior:RM?'auto':'smooth'});
   }
 }
 
@@ -1814,7 +1759,7 @@ async function showPlan(h){
 }
 
 /* ---------- баптау ---------- */
-document.getElementById('bClear').onclick=()=>{ S={mine:[],foe:[]}; save(); board(); go('p-pick'); };
+document.getElementById('bClear').onclick=()=>{ S={mine:[],foe:[],fi:{}}; normState(); save(); board(); go('p-pick'); };
 document.getElementById('bRefresh').onclick=async e=>{
   e.target.textContent='Жаңартылуда…';
   LS.del('mu'); LS.del('ip'); MU={};
@@ -1831,7 +1776,6 @@ window.addEventListener('popstate',e=>{
   const st=e.state||{};
   // 1) ашық бет болса — алдымен соны жабамыз
   if(document.getElementById('sheet').classList.contains('on')){ closePicker(true); return; }
-  if(document.getElementById('psheet').classList.contains('on')){ closePhoto(true); return; }
   if(document.getElementById('isheet').classList.contains('on')){ closeItems(true); return; }
   // 2) басқа табқа қайту
   if(st.d2==='tab'||st.d2==='main'){ go(st.tab||'p-pick',undefined,false); return; }
@@ -1850,6 +1794,7 @@ window.addEventListener('popstate',e=>{
   catch(e){
     box.innerHTML='<div class="empty"><b>Геройлар жүктелмеді</b>Бірінші рет ашқанда интернет керек. Қосылып, бетті қайта аш.</div>'; hideSplash(); return;
   }
+  S.mine=S.mine.filter(id=>BYID[id]); S.foe=S.foe.filter(id=>BYID[id]); save();
   board();
   restoreView();
   setTimeout(hideSplash,420);
@@ -1861,208 +1806,6 @@ window.addEventListener('popstate',e=>{
 history.replaceState({d2:'root'},'');
 history.pushState({d2:'main',tab:LS.get('tab')||'p-pick'},'');
 
-
-/* ================= фотодан геройларды тану (Claude көру моделі) ================= */
-const PH_MODELS=['claude-sonnet-5-5','claude-haiku-4-5-20251001'];
-let PH=null;
-const phEl=id=>document.getElementById(id);
-const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-function lev(a,b){
-  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
-  let p=Array.from({length:n+1},(_,j)=>j);
-  for(let i=1;i<=m;i++){ const c=[i];
-    for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));
-    p=c; }
-  return p[n];
-}
-function matchHero(name){
-  const n=norm(name||''); if(!n||!HEROES.length) return null;
-  let h=HEROES.find(x=>norm(x.localized_name)===n); if(h) return h;
-  h=HEROES.find(x=>{ const m=norm(x.name.replace('npc_dota_hero_','')); return m===n; }); if(h) return h;
-  let best=null,bd=99;
-  HEROES.forEach(x=>{ const d=lev(norm(x.localized_name),n); if(d<bd){bd=d;best=x;} });
-  return (bd<=2 && n.length>=5) ? best : null;
-}
-function matchItem(name){
-  const k=DN2KEY[norm(name||'')];
-  return (k&&ITEMDATA&&ITEMDATA[k]) ? ITEMDATA[k].n : null;
-}
-
-async function shrinkImage(file,max){
-  max=max||1600;
-  let bmp;
-  try{ bmp=await createImageBitmap(file,{imageOrientation:'from-image'}); }
-  catch(e){
-    bmp=await new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=URL.createObjectURL(file); });
-  }
-  const w=bmp.width||bmp.naturalWidth, h=bmp.height||bmp.naturalHeight;
-  const k=Math.min(1,max/Math.max(w,h));
-  const c=document.createElement('canvas'); c.width=Math.round(w*k); c.height=Math.round(h*k);
-  c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
-  return c.toDataURL('image/jpeg',0.86);
-}
-
-async function askClaude(dataUrl,key){
-  const names=HEROES.map(h=>h.localized_name).join(', ');
-  const prompt=
-`This is a PHOTO taken with a phone camera of a Dota 2 screen (hero draft / pick screen, loading screen, top bar or scoreboard). It may be angled or have glare.
-List the heroes of the two teams.
-- Team "a" = the LEFT side of the screen, or the TOP team on a scoreboard (usually Radiant).
-- Team "b" = the RIGHT side, or the BOTTOM team (usually Dire).
-- Identify each hero from its portrait or name tag. Use ONLY names from this exact list: ${names}.
-- Skip banned heroes (greyed out / crossed) and empty slots. If you are not confident about a hero, do not guess; mention it in "unsure".
-- If item icons are clearly visible next to a hero (scoreboard), list the items using official English item names; otherwise leave them out.
-Reply with ONLY valid JSON, no other text:
-{"a":["Hero"],"b":["Hero"],"items":{"Hero":["Item"]},"unsure":"short note or empty string"}`;
-  let last;
-  for(const model of PH_MODELS){
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model,max_tokens:2000,messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:dataUrl.split(',')[1]}},
-        {type:'text',text:prompt}]}]})
-    });
-    if(r.ok){
-      const d=await r.json();
-      const t=(d.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('');
-      const m=t.match(/\{[\s\S]*\}/);
-      if(!m) throw new Error('PARSE');
-      try{ return JSON.parse(m[0]); }catch(e){ throw new Error('PARSE'); }
-    }
-    let msg=''; try{ msg=(await r.json()).error.message||''; }catch(e){}
-    if(r.status===401||r.status===403) throw new Error('KEY');
-    if(r.status===429) throw new Error('RATE');
-    if(/credit|billing|balance/i.test(msg)) throw new Error('CREDIT');
-    if(r.status===404||/model/i.test(msg)){ last=new Error('MODEL'); continue; }
-    throw new Error('HTTP '+r.status+' '+msg);
-  }
-  throw last||new Error('MODEL');
-}
-
-function buildPH(j){
-  const miss=[];
-  const conv=arr=>(Array.isArray(arr)?arr:[]).map(n=>{ const h=matchHero(n); if(!h) miss.push(n); return h; })
-    .filter(Boolean).filter((h,i,a)=>a.findIndex(x=>x.id===h.id)===i).slice(0,5).map(h=>h.id);
-  const items={};
-  Object.entries(j.items||{}).forEach(([hn,list])=>{
-    const h=matchHero(hn); if(!h||!Array.isArray(list)) return;
-    const out=[...new Set(list.map(matchItem).filter(Boolean))];
-    if(out.length) items[h.id]=out;
-  });
-  return {a:conv(j.a),b:conv(j.b),items,miss,note:(j.unsure||'').toString().slice(0,200),swapped:false};
-}
-
-function openPhoto(){
-  phEl('psheet').classList.add('on');
-  document.body.style.overflow='hidden';
-  history.pushState({d2:'sheet',sheet:1},'');
-}
-function closePhoto(fromPop){
-  phEl('psheet').classList.remove('on');
-  document.body.style.overflow='';
-  if(fromPop!==true && history.state && history.state.d2==='sheet') history.back();
-}
-
-function phHeroRow(id,side){
-  const h=BYID[id]; if(!h) return '';
-  const its=(PH.items[id]||[]);
-  return `<div class="ph"><img src="${h.img}" alt="">
-    <b>${esc(h.localized_name)}${its.length?`<br><span class="pits">${its.map(n=>`<img src="${IMG(ikey(n))}" alt="" title="${esc(n)}" onerror="this.style.display='none'">`).join('')}</span>`:''}</b>
-    <button class="rm" data-rm="${id}" data-side="${side}" aria-label="Өшіру">✕</button></div>`;
-}
-function renderPH(){
-  const ours=PH.swapped?PH.b:PH.a, theirs=PH.swapped?PH.a:PH.b;
-  const tag=side=>side==='a'?'сол / жоғарғы жақ':'оң / төменгі жақ';
-  const oSide=PH.swapped?'b':'a', tSide=PH.swapped?'a':'b';
-  const total=ours.length+theirs.length;
-  phEl('phSub').textContent = total?`Танылды: ${total}`:'Герой танылмады';
-  phEl('phBody').innerHTML =
-    `<img class="pprev" src="${PH.url}" alt="">`+
-    (total?'':`<div class="perr">Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз, тік ұстап қайта түсір.</div>`)+
-    `<div class="pcol us"><h4>Біздің команда <small>${tag(oSide)}</small></h4>${ours.map(id=>phHeroRow(id,oSide)).join('')||'<div class="pmiss">Бос</div>'}</div>`+
-    `<div class="pcol them"><h4>Қарсылас <small>${tag(tSide)}</small></h4>${theirs.map(id=>phHeroRow(id,tSide)).join('')||'<div class="pmiss">Бос</div>'}</div>`+
-    (PH.miss.length||PH.note?`<p class="pmiss">${PH.miss.length?'Танылмаған: '+esc(PH.miss.join(', '))+'. ':''}${esc(PH.note)}</p>`:'')+
-    `<p class="pmiss">Қате герой болса ✕ басып алып таста; жетпегенін «Таңдау» бетінде өзің қос. Жақтар қате болса «Жақтарды ауыстыру» бас.</p>`;
-  phEl('phFoot').hidden=!total;
-  phEl('phBody').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{
-    const id=+b.dataset.rm, k=b.dataset.side;
-    PH[k]=PH[k].filter(x=>x!==id); delete PH.items[id]; buzz(8); renderPH();
-  });
-}
-
-function phError(e){
-  const m=(e&&e.message)||'';
-  let t='Қате шықты: '+m;
-  if(m==='KEY') t='Claude кілті қате немесе жарамсыз. Баптауда қайта енгіз.';
-  else if(m==='RATE') t='Сұрау тым жиі. Бір минуттан кейін қайталап көр.';
-  else if(m==='CREDIT') t='Anthropic шотында қаражат жоқ (console.anthropic.com → Billing).';
-  else if(m==='PARSE') t='Суреттен геройларды оқи алмадым. Экранды жақынырақ, шағылыссыз түсіріп көр.';
-  else if(m==='MODEL') t='Модель қолжетімсіз. Кейінірек қайталап көр.';
-  else if(e instanceof TypeError) t='Интернет жоқ немесе сұрау бұғатталды.';
-  phEl('phSub').textContent='Қате шықты';
-  phEl('phBody').innerHTML = (PH&&PH.url?`<img class="pprev" src="${PH.url}" alt="">`:'')+`<div class="perr">${esc(t)}</div>`;
-  phEl('phFoot').hidden=true;
-}
-
-async function startPhoto(file){
-  if(!file) return;
-  const key=LS.get('apikey');
-  if(!key){
-    toast('Алдымен Баптауда Claude кілтін енгіз');
-    go('p-set'); setTimeout(()=>{ const k=phEl('apiKey'); k&&k.focus(); },350); return;
-  }
-  PH=null; openPhoto();
-  phEl('phSub').textContent='Геройларды іздеп жатыр…';
-  phEl('phFoot').hidden=true;
-  phEl('phBody').innerHTML='<div class="pst"><i></i><span>Сурет дайындалуда…</span></div>';
-  try{
-    if(!HEROES.length) await loadHeroes();
-    try{ await loadItems(); }catch(e){}
-    const url=await shrinkImage(file);
-    PH={url,a:[],b:[],items:{},miss:[],note:'',swapped:false};
-    phEl('phBody').innerHTML=`<img class="pprev" src="${url}" alt=""><div class="pst"><i></i><span>Геройларды іздеп жатыр…</span></div>`;
-    const j=await askClaude(url,key);
-    PH=Object.assign(buildPH(j),{url});
-    renderPH(); buzz(14);
-  }catch(e){ phError(e); }
-}
-
-function applyPH(){
-  if(!PH) return;
-  const ours=PH.swapped?PH.b:PH.a, theirs=PH.swapped?PH.a:PH.b;
-  S.mine=[...ours]; S.foe=[...theirs]; S.fi={};
-  [...ours,...theirs].forEach(id=>{ if(PH.items[id]) S.fi[id]=PH.items[id]; });
-  save();
-  closePhoto();
-  go('p-pick'); board(); buzz(20);
-  toast('Драфт жаңартылды ✓');
-}
-
-phEl('phSwap').onclick=()=>{ if(!PH) return; PH.swapped=!PH.swapped; buzz(8); renderPH(); };
-phEl('phApply').onclick=applyPH;
-document.querySelectorAll('[data-pclose]').forEach(e=>e.onclick=()=>closePhoto());
-phEl('bCam').onclick=()=>phEl('fCam').click();
-phEl('bGal').onclick=()=>phEl('fGal').click();
-['fCam','fGal'].forEach(id=>phEl(id).addEventListener('change',e=>{
-  const f=e.target.files&&e.target.files[0]; e.target.value=''; startPhoto(f);
-}));
-
-// API кілтті баптау
-function keyStatus(){
-  const k=LS.get('apikey'), st=phEl('keySt');
-  st.textContent = k ? 'Сақталған ✓ …'+k.slice(-4) : 'Кілт жоқ';
-  st.classList.toggle('ok',!!k);
-}
-phEl('keySave').onclick=()=>{
-  const v=phEl('apiKey').value.trim();
-  if(!/^sk-ant-/.test(v)){ toast('Кілт «sk-ant-» деп басталуы керек'); return; }
-  LS.set('apikey',v); phEl('apiKey').value=''; keyStatus(); buzz(12); toast('Кілт сақталды');
-};
-phEl('keyClear').onclick=()=>{ LS.del('apikey'); phEl('apiKey').value=''; keyStatus(); toast('Кілт өшірілді'); };
-keyStatus();
 
 /* тіл түймелері мен автоаударма бақылаушысы */
 document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
