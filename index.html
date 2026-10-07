@@ -392,7 +392,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.6';
+const V='3.7';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1597,12 +1597,17 @@ function topItems(){
     const who=foesOf(n); if(!who.length) return;
     const why=[]; THREATS.forEach(t=>{ if(t.items.includes(n)&&who.some(f=>has(t.list,f))) why.push(t.ttl); });
     if(!why.length){ const c=HCOUNTER[key(who[0])]||HCOUNTER[slug(who[0].localized_name)]; if(c&&c.w) why.push(c.w); }
-    res.push({n,who,why:why.slice(0,2)});
+    let hot=0; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&(r.items||[]).includes(n)){ hot++; why.unshift('→ '+it); } }));
+    res.push({n,who,hot,why:[...new Set(why)].slice(0,2)});
   });
-  return res.sort((a,b)=>b.who.length-a.who.length||b.why.length-a.why.length).slice(0,3);
+  const sc=x=>x.who.length+x.hot*3;
+  const need=Math.min(2,fs.length);
+  const strong=res.filter(x=>x.hot||x.who.length>=need).sort((a,b)=>sc(b)-sc(a)||b.why.length-a.why.length);
+  return (strong.length?strong:res.sort((a,b)=>sc(b)-sc(a))).slice(0,3);
 }
-function teamItems(){
+function teamItems(skip){
   const fs=foeHeroes(); if(!fs.length) return [];
+  skip=skip||new Set();
   const me=S.mine.map(id=>BYID[id]).filter(Boolean), m=new Map();
   const add=(n,w,why,fit)=>{
     const e=m.get(n)||{n,w:0,why:new Set(),fit:new Map(),hot:0}; e.w+=w; e.why.add(why); fit.forEach(h=>e.fit.set(h.id,h)); m.set(n,e); return e;
@@ -1623,7 +1628,8 @@ function teamItems(){
   }));
   const own=h=>(S.fi[h.id]||[]);
   return [...m.values()].filter(e=>!(e.fit.size&&[...e.fit.values()].every(h=>own(h).includes(e.n))))
-    .sort((a,b)=>b.w-a.w).slice(0,4);
+    .filter(e=>!skip.has(e.n)&&(e.hot||e.w>=(fs.length>=2?1.8:1)))
+    .sort((a,b)=>b.w-a.w).slice(0,3);
 }
 function renderPickItems(){
   const t=document.getElementById('itTop'), tm=document.getElementById('itTeam');
@@ -1638,7 +1644,7 @@ function renderPickItems(){
   t.innerHTML=tops.length?`<div class="card"><div class="plist">${tops.map(x=>`<div class="pl">${itemIcon(x.n)}
     <div><div class="pn">${x.n} <span class="mc">${x.who.length}/${fs.length}</span>${heroBadges(x.who,5)}</div>
     <div class="pw">${x.why.join(' · ')}</div></div></div>`).join('')}</div></div>`:'<div class="empty">Бұл құрамға ортақ зат табылмады.</div>';
-  const team=teamItems(), me=S.mine.map(id=>BYID[id]).filter(Boolean);
+  const team=teamItems(new Set(tops.map(x=>x.n))), me=S.mine.map(id=>BYID[id]).filter(Boolean);
   document.getElementById('tmHint').textContent=me.length?me.length+'/5 команда':'команда бос';
   tm.innerHTML=team.length?`<div class="card"><div class="plist">${team.map(e=>{
     const fit=[...e.fit.values()];
