@@ -101,6 +101,7 @@ input{font-family:inherit}
 .it{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);
   border-radius:8px;padding:4px 8px 4px 4px;font-size:12px}
 .it img{width:32px;height:24px;border-radius:3px;object-fit:cover;background:#0B0F18}
+.pairimgs{display:flex;flex-direction:column;gap:2px;flex:0 0 auto}.pairimgs img{width:62px;height:27px;border-radius:5px;object-fit:cover;background:#0B0F18}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -316,6 +317,9 @@ input{font-family:inherit}
     <div id="recs"></div>
     <button class="btn" id="recMore" style="display:none"></button>
 
+    <div class="sec" id="prsec"><h2>Линия жұбы</h2><span class="hint" id="prHint"></span></div>
+    <div id="pairs"></div>
+
     <div class="sec" id="itsec"><h2>Бір зат — көп геройға</h2><span class="hint" id="itHint"></span></div>
     <div id="itTop"></div>
     <div class="sec"><h2>Командаға зат</h2><span class="hint" id="tmHint"></span></div>
@@ -392,7 +396,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.7';
+const V='3.8';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -756,6 +760,9 @@ Object.assign(I18N.en, {
 
 Object.assign(I18N.ru,{"Бір зат — көп геройға": "Один предмет — против многих", "Командаға зат": "Предметы команде", "Тағы көрсету": "Показать ещё", "Азырақ көрсету": "Свернуть", "Қарсылас бос": "Соперник пуст", "Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.": "Добавь героев — здесь появится предмет сразу против нескольких.", "Бұл құрамға ортақ зат табылмады.": "Общего предмета для этого состава не нашлось.", "бүкіл команда": "вся команда", "команда бос": "команда пуста", "команда": "команда", "Қосымша зат қажет емес — әдеттегі жинақпен жүре бер.": "Доп. предметы не нужны — играй обычную сборку.", "Контрпик екі деректі біріктіреді:": "Контрпик объединяет два источника:", "Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады.": "Если выбранный герой проигрывает сопернику — появится ⚠.", "Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.": "У обоих сайтов метод один (разница винрейта); открытых данных dotapuls найти не удалось.", "(1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады).": "(1) Dotabuff — разница винрейта у 8 лучших героев против каждого героя (десятки тысяч игр, окт. 2026); (2) OpenDota — живые матчапы (выборка мала, поэтому берутся с малым весом)."});
 Object.assign(I18N.en,{"Бір зат — көп геройға": "One item vs many", "Командаға зат": "Team items", "Тағы көрсету": "Show more", "Азырақ көрсету": "Show less", "Қарсылас бос": "Enemy empty", "Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.": "Add heroes — an item against several at once appears here.", "Бұл құрамға ортақ зат табылмады.": "No shared item found for this lineup.", "бүкіл команда": "whole team", "команда бос": "team empty", "команда": "team", "Қосымша зат қажет емес — әдеттегі жинақпен жүре бер.": "No extra items needed — play your normal build.", "Контрпик екі деректі біріктіреді:": "Counterpick merges two sources:", "Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады.": "If the picked hero loses to an enemy, ⚠ is shown.", "Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.": "Both sites use the same method (win-rate difference); no open dotapuls data was found.", "(1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады).": "(1) Dotabuff — win-rate difference of the 8 best heroes against each hero (tens of thousands of games, Oct 2026); (2) OpenDota — live matchups (small sample, so given low weight)."});
+
+Object.assign(I18N.ru,{"Линия жұбы": "Пара на линию", "Линияда өлтіреді": "Убивает на линии", "Линияны ұстап тұрады": "Держит линию", "+ Екеуін қос": "+ Добавить обоих", "+ Қос": "+ Добавить", "саппорт + керри/хард": "саппорт + керри/хард", "Линия жұбы бар немесе орын жоқ.": "Пара на линии уже есть или нет места."});
+Object.assign(I18N.en,{"Линия жұбы": "Lane pair", "Линияда өлтіреді": "Kills in lane", "Линияны ұстап тұрады": "Holds the lane", "+ Екеуін қос": "+ Add both", "+ Қос": "+ Add", "саппорт + керри/хард": "support + carry/offlane", "Линия жұбы бар немесе орын жоқ.": "Lane pair already set or no space."});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1356,7 +1363,7 @@ function slots(side){
 }
 // бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
 function board(){
-  [()=>slots('mine'),()=>slots('foe'),renderRecs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+  [()=>slots('mine'),()=>slots('foe'),renderRecs,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
 }
 
 /* ---------- сүзгілер ---------- */
@@ -1577,6 +1584,59 @@ function renderRecs(){
     box.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%');
     box.querySelectorAll('.val').forEach((v,i)=>countUp(v,+v.dataset.to,520+Math.min(i,10)*25));
   });
+}
+
+
+/* ---------- линия жұбы: керри/хард + қасындағы саппорт ---------- */
+const LANE_KILL=['Lion','Shadow Shaman','Lich','Bane','Skywrath Mage','Tusk','Vengeful Spirit','Earthshaker','Rubick','Dark Willow','Hoodwink','Clockwerk','Nyx Assassin','Grimstroke','Snapfire','Jakiro','Disruptor','Crystal Maiden','Witch Doctor','Ogre Magi','Ringmaster'];
+const LANE_SAFE=['Dazzle','Oracle','Io','Omniknight','Chen','Treant Protector','Winter Wyvern','Abaddon','Warlock','Keeper of the Light','Undying'];
+const roleOf=h=>{
+  const c=has(POS.carry,h),o=has(POS.off,h),m=has(POS.mid,h),s=has(POS.sup,h);
+  if(s&&!c&&!o&&!m) return 'sup'; if(c) return 'carry'; if(o) return 'off'; if(m) return 'mid'; return s?'sup':'mid';
+};
+const isLaneSup=h=>LANE_KILL.includes(h.localized_name)||LANE_SAFE.includes(h.localized_name);
+const isLaneCore=h=>['carry','off'].includes(roleOf(h));
+function renderPairs(){
+  const box=document.getElementById('pairs'), hint=document.getElementById('prHint');
+  const rm=new Map((recommend()||[]).map(x=>[x.h.id,x.score]));
+  const used=new Set([...S.mine,...S.foe]);
+  const me=S.mine.map(id=>BYID[id]).filter(Boolean);
+  const sc=(c,u)=>{
+    const k=LANE_KILL.includes(u.localized_name);
+    const base=k?2:(roleOf(c)==='carry'?1.6:.6);
+    return base+(rm.get(c.id)||0)*.25+(rm.get(u.id)||0)*.25;
+  };
+  const sups=HEROES.filter(h=>!used.has(h.id)&&isLaneSup(h)), cores=HEROES.filter(h=>!used.has(h.id)&&isLaneCore(h));
+  const myC=me.filter(isLaneCore), myS=me.filter(isLaneSup);
+  const rows=[];
+  if(myC.length&&!myS.length){
+    myC.slice(0,2).forEach(c=>sups.map(u=>({a:c,b:u,add:[u],s:sc(c,u)})).sort((x,y)=>y.s-x.s).slice(0,2).forEach(r=>rows.push(r)));
+  } else if(myS.length&&!myC.length){
+    const u=myS[0]; cores.map(c=>({a:u,b:c,add:[c],s:sc(c,u)})).sort((x,y)=>y.s-x.s).slice(0,3).forEach(r=>rows.push(r));
+  } else if(!me.length){
+    const topC=cores.slice().sort((x,y)=>(rm.get(y.id)||0)-(rm.get(x.id)||0)).slice(0,12);
+    topC.forEach(c=>{ const best=sups.map(u=>({a:c,b:u,add:[c,u],s:sc(c,u)})).sort((x,y)=>y.s-x.s)[0]; if(best) rows.push(best); });
+    rows.sort((x,y)=>y.s-x.s); rows.length=Math.min(rows.length,3);
+  }
+  hint.textContent=me.length?'':'саппорт + керри/хард';
+  if(!rows.length){ box.innerHTML=me.length?'<div class="empty">Линия жұбы бар немесе орын жоқ.</div>':''; return; }
+  const free=5-S.mine.length;
+  box.innerHTML='';
+  rows.forEach(r=>{
+    const b=document.createElement('button'); b.className='rec';
+    const kill=LANE_KILL.includes((r.add.length>1?r.add[1]:r.b).localized_name)||LANE_KILL.includes(r.b.localized_name)||LANE_KILL.includes(r.a.localized_name);
+    b.innerHTML=`<div class="pairimgs"><img src="${r.a.img}" alt="" loading="lazy"><img src="${r.b.img}" alt="" loading="lazy"></div>
+      <div class="info"><div class="nm">${r.a.localized_name} + ${r.b.localized_name}</div>
+      <div class="rl">${kill?'Линияда өлтіреді':'Линияны ұстап тұрады'}</div></div>
+      <div class="val" style="font-size:13px">${r.add.length>1?'+ Екеуін қос':'+ Қос'}</div>`;
+    b.onclick=()=>{
+      if(r.add.length>free){ toast('Команда толы'); return; }
+      r.add.forEach(h=>{ if(!S.mine.includes(h.id)) S.mine.push(h.id); });
+      save(); board(); buzz(12); toast(r.add.map(h=>h.localized_name).join(' + ')+' қосылды');
+    };
+    box.appendChild(b);
+  });
+  stagger([...box.children]);
 }
 
 /* ---------- бір зат — көп геройға / команда заттары ---------- */
