@@ -102,6 +102,11 @@ input{font-family:inherit}
   border-radius:8px;padding:4px 8px 4px 4px;font-size:12px}
 .it img{width:32px;height:24px;border-radius:3px;object-fit:cover;background:#0B0F18}
 .pairimgs{display:flex;flex-direction:column;gap:2px;flex:0 0 auto}.pairimgs img{width:62px;height:27px;border-radius:5px;object-fit:cover;background:#0B0F18}
+.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.fv{min-width:0;text-align:center}.fv img{width:100%;aspect-ratio:16/9;border-radius:5px;object-fit:cover;background:#0B0F18;display:block;border:1.5px solid transparent}
+.fv.mine img{border-color:var(--gold)}.fv span{display:block;font-size:10px;color:var(--dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fv.mine span{color:var(--gold)}
+.tgs{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}.tg{font-size:11px;color:var(--rad);background:#10241A;border-radius:5px;padding:2px 7px}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -317,6 +322,9 @@ input{font-family:inherit}
     <div id="recs"></div>
     <button class="btn" id="recMore" style="display:none"></button>
 
+    <div class="sec" id="idsec"><h2>Идеал команда</h2><span class="hint" id="idHint"></span></div>
+    <div id="ideal"></div>
+
     <div class="sec" id="prsec"><h2>Линия жұбы</h2><span class="hint" id="prHint"></span></div>
     <div id="pairs"></div>
 
@@ -396,7 +404,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.8';
+const V='3.9';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -763,6 +771,9 @@ Object.assign(I18N.en,{"Бір зат — көп геройға": "One item vs m
 
 Object.assign(I18N.ru,{"Линия жұбы": "Пара на линию", "Линияда өлтіреді": "Убивает на линии", "Линияны ұстап тұрады": "Держит линию", "+ Екеуін қос": "+ Добавить обоих", "+ Қос": "+ Добавить", "саппорт + керри/хард": "саппорт + керри/хард", "Линия жұбы бар немесе орын жоқ.": "Пара на линии уже есть или нет места."});
 Object.assign(I18N.en,{"Линия жұбы": "Lane pair", "Линияда өлтіреді": "Kills in lane", "Линияны ұстап тұрады": "Holds the lane", "+ Екеуін қос": "+ Add both", "+ Қос": "+ Add", "саппорт + керри/хард": "support + carry/offlane", "Линия жұбы бар немесе орын жоқ.": "Lane pair already set or no space."});
+
+Object.assign(I18N.ru,{"Идеал команда": "Идеальная команда", "Командаға қос": "Добавить команду", "ең жақсы 5": "лучшая пятёрка", "сенің геройларыңмен": "с твоими героями", "сенің командаң": "твоя команда", "сиқыр + физика": "магия + физика", "бастама": "инициация", "контроль": "контроль", "линия жұбы": "пара на линию", "барлық рөл": "все роли", "сиқыр көп": "много магии", "қатты зиянға қарсы": "против физ. урона", "байлауға қарсы": "против связывания", "жақын геройларға вампиризм": "вампиризм для ближников", "команда емі": "лечение команды", "бастама жоқ — блинк": "нет инициации — блинк"});
+Object.assign(I18N.en,{"Идеал команда": "Ideal team", "Командаға қос": "Add team", "ең жақсы 5": "best five", "сенің геройларыңмен": "with your heroes", "сенің командаң": "your team", "сиқыр + физика": "magic + physical", "бастама": "initiation", "контроль": "control", "линия жұбы": "lane pair", "барлық рөл": "all roles", "сиқыр көп": "lots of magic", "қатты зиянға қарсы": "vs physical damage", "байлауға қарсы": "vs lockdown", "жақын геройларға вампиризм": "lifesteal for melee", "команда емі": "team healing", "бастама жоқ — блинк": "no initiator — blink"});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1363,7 +1374,7 @@ function slots(side){
 }
 // бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
 function board(){
-  [()=>slots('mine'),()=>slots('foe'),renderRecs,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+  [()=>slots('mine'),()=>slots('foe'),renderRecs,renderIdeal,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
 }
 
 /* ---------- сүзгілер ---------- */
@@ -1524,14 +1535,7 @@ function ctr(name){
   const m=new Map(); (DBC[name]||'').split('|').forEach(x=>{ if(!x) return; const i=x.lastIndexOf('~'); m.set(x.slice(0,i),+x.slice(i+1)/10); });
   return CTR[name]=m;
 }
-/* ұсыныс: Dotabuff (үлкен іріктеме) + OpenDota (тірі, аз іріктеме — әлсіретілген) + «өзін жеңетін қарсылас» айыбы */
-function recommend(){
-  const used=new Set([...S.mine,...S.foe]);
-  const fs=S.foe.map(id=>BYID[id]).filter(Boolean);
-  if(!fs.length) return null;
-  const out=[];
-  for(const h of HEROES){
-    if(used.has(h.id)) continue;
+function scoreVs(h,fs){
     const hn=h.localized_name, mine=ctr(hn);
     let sum=0; const det=[];
     for(const f of fs){
@@ -1543,7 +1547,17 @@ function recommend(){
       sum+=c; det.push({f,c,back});
     }
     det.sort((x,y)=>y.c-x.c);
-    out.push({h,score:sum/fs.length,det});
+    return {score:fs.length?sum/fs.length:0,det};
+}
+/* ұсыныс: Dotabuff (үлкен іріктеме) + OpenDota (тірі, аз іріктеме — әлсіретілген) + «өзін жеңетін қарсылас» айыбы */
+function recommend(){
+  const used=new Set([...S.mine,...S.foe]);
+  const fs=S.foe.map(id=>BYID[id]).filter(Boolean);
+  if(!fs.length) return null;
+  const out=[];
+  for(const h of HEROES){
+    if(used.has(h.id)) continue;
+    const r=scoreVs(h,fs); out.push({h,score:r.score,det:r.det});
   }
   return out.sort((a,b)=>b.score-a.score);
 }
@@ -1586,6 +1600,109 @@ function renderRecs(){
   });
 }
 
+
+
+/* ---------- идеал команда: 5 геройдың өзара байланысы ---------- */
+const TL=id=>THREATS.find(t=>t.id===id).list;
+const SLOTS=['c','m','o','s','s'];
+function slotsOf(h){
+  const a=[]; if(has(POS.carry,h)) a.push('c'); if(has(POS.mid,h)) a.push('m'); if(has(POS.off,h)) a.push('o'); if(has(POS.sup,h)) a.push('s');
+  return a.length?a:['m','o'];
+}
+function tagsOf(h){
+  const r=roleOf(h);
+  return {r,sl:slotsOf(h),
+    magic:has(TL('magic'),h)||(h.primary_attr==='int'&&!has(TL('phys'),h)),
+    phys:has(TL('phys'),h)||(h.primary_attr!=='int'&&r!=='sup'),
+    init:has(TL('init'),h),lock:has(TL('lock'),h),push:has(TL('push'),h),
+    kill:LANE_KILL.includes(h.localized_name),safe:LANE_SAFE.includes(h.localized_name)};
+}
+function maxFill(t){ // ең көп рөл толтыру (carry, mid, off, 2 саппорт)
+  let best=0;
+  const go=(i,used,n)=>{ if(n+(t.length-i)<=best) return; if(i===t.length){ best=Math.max(best,n); return; }
+    t[i].sl.forEach(sl=>{ for(let j=0;j<5;j++) if(!(used&(1<<j))&&SLOTS[j]===sl){ go(i+1,used|(1<<j),n+1); break; } });
+    go(i+1,used,n); };
+  go(0,0,0); return best;
+}
+function teamScore(team,vsMap){
+  const t=team.map(tagsOf), cnt=f=>t.filter(f).length;
+  const fill=maxFill(t); let s=fill*2+(fill===5?2:0); const tags=[];
+  const mg=cnt(x=>x.magic), ph=cnt(x=>x.phys);
+  if(mg&&ph){ s+=2; tags.push('сиқыр + физика'); } else if(team.length>=3) s-=2;
+  const init=cnt(x=>x.init), lock=cnt(x=>x.lock);
+  if(init){ s+=2.5; tags.push('бастама'); }
+  if(lock>=2||(lock&&cnt(x=>x.kill))){ s+=2; tags.push('контроль'); }
+  const core=cnt(x=>x.r==='carry'||x.r==='off'), ks=cnt(x=>x.kill), ss=cnt(x=>x.safe);
+  if(core&&ks){ s+=2; tags.push('линия жұбы'); } else if(core&&ss){ s+=1.5; tags.push('линия жұбы'); }
+  if(ss) s+=1;
+  if(cnt(x=>x.r==='carry')>2) s-=1.5*(cnt(x=>x.r==='carry')-2);
+  if(cnt(x=>x.push)>=2) s+=1;
+  s+=team.reduce((a,h)=>a+(vsMap.get(h.id)||0),0)/Math.max(team.length,1)*team.length*.5;
+  return {s,tags,fill};
+}
+function auraItems(team,fs){
+  const t=team.map(tagsOf), out=[];
+  const mag=fs.filter(f=>has(TL('magic'),f)).length, ph=fs.filter(f=>has(TL('phys'),f)).length, lk=fs.filter(f=>has(TL('lock'),f)).length;
+  const melee=team.filter(h=>h.attack_type==='Melee'&&roleOf(h)!=='sup').length;
+  if(mag>=3) out.push(['Pipe of Insight','сиқыр көп']);
+  if(ph>=3&&melee>=1) out.push(['Crimson Guard','қатты зиянға қарсы']);
+  if(lk>=2) out.push(['Lotus Orb','байлауға қарсы']);
+  if(melee>=2) out.push(["Vladmir's Offering",'жақын геройларға вампиризм']);
+  if(t.some(x=>x.r==='sup')&&team.length>=3) out.push(['Mekansm','команда емі']);
+  if(team.length>=4&&!t.some(x=>x.init)) out.push(['Blink Dagger','бастама жоқ — блинк']);
+  return out.slice(0,3);
+}
+function idealTeams(){
+  const fs=foeHeroes(), foeIds=new Set(S.foe), me=S.mine.map(id=>BYID[id]).filter(Boolean);
+  if(me.length>=5) return [];
+  const vs=new Map(); HEROES.forEach(h=>{ if(!foeIds.has(h.id)) vs.set(h.id,(fs.length?scoreVs(h,fs).score:0)+(h.base-.5)*20); });
+  const mine=new Set(me.map(h=>h.id));
+  const cand=HEROES.filter(h=>!foeIds.has(h.id)&&!mine.has(h.id)).sort((a,b)=>vs.get(b.id)-vs.get(a.id));
+  const pool=new Map(); cand.slice(0,30).forEach(h=>pool.set(h.id,h));
+  [h=>isLaneSup(h),h=>roleOf(h)==='carry',h=>roleOf(h)==='off',h=>roleOf(h)==='mid'].forEach(f=>cand.filter(f).slice(0,10).forEach(h=>pool.set(h.id,h)));
+  const P=[...pool.values()];
+  let beams=[{team:me,s:teamScore(me,vs).s}];
+  for(let step=me.length;step<5;step++){
+    const nx=new Map();
+    beams.forEach(b=>P.forEach(h=>{ if(b.team.includes(h)) return;
+      const team=[...b.team,h], key=team.map(x=>x.id).sort().join(',');
+      if(!nx.has(key)) nx.set(key,{team,s:teamScore(team,vs).s}); }));
+    beams=[...nx.values()].sort((a,b)=>b.s-a.s).slice(0,40);
+  }
+  // бір-біріне өте ұқсас құрамдарды қайталамау
+  const pick=[], nw=b=>b.team.filter(h=>!mine.has(h.id)).map(h=>h.id);
+  for(const b of beams){
+    const n=nw(b); if(pick.every(q=>{ const o=nw(q).filter(id=>n.includes(id)).length; return o<=Math.max(0,n.length-2); })) pick.push(b);
+    if(pick.length>=3) break;
+  }
+  if(!pick.length&&beams[0]) pick.push(beams[0]);
+  return pick.map(b=>({team:b.team,fs,...teamScore(b.team,vs)}));
+}
+function renderIdeal(){
+  const box=document.getElementById('ideal'), hint=document.getElementById('idHint');
+  const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
+  let list;
+  if(me.length>=5){ const vs=new Map(); me.forEach(h=>vs.set(h.id,fs.length?scoreVs(h,fs).score:0)); list=[{team:me,fs,...teamScore(me,vs),full:1}]; hint.textContent='сенің командаң'; }
+  else { list=idealTeams(); hint.textContent=me.length?'сенің геройларыңмен':'ең жақсы 5'; }
+  const mineSet=new Set(me.map(h=>h.id));
+  box.innerHTML='';
+  list.forEach((x,i)=>{
+    const aura=auraItems(x.team,fs);
+    const miss=x.team.filter(h=>!mineSet.has(h.id));
+    const c=document.createElement('div'); c.className='card ideal';
+    c.innerHTML=`<div class="five">${x.team.map(h=>`<div class="fv${mineSet.has(h.id)?' mine':''}"><img src="${h.img}" alt="" loading="lazy"><span>${h.localized_name}</span></div>`).join('')}</div>
+      <div class="tgs">${x.tags.map(t=>`<span class="tg">✓ ${t}</span>`).join('')}${x.fill>=5?'<span class="tg">✓ барлық рөл</span>':''}</div>
+      ${aura.length?`<div class="grow"><span class="gt">Командаға зат</span><div class="items">${aura.map(([n,w])=>`<span class="it">${itemIcon(n)}${n}<small style="color:var(--dim);margin-left:5px">${w}</small></span>`).join('')}</div></div>`:''}`;
+    if(miss.length&&!x.full){
+      const bt=document.createElement('button'); bt.className='btn'; bt.style.marginTop='10px';
+      bt.textContent=miss.length>1?'Командаға қос':'+ Қос';
+      bt.onclick=()=>{ miss.forEach(h=>{ if(S.mine.length<5&&!S.mine.includes(h.id)) S.mine.push(h.id); }); save(); board(); buzz(14); toast('Команда құрылды'); };
+      c.appendChild(bt);
+    }
+    box.appendChild(c);
+  });
+  stagger([...box.children]);
+}
 
 /* ---------- линия жұбы: керри/хард + қасындағы саппорт ---------- */
 const LANE_KILL=['Lion','Shadow Shaman','Lich','Bane','Skywrath Mage','Tusk','Vengeful Spirit','Earthshaker','Rubick','Dark Willow','Hoodwink','Clockwerk','Nyx Assassin','Grimstroke','Snapfire','Jakiro','Disruptor','Crystal Maiden','Witch Doctor','Ogre Magi','Ringmaster'];
