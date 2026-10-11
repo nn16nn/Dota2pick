@@ -404,7 +404,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='3.9';
+const V='4.0';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -774,6 +774,12 @@ Object.assign(I18N.en,{"Линия жұбы": "Lane pair", "Линияда өл�
 
 Object.assign(I18N.ru,{"Идеал команда": "Идеальная команда", "Командаға қос": "Добавить команду", "ең жақсы 5": "лучшая пятёрка", "сенің геройларыңмен": "с твоими героями", "сенің командаң": "твоя команда", "сиқыр + физика": "магия + физика", "бастама": "инициация", "контроль": "контроль", "линия жұбы": "пара на линию", "барлық рөл": "все роли", "сиқыр көп": "много магии", "қатты зиянға қарсы": "против физ. урона", "байлауға қарсы": "против связывания", "жақын геройларға вампиризм": "вампиризм для ближников", "команда емі": "лечение команды", "бастама жоқ — блинк": "нет инициации — блинк"});
 Object.assign(I18N.en,{"Идеал команда": "Ideal team", "Командаға қос": "Add team", "ең жақсы 5": "best five", "сенің геройларыңмен": "with your heroes", "сенің командаң": "your team", "сиқыр + физика": "magic + physical", "бастама": "initiation", "контроль": "control", "линия жұбы": "lane pair", "барлық рөл": "all roles", "сиқыр көп": "lots of magic", "қатты зиянға қарсы": "vs physical damage", "байлауға қарсы": "vs lockdown", "жақын геройларға вампиризм": "lifesteal for melee", "команда емі": "team healing", "бастама жоқ — блинк": "no initiator — blink"});
+
+Object.assign(I18N.ru,{"байланыс ✓": "связка ✓"});
+Object.assign(I18N.en,{"байланыс ✓": "synergy ✓"});
+
+Object.assign(I18N.ru,{"Барлық": "Все", "ең жақсы": "лучшие"});
+Object.assign(I18N.en,{"Барлық": "All", "ең жақсы": "best"});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1554,12 +1560,13 @@ function recommend(){
   const used=new Set([...S.mine,...S.foe]);
   const fs=S.foe.map(id=>BYID[id]).filter(Boolean);
   if(!fs.length) return null;
-  const out=[];
+  const out=[], NOV=new Map(), me=S.mine.map(id=>BYID[id]).filter(Boolean), base=me.length?teamScore(me,NOV).s:0;
   for(const h of HEROES){
     if(used.has(h.id)) continue;
-    const r=scoreVs(h,fs); out.push({h,score:r.score,det:r.det});
+    const r=scoreVs(h,fs), syn=(me.length&&me.length<5)?teamScore([...me,h],NOV).s-base:0;
+    out.push({h,score:r.score,det:r.det,syn,rank:r.score+syn*.4});
   }
-  return out.sort((a,b)=>b.score-a.score);
+  return out.sort((a,b)=>b.rank-a.rank);
 }
 let recAll=false;
 document.getElementById('recMore').onclick=()=>{ recAll=!recAll; renderRecs(); };
@@ -1587,7 +1594,7 @@ function renderRecs(){
     const pos=posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ');
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
-      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${warn}</div>
+      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.syn>=3.5?' · байланыс ✓':''}${warn}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
       <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
@@ -1667,26 +1674,30 @@ function idealTeams(){
     beams.forEach(b=>P.forEach(h=>{ if(b.team.includes(h)) return;
       const team=[...b.team,h], key=team.map(x=>x.id).sort().join(',');
       if(!nx.has(key)) nx.set(key,{team,s:teamScore(team,vs).s}); }));
-    beams=[...nx.values()].sort((a,b)=>b.s-a.s).slice(0,40);
+    beams=[...nx.values()].sort((a,b)=>b.s-a.s).slice(0,80);
   }
-  // бір-біріне өте ұқсас құрамдарды қайталамау
+  // бір-біріне өте ұқсас құрамдарды қайталамау (алдымен қатаң, содан кейін жұмсақ)
   const pick=[], nw=b=>b.team.filter(h=>!mine.has(h.id)).map(h=>h.id);
-  for(const b of beams){
-    const n=nw(b); if(pick.every(q=>{ const o=nw(q).filter(id=>n.includes(id)).length; return o<=Math.max(0,n.length-2); })) pick.push(b);
-    if(pick.length>=3) break;
-  }
-  if(!pick.length&&beams[0]) pick.push(beams[0]);
+  [2,1].forEach(gap=>{
+    for(const b of beams){
+      if(pick.length>=7||pick.includes(b)) continue;
+      const n=nw(b); if(pick.every(q=>nw(q).filter(id=>n.includes(id)).length<=Math.max(0,n.length-gap))) pick.push(b);
+    }
+  });
+  pick.sort((a,b)=>b.s-a.s);
   return pick.map(b=>({team:b.team,fs,...teamScore(b.team,vs)}));
 }
+let idAll=false;
 function renderIdeal(){
   const box=document.getElementById('ideal'), hint=document.getElementById('idHint');
   const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
   let list;
   if(me.length>=5){ const vs=new Map(); me.forEach(h=>vs.set(h.id,fs.length?scoreVs(h,fs).score:0)); list=[{team:me,fs,...teamScore(me,vs),full:1}]; hint.textContent='сенің командаң'; }
-  else { list=idealTeams(); hint.textContent=me.length?'сенің геройларыңмен':'ең жақсы 5'; }
+  else { list=idealTeams(); hint.textContent=me.length?'сенің геройларыңмен':'ең жақсы '+list.length; }
   const mineSet=new Set(me.map(h=>h.id));
   box.innerHTML='';
-  list.forEach((x,i)=>{
+  const shown=idAll?list:list.slice(0,3);
+  shown.forEach((x,i)=>{
     const aura=auraItems(x.team,fs);
     const miss=x.team.filter(h=>!mineSet.has(h.id));
     const c=document.createElement('div'); c.className='card ideal';
@@ -1701,6 +1712,10 @@ function renderIdeal(){
     }
     box.appendChild(c);
   });
+  if(list.length>3){
+    const m=document.createElement('button'); m.className='btn'; m.textContent=idAll?'Азырақ көрсету':'Барлық '+list.length+' команда';
+    m.onclick=()=>{ idAll=!idAll; renderIdeal(); }; box.appendChild(m);
+  }
   stagger([...box.children]);
 }
 
