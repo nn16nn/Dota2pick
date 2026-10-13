@@ -1,7 +1,7 @@
 /* Dota 2 Pick — service worker (автожаңарту) */
-const V = '4.0';
+const V = '4.1';
 const C = 'd2pick-' + V;
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './skills.json'];
 
 self.addEventListener('install', e => {
   // жаңа нұсқа бірден кезекке тұрады, бетке хабар келгенде іске қосылады
