@@ -331,6 +331,9 @@ input{font-family:inherit}
     <div class="sec" id="idsec"><h2>Идеал команда</h2><span class="hint" id="idHint"></span></div>
     <div id="ideal"></div>
 
+    <div class="sec" id="tbsec"><h2>Команда жинағы</h2><span class="hint" id="tmHint"></span></div>
+    <div id="itTeam"></div>
+
     <div class="sec" id="recsec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
     <div class="chips" id="filters"></div>
     <div id="recs"></div>
@@ -341,8 +344,7 @@ input{font-family:inherit}
 
     <div class="sec" id="itsec"><h2>Бір зат — көп геройға</h2><span class="hint" id="itHint"></span></div>
     <div id="itTop"></div>
-    <div class="sec" id="tbsec"><h2>Команда жинағы</h2><span class="hint" id="tmHint"></span></div>
-    <div id="itTeam"></div>
+
   </section>
 
   <!-- ЗАТТАР -->
@@ -415,7 +417,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.1';
+const V='4.2';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1236,15 +1238,15 @@ let KEYBYNAME={};
 const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
 async function loadItems(){
   if(ITEMDATA) return;
-  let d=LS.get('itemsdb',30);
+  let d=LS.get('itemsdb2',30);
   if(!d){
     const raw=await getJSON('https://raw.githubusercontent.com/odota/dotaconstants/master/build/items.json');
     d={};
     Object.entries(raw).forEach(([k,v])=>{
       if(!v||!v.dname||k.startsWith('recipe_')) return;
-      d[k]={n:v.dname,c:v.cost||0,q:v.qual||''};
+      d[k]={n:v.dname,c:v.cost||0,q:v.qual||'',m:(v.components&&v.components.length)?1:0};
     });
-    LS.set('itemsdb',d);
+    LS.set('itemsdb2',d);
   }
   ITEMDATA=d; DN2KEY={};
   Object.entries(d).forEach(([k,v])=>{ DN2KEY[norm(v.n)]=k; });
@@ -1858,7 +1860,7 @@ function renderPickItems(){
 
 /* ---------- команда жинағы: әр геройға бөлек, бір зат бір рет қана ---------- */
 const CORE={}; let SKILLS=null, PLANH=null;
-const JUNK=new Set(['tango','flask','clarity','enchanted_mango','faerie_fire','ward_observer','ward_sentry','ward_dispenser','smoke_of_deceit','dust','tpscroll','branches','blood_grenade','famango','great_famango','greater_famango','magic_stick','quelling_blade','circlet','gauntlets','slippers','mantle','crown','ring_of_protection','sobi_mask','orb_of_venom','boots','gloves','belt_of_strength','band_of_elvenskin','robe','ogre_axe','blade_of_alacrity','staff_of_wizardry','ring_of_regen','wind_lace','fluffy_hat','blitz_knuckles','chainmail','javelin','mithril_hammer','broadsword','claymore','quarterstaff','cornucopia','point_booster','vitality_booster','energy_booster','ultimate_orb','demon_edge','eagle','reaver','relic','talisman_of_evasion','platemail','hyperstone','mystic_staff','void_stone','ring_of_health','headdress','buckler','ring_of_basilius','lifesteal','gem','aegis','cheese','refresher_shard','tome_of_knowledge','infused_raindrop','bottle','ring_of_tarrasque','tiara_of_selemene','diadem','voodoo_mask','shadow_amulet','cloak','ghost','blink','splintered_shard','wraith_band','null_talisman','bracer','fluffy_hat','soul_ring','tranquil_boots','ultimate_scepter_roshan','aghanims_shard_roshan','ultimate_scepter_2']);
+const JUNK=new Set(['tango','flask','clarity','enchanted_mango','faerie_fire','ward_observer','ward_sentry','ward_dispenser','smoke_of_deceit','dust','tpscroll','branches','blood_grenade','famango','great_famango','greater_famango','magic_stick','quelling_blade','circlet','gauntlets','slippers','mantle','crown','ring_of_protection','sobi_mask','orb_of_venom','boots','gloves','belt_of_strength','band_of_elvenskin','robe','ogre_axe','blade_of_alacrity','staff_of_wizardry','ring_of_regen','wind_lace','fluffy_hat','blitz_knuckles','chainmail','javelin','mithril_hammer','broadsword','claymore','quarterstaff','cornucopia','point_booster','vitality_booster','energy_booster','ultimate_orb','demon_edge','eagle','reaver','relic','talisman_of_evasion','platemail','hyperstone','mystic_staff','void_stone','ring_of_health','headdress','buckler','ring_of_basilius','lifesteal','gem','aegis','cheese','refresher_shard','tome_of_knowledge','infused_raindrop','ring_of_tarrasque','tiara_of_selemene','diadem','voodoo_mask','shadow_amulet','cloak','splintered_shard','wraith_band','null_talisman','bracer','fluffy_hat','ultimate_scepter_roshan','aghanims_shard_roshan','ultimate_scepter_2']);
 const coreList=c=>c?[...c.early,...c.mid,...c.late]:[];
 async function loadCore(h){
   if(CORE[h.id]) return CORE[h.id];
@@ -1866,13 +1868,28 @@ async function loadCore(h){
     await Promise.all([loadItemIds(),loadItems()]);
     let d=LS.get('ip'+h.id,7);
     if(!d){ d=await getJSON(API+'/heroes/'+h.id+'/itemPopularity'); LS.set('ip'+h.id,d); }
-    const seen=new Set();
-    const grp=(o,n)=>{ const r=[]; for(const [id] of Object.entries(o||{}).sort((a,b)=>b[1]-a[1])){
-      const k=ITEMIDS[id]; if(!k||JUNK.has(k)||k.startsWith('recipe')||seen.has(k)) continue;
-      if(ITEMDATA&&(!ITEMDATA[k]||!(ITEMDATA[k].c>0))) continue; // нейтрал, токен, шығын емес — дүкендегі зат қана
-      seen.add(k); r.push(pretty(k)); if(r.length>=n) break; } return r; };
-    const c={early:grp(d.early_game_items,2),mid:grp(d.mid_game_items,3),late:grp(d.late_game_items,3)};
-    c.more=grp(d.late_game_items,3);
+    const WL=new Set(['blink','ghost','bottle','aghanims_shard']);
+    const ok=k=>k&&!JUNK.has(k)&&!k.startsWith('recipe')&&ITEMDATA&&ITEMDATA[k]&&ITEMDATA[k].c>0&&(ITEMDATA[k].m||WL.has(k));
+    // әр кезеңде жиілігін 0..1-ге келтіріп, ең маңызды 9 затты аламыз
+    const best=new Map();
+    [['early',d.early_game_items],['mid',d.mid_game_items],['late',d.late_game_items]].forEach(([ph,o])=>{
+      const ent=Object.entries(o||{}); const mx=Math.max(1,...ent.map(e=>e[1]));
+      ent.forEach(([id,cnt])=>{ const k=ITEMIDS[id]; if(!ok(k)) return; const sc=cnt/mx, b=best.get(k); if(!b||sc>b.sc) best.set(k,{k,sc,ph}); });
+    });
+    const top=[...best.values()].sort((a,b)=>b.sc-a.sc);
+    // аяқ киім біреу ғана (Boots of Travel кеш ойынға бөлек)
+    const BOOT=/^(power_treads|phase_boots|arcane_boots|tranquil_boots|boots_of_bearing|guardian_greaves)$/;
+    const pick=[]; let boot=false;
+    for(const x of top){ if(BOOT.test(x.k)){ if(boot) continue; boot=true; } pick.push(x); if(pick.length>=9) break; }
+    const swap=(test)=>{ if(pick.some(x=>test(x.k))) return; const f=top.find(x=>test(x.k)); if(f){ pick.pop(); pick.push(f); } };
+    // бастама жасайтын геройға блинк міндетті, әр геройға аяқ киім міндетті
+    if(has(TL('init'),h)) swap(k=>/blink/.test(k));
+    swap(k=>/boots|treads|greaves|bearing/.test(k));
+    const ord={early:0,mid:1,late:2};
+    pick.sort((a,b)=>ord[a.ph]-ord[b.ph]||b.sc-a.sc);
+    const nm=x=>pretty(x.k);
+    const c={early:pick.filter(x=>x.ph==='early').map(nm),mid:pick.filter(x=>x.ph==='mid').map(nm),late:pick.filter(x=>x.ph==='late').map(nm)};
+    c.more=top.filter(x=>!pick.includes(x)&&!(boot&&BOOT.test(x.k))).slice(0,3).map(nm);
     return CORE[h.id]=c;
   }catch(e){ return CORE[h.id]={early:[],mid:[],late:[],more:[],fail:1}; }
 }
