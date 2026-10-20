@@ -118,6 +118,10 @@ input{font-family:inherit}
 .mc.dim{color:var(--dim);background:#1A2130}.pl.ult img{outline:1.5px solid var(--gold)}
 .tal .tr{display:grid;grid-template-columns:1fr 26px 1fr;gap:6px;align-items:center;font-size:11.5px;padding:5px 0;border-top:1px solid var(--line)}
 .tal .tr span:first-child{text-align:right}.tal .tr b{text-align:center;color:var(--gold);font-family:var(--disp)}
+.ti .no{position:absolute;top:-4px;left:-2px;font-style:normal;font-size:9px;font-weight:700;color:#E9EEF7;background:#2A3448;border-radius:4px;padding:0 4px}
+.tis.sm .ti{width:44px}.tis.sm .ti img{width:36px;height:26px}
+.why.lg{font-size:11.5px;margin:0 2px 8px}.why.rs{margin:6px 0 0;font-size:12px}.why.rs b{color:var(--txt,#E9EEF7);font-weight:600}
+.why.cmb{margin:8px 0 0;font-size:12px}.why.cmb b{color:var(--gold);font-weight:600}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -417,7 +421,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.2';
+const V='4.3';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -796,6 +800,9 @@ Object.assign(I18N.en,{"Барлық": "All", "ең жақсы": "best"});
 
 Object.assign(I18N.ru,{"Команда жинағы": "Сборка команды", "Негізгі": "Основа", "Қарсыласқа": "Против врага", "Тағы": "Ещё", "Скилдар": "Способности", "Ульт · 6/12/18": "Ульта · 6/12/18", "Туа біткен": "Врождённая", "Пассив": "Пассивка", "Таланттар": "Таланты", "Қарсыласқа қарсы": "Против соперника", "Тағы не қосуға болады": "Что ещё можно добавить", "Өз геройларыңды қос — әр геройға бөлек, қайталанбайтын жинақ шығады.": "Добавь своих героев — у каждого будет своя сборка без повторов.", "басып аш — толық жинақ пен скилдар": "нажми — полная сборка и способности", "кеш ойын": "поздняя игра", "Жинақ жүктелмеді — интернетті тексер.": "Сборка не загрузилась — проверь интернет.", "Негізгі жинақ": "Основная сборка", "Нақты ойындарда ең жиі жиналғаны. Алтын жиекті зат — қарсыласқа да қарсы.": "Чаще всего собирают в реальных играх. Золотая рамка — предмет ещё и контрит соперника.", "Жинақта бар — қарсыласқа да қарсы": "Уже в сборке — и контрит соперника", "Бұл геройға қосымша қарсы зат қажет емес — негізгі жинақпен жүре бер.": "Этому герою доп. контр-предметы не нужны — играй основную сборку.", "кор": "кор", "қолдау": "саппорт"});
 Object.assign(I18N.en,{"Команда жинағы": "Team build", "Негізгі": "Core", "Қарсыласқа": "Counter", "Тағы": "Extra", "Скилдар": "Abilities", "Ульт · 6/12/18": "Ult · 6/12/18", "Туа біткен": "Innate", "Пассив": "Passive", "Таланттар": "Talents", "Қарсыласқа қарсы": "Against enemies", "Тағы не қосуға болады": "What else to add", "Өз геройларыңды қос — әр геройға бөлек, қайталанбайтын жинақ шығады.": "Add your heroes — each gets its own build, no repeats.", "басып аш — толық жинақ пен скилдар": "tap — full build and abilities", "кеш ойын": "late game", "Жинақ жүктелмеді — интернетті тексер.": "Build failed to load — check internet.", "Негізгі жинақ": "Core build", "Нақты ойындарда ең жиі жиналғаны. Алтын жиекті зат — қарсыласқа да қарсы.": "Most built in real games. Gold border — it also counters the enemy.", "Жинақта бар — қарсыласқа да қарсы": "Already in build — also counters", "Бұл геройға қосымша қарсы зат қажет емес — негізгі жинақпен жүре бер.": "No extra counter items needed — play the core build.", "кор": "core", "қолдау": "support"});
+
+Object.assign(I18N.ru,{"Сатып алу реті": "Порядок покупки", "Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.": "Номер — порядок покупки. Красная рамка — против соперника, золотая — в сборке и контрит.", "Нақты ойындардағы жиілік пен уақыт бойынша. Қызыл жиек — қарсыласқа қарсы, алтын — жинақта бар әрі қарсы.": "По частоте и времени покупки в реальных играх. Красная рамка — против соперника, золотая — в сборке и контрит.", "Негізгі → кеш": "Основа → поздняя", "Неге бұл заттар": "Почему эти предметы", "комбо": "комбо", "комбо: ": "комбо: "});
+Object.assign(I18N.en,{"Сатып алу реті": "Buy order", "Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.": "Number — buy order. Red border — counter item, gold — core item that also counters.", "Нақты ойындардағы жиілік пен уақыт бойынша. Қызыл жиек — қарсыласқа қарсы, алтын — жинақта бар әрі қарсы.": "By frequency and timing in real games. Red border — counter item, gold — core item that also counters.", "Негізгі → кеш": "Core → late", "Неге бұл заттар": "Why these items", "комбо": "combo", "комбо: ": "combo: "});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1580,7 +1587,8 @@ function recommend(){
   for(const h of HEROES){
     if(used.has(h.id)) continue;
     const r=scoreVs(h,fs), syn=(me.length&&me.length<5)?teamScore([...me,h],NOV).s-base:0;
-    out.push({h,score:r.score,det:r.det,syn,rank:r.score+syn*.4});
+    const cm=me.find(m=>comboWith(m.localized_name,h.localized_name));
+    out.push({h,score:r.score,det:r.det,syn,cmb:cm?cm.localized_name:'',rank:r.score+syn*.4+(cm?2:0)});
   }
   return out.sort((a,b)=>b.rank-a.rank);
 }
@@ -1610,7 +1618,7 @@ function renderRecs(){
     const pos=posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ');
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
-      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.syn>=3.5?' · байланыс ✓':''}${warn}</div>
+      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.cmb?' · комбо: '+x.cmb:x.syn>=3.5?' · байланыс ✓':''}${warn}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
       <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
@@ -1647,6 +1655,9 @@ function maxFill(t){ // ең көп рөл толтыру (carry, mid, off, 2 с
     go(i+1,used,n); };
   go(0,0,0); return best;
 }
+/* классикалық комбо (тексерілген, белгілі байланыстар) */
+const COMBOS=[["Io", "Gyrocopter", "Tether + Overload"], ["Io", "Tiny", "Toss + Tether"], ["Io", "Chaos Knight", "Relocate + Reality Rift"], ["Io", "Sven", "Tether + God's Strength"], ["Magnus", "Sven", "Empower + Great Cleave"], ["Magnus", "Troll Warlord", "Reverse Polarity + Battle Trance"], ["Magnus", "Phantom Assassin", "Empower + Coup de Grace"], ["Magnus", "Juggernaut", "Reverse Polarity + Omnislash"], ["Dazzle", "Huskar", "Shallow Grave + Berserker's Blood"], ["Ogre Magi", "Troll Warlord", "Bloodlust + Battle Trance"], ["Enigma", "Queen of Pain", "Black Hole + Sonic Wave"], ["Enigma", "Death Prophet", "Black Hole + Exorcism"], ["Faceless Void", "Invoker", "Chronosphere + Chaos Meteor"], ["Faceless Void", "Skywrath Mage", "Chronosphere + Mystic Flare"], ["Vengeful Spirit", "Drow Ranger", "Vengeance Aura + Multishot"], ["Disruptor", "Lina", "Kinetic Field + Light Strike Array"], ["Tidehunter", "Kunkka", "Ravage + Torrent"], ["Shadow Shaman", "Lycan", "Serpent Wards + Wolves (push)"]];
+const comboWith=(a,b)=>COMBOS.find(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
 function teamScore(team,vsMap){
   const t=team.map(tagsOf), cnt=f=>t.filter(f).length;
   const fill=maxFill(t); let s=fill*2+(fill===5?2:0); const tags=[];
@@ -1661,7 +1672,9 @@ function teamScore(team,vsMap){
   if(cnt(x=>x.r==='carry')>2) s-=1.5*(cnt(x=>x.r==='carry')-2);
   if(cnt(x=>x.push)>=2) s+=1;
   s+=team.reduce((a,h)=>a+(vsMap.get(h.id)||0),0)/Math.max(team.length,1)*team.length*.5;
-  return {s,tags,fill};
+  const names=new Set(team.map(h=>h.localized_name)), cmb=COMBOS.filter(([a,b])=>names.has(a)&&names.has(b));
+  if(cmb.length){ s+=3*cmb.length; tags.push('комбо'); }
+  return {s,tags,fill,cmb};
 }
 function auraItems(team,fs){
   const t=team.map(tagsOf), out=[];
@@ -1683,6 +1696,8 @@ function idealTeams(){
   const cand=HEROES.filter(h=>!foeIds.has(h.id)&&!mine.has(h.id)).sort((a,b)=>vs.get(b.id)-vs.get(a.id));
   const pool=new Map(); cand.slice(0,30).forEach(h=>pool.set(h.id,h));
   [h=>isLaneSup(h),h=>roleOf(h)==='carry',h=>roleOf(h)==='off',h=>roleOf(h)==='mid'].forEach(f=>cand.filter(f).slice(0,10).forEach(h=>pool.set(h.id,h)));
+  // өз геройларыңның комбо серіктері мен барлық комбо геройлар пулға кіреді
+  COMBOS.forEach(([a,b])=>[a,b].forEach(n=>{ const x=HEROES.find(z=>z.localized_name===n); if(x&&!foeIds.has(x.id)&&!mine.has(x.id)) pool.set(x.id,x); }));
   const P=[...pool.values()];
   let beams=[{team:me,s:teamScore(me,vs).s}];
   for(let step=me.length;step<5;step++){
@@ -1718,6 +1733,7 @@ function renderIdeal(){
     const c=document.createElement('div'); c.className='card ideal';
     c.innerHTML=`<div class="five">${x.team.map(h=>`<div class="fv${mineSet.has(h.id)?' mine':''}"><img src="${h.img}" alt="" loading="lazy"><span>${h.localized_name}</span></div>`).join('')}</div>
       <div class="tgs">${x.tags.map(t=>`<span class="tg">✓ ${t}</span>`).join('')}${x.fill>=5?'<span class="tg">✓ барлық рөл</span>':''}</div>
+      ${x.cmb&&x.cmb.length?`<p class="why cmb">${x.cmb.map(c=>`<b>${c[0]} + ${c[1]}</b> — ${c[2]}`).join('<br>')}</p>`:''}
       `;
     if(miss.length&&!x.full){
       const bt=document.createElement('button'); bt.className='btn'; bt.style.marginTop='10px';
@@ -1874,7 +1890,8 @@ async function loadCore(h){
     const best=new Map();
     [['early',d.early_game_items],['mid',d.mid_game_items],['late',d.late_game_items]].forEach(([ph,o])=>{
       const ent=Object.entries(o||{}); const mx=Math.max(1,...ent.map(e=>e[1]));
-      ent.forEach(([id,cnt])=>{ const k=ITEMIDS[id]; if(!ok(k)) return; const sc=cnt/mx, b=best.get(k); if(!b||sc>b.sc) best.set(k,{k,sc,ph}); });
+      ent.forEach(([id,cnt])=>{ const k=ITEMIDS[id]; if(!ok(k)) return; const sc=cnt/mx; let b=best.get(k);
+        if(!b){ b={k,sc:0,ph,sh:[0,0,0]}; best.set(k,b); } b.sh[{early:0,mid:1,late:2}[ph]]=sc; if(sc>b.sc){ b.sc=sc; b.ph=ph; } });
     });
     const top=[...best.values()].sort((a,b)=>b.sc-a.sc);
     // аяқ киім біреу ғана (Boots of Travel кеш ойынға бөлек)
@@ -1885,13 +1902,18 @@ async function loadCore(h){
     // бастама жасайтын геройға блинк міндетті, әр геройға аяқ киім міндетті
     if(has(TL('init'),h)) swap(k=>/blink/.test(k));
     swap(k=>/boots|treads|greaves|bearing/.test(k));
-    const ord={early:0,mid:1,late:2};
-    pick.sort((a,b)=>ord[a.ph]-ord[b.ph]||b.sc-a.sc);
+    // әр заттың орташа алу уақыты: 1=ерте, 2=орта, 3=кеш
+    const tOf=x=>{ const [e,m,l]=x.sh, z=e+m+l||1; return (e*1+m*2+l*3)/z; };
+    pick.forEach(x=>x.t=tOf(x));
+    pick.sort((a,b)=>a.t-b.t);
     const nm=x=>pretty(x.k);
     const c={early:pick.filter(x=>x.ph==='early').map(nm),mid:pick.filter(x=>x.ph==='mid').map(nm),late:pick.filter(x=>x.ph==='late').map(nm)};
     c.more=top.filter(x=>!pick.includes(x)&&!(boot&&BOOT.test(x.k))).slice(0,3).map(nm);
+    c.t={}; pick.forEach(x=>c.t[nm(x)]=x.t); top.forEach(x=>{ if(c.t[nm(x)]==null) c.t[nm(x)]=tOf(x); });
+    c.start=Object.entries(d.start_game_items||{}).sort((a,b)=>b[1]-a[1]).map(([id])=>ITEMIDS[id])
+      .filter(k=>k&&!k.startsWith('recipe')&&ITEMDATA[k]&&ITEMDATA[k].c>0&&ITEMDATA[k].c<=1000).slice(0,5).map(k=>pretty(k));
     return CORE[h.id]=c;
-  }catch(e){ return CORE[h.id]={early:[],mid:[],late:[],more:[],fail:1}; }
+  }catch(e){ return CORE[h.id]={early:[],mid:[],late:[],more:[],start:[],t:{},fail:1}; }
 }
 async function loadSkills(){
   if(SKILLS) return SKILLS;
@@ -1935,32 +1957,38 @@ function teamPlan(){
   return {per,fs,me};
 }
 const AIMG=k=>CDN+'/apps/dota2/images/dota_react/abilities/'+k+'.png';
-const tile=(n,cls,cnt)=>`<div class="ti${cls?' '+cls:''}" title="${n}">${itemIcon(n)}${cnt?`<i class="tc">${cnt}</i>`:''}<span>${n}</span></div>`;
+const tile=(n,cls,cnt,no)=>`<div class="ti${cls?' '+cls:''}" title="${n}">${itemIcon(n)}${cnt?`<i class="tc">${cnt}</i>`:''}${no?`<i class="no">${no}</i>`:''}<span>${n}</span></div>`;
+function seqOf(p){
+  const c=p.core; if(!c||c.fail) return [];
+  const T=n=>{ if(c.t&&c.t[n]!=null) return c.t[n]; const k=DN2KEY[norm(n)], cost=k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; return cost<1500?1.3:cost<3000?1.9:cost<4500?2.3:2.7; };
+  return [...coreList(c).map(n=>({n,t:T(n),hit:p.hit.get(n)})),...p.counter.map(e=>({n:e.n,t:T(e.n),ctr:e}))].sort((a,b)=>a.t-b.t);
+}
+function seqTiles(p,n){
+  return seqOf(p).map((x,i)=>{ const e=x.ctr||x.hit; return tile(x.n,x.ctr?'hotc':x.hit?'hit':'',e&&e.who.size?e.who.size+'/'+n:'',i+1); }).join('');
+}
 function renderTeamBuild(){
   const tm=document.getElementById('itTeam'), hint=document.getElementById('tmHint');
   const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
   hint.textContent=me.length?'басып аш — толық жинақ пен скилдар':'';
   if(!me.length){ tm.innerHTML='<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қайталанбайтын жинақ шығады.</div>'; return; }
   const P=teamPlan(), n=fs.length;
-  tm.innerHTML='';
+  tm.innerHTML='<p class="why lg">Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.</p>';
   me.forEach(h=>{
     const p=P.per.get(h.id), c=p.core, sk=SKILLS&&SKILLS[h.name];
-    const hitCnt=x=>{ const e=p.hit.get(x); return e&&e.who.size?e.who.size+'/'+n:''; };
-    const grp=(arr)=>arr.map(x=>tile(x,p.hit.has(x)?'hit':'',hitCnt(x))).join('');
     const coreHtml=!c?'<div class="sk" style="height:58px"></div>'
       :c.fail?'<p class="why" style="margin:0">Жинақ жүктелмеді — интернетті тексер.</p>'
-      :`<div class="tis">${grp(c.early)}${c.mid.length?'<b class="ar">›</b>':''}${grp(c.mid)}${c.late.length?'<b class="ar">›</b>':''}${grp(c.late)}</div>`;
+      :`<div class="tis">${seqTiles(p,n)}</div>`;
     const card=document.createElement('div'); card.className='card tb'; card.setAttribute('role','button');
     card.innerHTML=`<div class="tbh"><img class="tbp" src="${h.img}" alt="" loading="lazy">
         <div class="tbn"><div class="pn">${h.localized_name}</div><div class="pw">${POSKK[roleOf(h)]||''}</div></div>
         ${sk?`<div class="abl">${sk.a.filter(r=>r[4]!=='i').map(r=>`<img class="${r[4]==='u'?'u':''}" src="${AIMG(r[0])}" alt="" title="${r[1]}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}</div>
-      <div class="grow"><span class="gt">Негізгі</span>${coreHtml}</div>
-      ${p.counter.length?`<div class="grow"><span class="gt">Қарсыласқа</span><div class="tis">${p.counter.map(e=>tile(e.n,e.hot?'hotc':'',e.who.size?e.who.size+'/'+n:'')).join('')}</div></div>`:''}
+      ${c&&c.start&&c.start.length?`<div class="grow"><span class="gt">Бастапқы</span><div class="tis sm">${c.start.map(x=>tile(x,'','')).join('')}</div></div>`:''}
+      <div class="grow"><span class="gt">Сатып алу реті</span>${coreHtml}</div>
       ${p.extra.length?`<div class="grow"><span class="gt">Тағы</span><div class="tis">${p.extra.map(e=>tile(e.n,'ex','')).join('')}</div></div>`:''}`;
     card.onclick=()=>{ PLANH=h.id; go('p-items',1); setTimeout(()=>{ const m=document.getElementById('myHeroes'); if(m) window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:RM?'auto':'smooth'}); },450); };
     tm.appendChild(card);
   });
-  stagger([...tm.children]);
+  stagger([...tm.querySelectorAll('.card')]);
   const miss=me.filter(h=>!CORE[h.id]);
   if(miss.length) Promise.all(miss.map(loadCore)).then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); });
   if(!SKILLS) loadSkills().then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); }).catch(()=>{});
@@ -2179,14 +2207,14 @@ async function showPlan(h){
   const row=(n,sub,who,cls)=>`<div class="pl${cls?' '+cls:''}">${itemIcon(n)}<div><div class="pn">${n}${who&&who.length?heroBadges(who,4):''}</div><div class="pw">${sub}</div></div></div>`;
   const c=p.core;
   const coreCard=!c||c.fail?'<div class="empty">Негізгі жинақ жүктелмеді — интернетті тексер.</div>'
-    :`<div class="card"><h3>Негізгі жинақ</h3><p class="why">Нақты ойындарда ең жиі жиналғаны. Алтын жиекті зат — қарсыласқа да қарсы.</p>`
-      +[['Ерте',c.early],['Орта',c.mid],['Кеш',c.late]].filter(r=>r[1].length).map(([t,its])=>`<div class="grow"><span class="gt">${t}</span><div class="tis">${its.map(x=>{ const e=p.hit.get(x); return tile(x,e?'hit':'',e&&e.who.size?e.who.size+'/'+fs.length:''); }).join('')}</div></div>`).join('')
-      +'</div>';
+    :`<div class="card"><h3>Сатып алу реті</h3><p class="why">Нақты ойындардағы жиілік пен уақыт бойынша. Қызыл жиек — қарсыласқа қарсы, алтын — жинақта бар әрі қарсы.</p>`
+      +(c.start&&c.start.length?`<div class="grow"><span class="gt">Бастапқы</span><div class="tis sm">${c.start.map(x=>tile(x,'','')).join('')}</div></div>`:'')
+      +`<div class="grow"><span class="gt">Негізгі → кеш</span><div class="tis">${seqTiles(p,fs.length)}</div></div></div>`;
+  const why=[...p.counter.map(e=>({e,c:1})),...[...p.hit.values()].map(e=>({e,c:0}))];
   let counter;
   if(!fs.length) counter='<div class="empty">Қарсылас геройларын қосқанда, дәл соларға қарсы заттар осында шығады.</div>';
-  else if(!p.counter.length&&!p.hit.size) counter='<div class="empty">Бұл геройға қосымша қарсы зат қажет емес — негізгі жинақпен жүре бер.</div>';
-  else counter=(p.counter.length?`<div class="card"><span class="tagn">${p.counter.length}</span><h3>Қарсыласқа қарсы</h3><div class="plist">${p.counter.map(e=>row(e.n,[...e.why].slice(0,2).join(' · '),whoOf(e),e.hot?'hot':'')).join('')}</div></div>`:'')
-    +(p.hit.size?`<div class="card"><h3>Жинақта бар — қарсыласқа да қарсы</h3><div class="plist">${[...p.hit.values()].map(e=>row(e.n,[...e.why][0]||'',whoOf(e))).join('')}</div></div>`:'');
+  else if(!why.length) counter='<div class="empty">Бұл геройға қосымша қарсы зат қажет емес — негізгі жинақпен жүре бер.</div>';
+  else counter=`<div class="card"><h3>Неге бұл заттар</h3>${why.map(({e})=>`<p class="why rs"><b>${e.n}</b> — ${whoOf(e).map(f=>f.localized_name).join(', ')}${e.why.size?': '+[...e.why].slice(0,2).join(' · '):''}</p>`).join('')}</div>`;
   const extra=p.extra.length?`<div class="card"><h3>Тағы не қосуға болады</h3><div class="plist">${p.extra.map(e=>row(e.n,e.why,null)).join('')}</div></div>`:'';
   const have=p.have.length?`<div class="card"><h3>Қолда бар — дұрыс таңдау</h3><div class="plist">${p.have.map(e=>row(e.n,[...e.why][0]||'',whoOf(e))).join('')}</div></div>`:'';
   const own=S.fi[h.id]||[];
