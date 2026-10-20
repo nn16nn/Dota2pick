@@ -122,6 +122,13 @@ input{font-family:inherit}
 .tis.sm .ti{width:44px}.tis.sm .ti img{width:36px;height:26px}
 .why.lg{font-size:11.5px;margin:0 2px 8px}.why.rs{margin:6px 0 0;font-size:12px}.why.rs b{color:var(--txt,#E9EEF7);font-weight:600}
 .why.cmb{margin:8px 0 0;font-size:12px}.why.cmb b{color:var(--gold);font-weight:600}
+.pos{display:flex;gap:6px}.pb{width:36px;height:28px;border-radius:7px;border:1px solid var(--line);background:var(--panel2);color:var(--dim);font-family:var(--disp);font-size:14px;cursor:pointer}
+.pb.on{background:var(--gold);color:#0B0F18;border-color:var(--gold)}
+.skb{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}.skb.sm{grid-template-columns:repeat(18,minmax(0,1fr));gap:2px}
+.sc{position:relative;aspect-ratio:1;border-radius:4px;background:#0B0F18;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sc img{width:100%;height:100%;object-fit:cover}.sc b{position:absolute;left:2px;top:0;font-size:9px;color:#fff;text-shadow:0 0 3px #000,0 0 2px #000;z-index:1}
+.skb.sm .sc b{font-size:7px;left:1px}.sc span{font-size:11px;color:var(--dim);font-weight:700}.skb.sm .sc span{font-size:8px}
+.sc.r{border-color:var(--gold)}.sc.t{background:#2A2412}.sc.t span{color:var(--gold)}.sc.e{opacity:.3}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -421,7 +428,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.3';
+const V='4.4';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -804,6 +811,9 @@ Object.assign(I18N.en,{"Команда жинағы": "Team build", "Негіз�
 Object.assign(I18N.ru,{"Сатып алу реті": "Порядок покупки", "Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.": "Номер — порядок покупки. Красная рамка — против соперника, золотая — в сборке и контрит.", "Нақты ойындардағы жиілік пен уақыт бойынша. Қызыл жиек — қарсыласқа қарсы, алтын — жинақта бар әрі қарсы.": "По частоте и времени покупки в реальных играх. Красная рамка — против соперника, золотая — в сборке и контрит.", "Негізгі → кеш": "Основа → поздняя", "Неге бұл заттар": "Почему эти предметы", "комбо": "комбо", "комбо: ": "комбо: "});
 Object.assign(I18N.en,{"Сатып алу реті": "Buy order", "Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.": "Number — buy order. Red border — counter item, gold — core item that also counters.", "Нақты ойындардағы жиілік пен уақыт бойынша. Қызыл жиек — қарсыласқа қарсы, алтын — жинақта бар әрі қарсы.": "By frequency and timing in real games. Red border — counter item, gold — core item that also counters.", "Негізгі → кеш": "Core → late", "Неге бұл заттар": "Why these items", "комбо": "combo", "комбо: ": "combo: "});
 
+Object.assign(I18N.ru,{"Позиция": "Позиция", "Скилл көтеру реті": "Порядок прокачки", "Скилл көтеру реті · Dotabuff": "Порядок прокачки · Dotabuff", "позицияны ауыстырсаң, жинақ өзгереді": "смени позицию — сборка изменится"});
+Object.assign(I18N.en,{"Позиция": "Position", "Скилл көтеру реті": "Skill order", "Скилл көтеру реті · Dotabuff": "Skill order · Dotabuff", "позицияны ауыстырсаң, жинақ өзгереді": "change position to change the build"});
+
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -852,6 +862,7 @@ function normState(){
   if(!S||typeof S!=='object') S={};
   ['mine','foe'].forEach(k=>{ if(!Array.isArray(S[k])) S[k]=[]; });
   if(!S.fi||typeof S.fi!=='object') S.fi={};
+  if(!S.pos||typeof S.pos!=='object') S.pos={};
 }
 normState();
 LS.del('apikey'); // бұрынғы Claude кілті телефоннан өшіріледі
@@ -933,12 +944,13 @@ const FIT={
  'Ghost Scepter':{r:['sup','core']},'Lotus Orb':{r:['sup','core']},'Scythe of Vyse':{r:['sup','core']}
 };
 const kindOf=h=>{
+  const pp=heroPosRaw(h); if(pp) return pp<=3?['core']:['sup'];
   const k=[];
   if(has(POS.carry,h)||has(POS.mid,h)||has(POS.off,h)) k.push('core');
   if(has(POS.sup,h)) k.push('sup');
   return k.length?k:['core','sup'];
 };
-const attacker=h=>has(POS.carry,h)||h.roles.includes('Carry');
+const attacker=h=>{ const pp=heroPosRaw(h); if(pp) return pp<=2; return has(POS.carry,h)||h.roles.includes('Carry'); };
 function fits(name,h){
   const f=FIT[name]; if(!f) return true;
   const k=kindOf(h);
@@ -1922,13 +1934,13 @@ async function loadSkills(){
 const TEAMIT=new Set(['Pipe of Insight','Mekansm','Guardian Greaves','Crimson Guard',"Vladmir's Offering",'Glimmer Cape','Force Staff','Solar Crest','Spirit Vessel','Lotus Orb','Sentry Ward','Dust of Appearance','Gem of True Sight','Medallion of Courage','Holy Locket','Boots of Bearing']);
 function teamPlan(){
   const fs=foeHeroes(), me=S.mine.map(id=>BYID[id]).filter(Boolean), per=new Map();
-  me.forEach(h=>per.set(h.id,{h,core:CORE[h.id]||null,counter:[],extra:[],hit:new Map(),have:[]}));
+  me.forEach(h=>per.set(h.id,{h,core:coreFor(h)||null,counter:[],extra:[],hit:new Map(),have:[]}));
   if(!me.length) return {per,fs,me};
-  const pf=(n,h)=>{ const r=roleOf(h); if(TEAMIT.has(n)) return r==='sup'?1.25:r==='off'?1.15:.8; return r==='carry'?1.2:r==='mid'?1.1:r==='off'?1:.85; };
+  const pf=(n,h)=>{ const r=roleByPos(h); if(TEAMIT.has(n)) return r==='sup'?1.25:r==='off'?1.15:.8; return r==='carry'?1.2:r==='mid'?1.1:r==='off'?1:.85; };
   // команда заты (Pipe, Mek, Lotus...) негізгі жинақта да бір-ақ геройда қалады
   const owner=new Map();
-  me.forEach(h=>coreList(CORE[h.id]).forEach(n=>{ if(!TEAMIT.has(n)) return; const o=owner.get(n); if(!o||pf(n,h)>pf(n,o)) owner.set(n,h); }));
-  per.forEach(p=>{ const c=CORE[p.h.id]; if(!c) return; const f=a=>a.filter(n=>!TEAMIT.has(n)||owner.get(n)===p.h); p.core={...c,early:f(c.early),mid:f(c.mid),late:f(c.late)}; });
+  me.forEach(h=>coreList(coreFor(h)).forEach(n=>{ if(!TEAMIT.has(n)) return; const o=owner.get(n); if(!o||pf(n,h)>pf(n,o)) owner.set(n,h); }));
+  per.forEach(p=>{ const c=coreFor(p.h); if(!c) return; const f=a=>a.filter(n=>!TEAMIT.has(n)||owner.get(n)===p.h); p.core={...c,early:f(c.early),mid:f(c.mid),late:f(c.late)}; });
   const C=new Map();
   const add=(n,f,w,why)=>{ const e=C.get(n)||{n,v:0,who:new Map(),why:new Set(),hot:0}; if(f) e.who.set(f.id,f); e.v+=w; if(why) e.why.add(why); C.set(n,e); return e; };
   fs.forEach(f=>{
@@ -1956,6 +1968,58 @@ function teamPlan(){
   per.forEach(p=>{ (p.core&&p.core.more||[]).forEach(n=>{ if(p.extra.length>=3||taken.has(n)||allCore.has(n)) return; p.extra.push({n,why:'кеш ойын'}); taken.add(n); }); });
   return {per,fs,me};
 }
+
+/* ---------- позиция (1–5): таңдалмаса — автоматты бөлінеді ---------- */
+let APOS={key:'',m:{}};
+function autoPos(){
+  const me=S.mine.map(id=>BYID[id]).filter(Boolean), k=me.map(h=>h.id).join(',')+'|'+JSON.stringify(S.pos||{});
+  if(APOS.key===k) return APOS.m;
+  const m={}, used=new Set();
+  me.forEach(h=>{ const pp=S.pos&&S.pos[h.id]; if(pp){ m[h.id]=pp; used.add(pp); } });
+  const prefs=h=>{ const sl=slotsOf(h), r=[]; if(sl.includes('c')) r.push(1); if(sl.includes('m')) r.push(2); if(sl.includes('o')) r.push(3); if(sl.includes('s')) r.push(5,4); return r; };
+  me.filter(h=>!m[h.id]).sort((a,b)=>prefs(a).length-prefs(b).length).forEach(h=>{
+    const pp=prefs(h).find(x=>!used.has(x))||[1,2,3,4,5].find(x=>!used.has(x))||1; m[h.id]=pp; used.add(pp); });
+  APOS={key:k,m}; return m;
+}
+function heroPos(h){ return autoPos()[h.id]||0; }
+function heroPosRaw(h){ return S.mine.includes(h.id)?heroPos(h):0; }
+function roleByPos(h){ const pp=heroPosRaw(h); return pp?(pp===1?'carry':pp===2?'mid':pp===3?'off':'sup'):roleOf(h); }
+const POSLBL={1:'Керри',2:'Мидер',3:'Хард линия',4:'Қолдау',5:'Қолдау'};
+const posChips=h=>`<div class="pos">${[1,2,3,4,5].map(n=>`<button class="pb${heroPos(h)===n?' on':''}" data-p="${n}">${n}</button>`).join('')}</div>`;
+function bindPos(el,h,after){ el.querySelectorAll('.pb').forEach(b=>b.onclick=e=>{ e.stopPropagation(); S.pos[h.id]=+b.dataset.p; save(); buzz(8); after(); }); }
+// позицияға қарай жинақты түзету: 4–5 саппорт заттары, 1–2 саппорт заттарсыз
+const SUPONLY=new Set(['Glimmer Cape','Force Staff','Ghost Scepter','Mekansm','Guardian Greaves','Boots of Bearing','Holy Locket','Arcane Boots','Tranquil Boots','Medallion of Courage','Urn of Shadows','Pavise','Aether Lens','Wraith Pact']);
+const SUPKEEP=new Set([...SUPONLY,"Eul's Scepter of Divinity",'Blink Dagger','Pipe of Insight','Lotus Orb','Solar Crest','Spirit Vessel','Rod of Atos','Wind Waker',"Aghanim's Shard","Aghanim's Scepter",'Magic Wand','Orchid Malevolence','Veil of Discord','Phylactery','Kaya','Octarine Core','Scythe of Vyse',"Vladmir's Offering",'Crimson Guard','Ethereal Blade','Dagon','Bottle']);
+const BOOTRE=/Boots|Treads|Greaves/;
+function adaptCore(c,pp,h){
+  if(!c||c.fail||!pp) return c;
+  const cost=n=>{ const k=DN2KEY[norm(n)]; return k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; };
+  const t=Object.assign({},c.t||{});
+  let L=coreList(c);
+  if(pp>=4){
+    const cap=pp===5?2200:3000;
+    L=L.filter(n=>(SUPKEEP.has(n)||cost(n)<=cap)&&!/Power Treads|Phase Boots|Boots of Travel/.test(n));
+    if(!L.some(n=>BOOTRE.test(n)&&!/Travel/.test(n))){ const b=h.primary_attr==='int'?'Arcane Boots':'Tranquil Boots'; L.unshift(b); t[b]=1.1; }
+    for(const n of ['Glimmer Cape','Force Staff','Aether Lens','Ghost Scepter',"Aghanim's Shard"]){ if(L.length>=8) break; if(!L.includes(n)){ L.push(n); if(t[n]==null) t[n]=cost(n)<1600?1.5:2; } }
+  } else {
+    L=L.filter(n=>!SUPONLY.has(n)||(pp===3&&/Mekansm|Guardian Greaves|Boots of Bearing/.test(n)));
+    if(!L.some(n=>BOOTRE.test(n)&&!/Travel/.test(n))){ const b=h.primary_attr==='int'?'Arcane Boots':h.attack_type==='Melee'&&pp!==2?'Phase Boots':'Power Treads'; L.unshift(b); t[b]=1.1; }
+  }
+  L.forEach(n=>{ if(t[n]==null){ const k=cost(n); t[n]=k<1500?1.3:k<3000?1.9:k<4500?2.3:2.7; } });
+  L.sort((a,b)=>t[a]-t[b]);
+  return {...c,early:L.filter(n=>t[n]<1.67),mid:L.filter(n=>t[n]>=1.67&&t[n]<2.34),late:L.filter(n=>t[n]>=2.34),t};
+}
+const coreFor=h=>adaptCore(CORE[h.id],heroPosRaw(h),h);
+// скилл көтеру реті (Dotabuff, ең жиі): 1–18 деңгей
+function skillRow(h,small){
+  const d=SKILLS&&SKILLS[h.name]; if(!d||!d.b) return '';
+  const base=d.a.filter(r=>r[4]!=='i'&&r[4]!=='u'), ult=d.a.find(r=>r[4]==='u');
+  const map={Q:base[0],W:base[1],E:base[2],R:ult};
+  return `<div class="skb${small?' sm':''}">${[...d.b].map((ch,i)=>{ const lv=i+1, r=map[ch];
+    if(ch==='-') return `<div class="sc e"><b>${lv}</b></div>`;
+    if(ch==='T') return `<div class="sc t"><b>${lv}</b><span>T</span></div>`;
+    return `<div class="sc${ch==='R'?' r':''}"><b>${lv}</b>${r?`<img src="${AIMG(r[0])}" alt="" title="${r[1]}" loading="lazy" onerror="this.style.display='none'">`:`<span>${ch}</span>`}</div>`; }).join('')}</div>`;
+}
 const AIMG=k=>CDN+'/apps/dota2/images/dota_react/abilities/'+k+'.png';
 const tile=(n,cls,cnt,no)=>`<div class="ti${cls?' '+cls:''}" title="${n}">${itemIcon(n)}${cnt?`<i class="tc">${cnt}</i>`:''}${no?`<i class="no">${no}</i>`:''}<span>${n}</span></div>`;
 function seqOf(p){
@@ -1980,12 +2044,15 @@ function renderTeamBuild(){
       :`<div class="tis">${seqTiles(p,n)}</div>`;
     const card=document.createElement('div'); card.className='card tb'; card.setAttribute('role','button');
     card.innerHTML=`<div class="tbh"><img class="tbp" src="${h.img}" alt="" loading="lazy">
-        <div class="tbn"><div class="pn">${h.localized_name}</div><div class="pw">${POSKK[roleOf(h)]||''}</div></div>
+        <div class="tbn"><div class="pn">${h.localized_name}</div><div class="pw">${heroPos(h)} · ${POSLBL[heroPos(h)]||''}</div></div>
         ${sk?`<div class="abl">${sk.a.filter(r=>r[4]!=='i').map(r=>`<img class="${r[4]==='u'?'u':''}" src="${AIMG(r[0])}" alt="" title="${r[1]}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}</div>
+      <div class="grow"><span class="gt">Позиция</span>${posChips(h)}</div>
+      ${sk&&sk.b?`<div class="grow"><span class="gt">Скилл көтеру реті</span>${skillRow(h,true)}</div>`:''}
       ${c&&c.start&&c.start.length?`<div class="grow"><span class="gt">Бастапқы</span><div class="tis sm">${c.start.map(x=>tile(x,'','')).join('')}</div></div>`:''}
       <div class="grow"><span class="gt">Сатып алу реті</span>${coreHtml}</div>
       ${p.extra.length?`<div class="grow"><span class="gt">Тағы</span><div class="tis">${p.extra.map(e=>tile(e.n,'ex','')).join('')}</div></div>`:''}`;
     card.onclick=()=>{ PLANH=h.id; go('p-items',1); setTimeout(()=>{ const m=document.getElementById('myHeroes'); if(m) window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:RM?'auto':'smooth'}); },450); };
+    bindPos(card,h,()=>renderTeamBuild());
     tm.appendChild(card);
   });
   stagger([...tm.querySelectorAll('.card')]);
@@ -1996,7 +2063,7 @@ function renderTeamBuild(){
 function skillsCard(h){
   const d=SKILLS&&SKILLS[h.name]; if(!d) return '';
   const tag=r=>r[4]==='u'?'<span class="mc">Ульт · 6/12/18</span>':r[4]==='i'?'<span class="mc dim">Туа біткен</span>':r[2]==='P'?'<span class="mc dim">Пассив</span>':'';
-  return `<div class="card"><h3>Скилдар</h3><div class="plist">${d.a.map(r=>`<div class="pl${r[4]==='u'?' ult':''}"><img src="${AIMG(r[0])}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div><div class="pn">${r[1]} ${tag(r)}</div><div class="pw">${r[3]}</div></div></div>`).join('')}</div>
+  return `<div class="card"><h3>Скилдар</h3>${d.b?`<div class="grow" style="margin:6px 0 10px"><span class="gt">Скилл көтеру реті · Dotabuff</span>${skillRow(h)}</div>`:''}<div class="plist">${d.a.map(r=>`<div class="pl${r[4]==='u'?' ult':''}"><img src="${AIMG(r[0])}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div><div class="pn">${r[1]} ${tag(r)}</div><div class="pw">${r[3]}</div></div></div>`).join('')}</div>
     ${d.t.some(x=>x.length)?`<div class="grow"><span class="gt">Таланттар</span><div class="tal">${[25,20,15,10].map((lv,i)=>{ const t=d.t[3-i]||[]; return `<div class="tr"><span>${t[0]||''}</span><b>${lv}</b><span>${t[1]||''}</span></div>`; }).join('')}</div></div>`:''}</div>`;
 }
 
@@ -2199,10 +2266,10 @@ async function showPlan(h){
   await Promise.all(me.map(loadCore));
   try{ await loadSkills(); }catch(e){}
   if(PLANH!==h.id) return;
-  const P=teamPlan(), p=P.per.get(h.id)||{core:CORE[h.id],counter:[],extra:[],hit:new Map(),have:[]};
+  const P=teamPlan(), p=P.per.get(h.id)||{core:coreFor(h),counter:[],extra:[],hit:new Map(),have:[]};
   const kind=kindOf(h).map(k=>k==='core'?'кор':'қолдау').join('/');
-  const head=`<div class="card"><h3>${h.localized_name}</h3>
-    <p class="why" style="margin:4px 0 0">${posOf(h).join(' / ')||'—'} · ${h.attack_type==='Melee'?'жақын':'қашық'} · ${kind}</p></div>`;
+  const head=`<div class="card" id="planHead"><h3>${h.localized_name}</h3>
+    <p class="why" style="margin:4px 0 8px">${heroPos(h)} · ${POSLBL[heroPos(h)]||''} · ${h.attack_type==='Melee'?'жақын':'қашық'} — позицияны ауыстырсаң, жинақ өзгереді</p>${posChips(h)}</div>`;
   const whoOf=e=>[...e.who.values()];
   const row=(n,sub,who,cls)=>`<div class="pl${cls?' '+cls:''}">${itemIcon(n)}<div><div class="pn">${n}${who&&who.length?heroBadges(who,4):''}</div><div class="pw">${sub}</div></div></div>`;
   const c=p.core;
@@ -2223,6 +2290,7 @@ async function showPlan(h){
   const notes=[]; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&r.note) notes.push({f:f.localized_name,it,note:r.note}); }));
   const noteCard=notes.length?`<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`+notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')+'</div>':'';
   bd.innerHTML=head+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h);
+  const ph=document.getElementById('planHead'); if(ph) bindPos(ph,h,()=>showPlan(h));
 }
 
 /* ---------- баптау ---------- */
