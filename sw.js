@@ -1,5 +1,5 @@
 /* Dota 2 Pick — service worker (автожаңарту) */
-const V = '4.6';
+const V = '4.7';
 const C = 'd2pick-' + V;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './skills.json'];
 
