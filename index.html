@@ -454,7 +454,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.5';
+const V='4.6';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1286,15 +1286,15 @@ let KEYBYNAME={};
 const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
 async function loadItems(){
   if(ITEMDATA) return;
-  let d=LS.get('itemsdb2',30);
+  let d=LS.get('itemsdb3',30);
   if(!d){
     const raw=await getJSON('https://raw.githubusercontent.com/odota/dotaconstants/master/build/items.json');
     d={};
     Object.entries(raw).forEach(([k,v])=>{
       if(!v||!v.dname||k.startsWith('recipe_')) return;
-      d[k]={n:v.dname,c:v.cost||0,q:v.qual||'',m:(v.components&&v.components.length)?1:0};
+      d[k]={n:v.dname,c:v.cost||0,q:v.qual||'',m:(v.components&&v.components.length)?1:0}; if(v.components&&v.components.length) d[k].cp=v.components;
     });
-    LS.set('itemsdb2',d);
+    LS.set('itemsdb3',d);
   }
   ITEMDATA=d; DN2KEY={};
   Object.entries(d).forEach(([k,v])=>{ DN2KEY[norm(v.n)]=k; });
@@ -1951,6 +1951,7 @@ async function loadCore(h){
     const nm=x=>pretty(x.k);
     const c={early:pick.filter(x=>x.ph==='early').map(nm),mid:pick.filter(x=>x.ph==='mid').map(nm),late:pick.filter(x=>x.ph==='late').map(nm)};
     c.more=top.filter(x=>!pick.includes(x)&&!(boot&&BOOT.test(x.k))).slice(0,3).map(nm);
+    c.pool=top.slice(0,30).map(nm);
     c.t={}; pick.forEach(x=>c.t[nm(x)]=x.t); top.forEach(x=>{ if(c.t[nm(x)]==null) c.t[nm(x)]=tOf(x); });
     c.start=Object.entries(d.start_game_items||{}).sort((a,b)=>b[1]-a[1]).map(([id])=>ITEMIDS[id])
       .filter(k=>k&&!k.startsWith('recipe')&&ITEMDATA[k]&&ITEMDATA[k].c>0&&ITEMDATA[k].c<=1000).slice(0,5).map(k=>pretty(k));
@@ -1990,7 +1991,7 @@ function teamPlan(){
     }
   });
   const pairs=[];
-  cand.forEach(e=>{ if(taken.has(e.n)) return; me.forEach(h=>{ if(fits(e.n,h)) pairs.push({e,h,s:e.v*pf(e.n,h)}); }); });
+  cand.forEach(e=>{ if(taken.has(e.n)) return; me.forEach(h=>{ if(fits(e.n,h)&&itemOk(e.n,heroPosRaw(h),h)&&(itemCost(e.n)>=1200||DETECT.has(e.n))) pairs.push({e,h,s:e.v*pf(e.n,h)}); }); });
   pairs.sort((a,b)=>b.s-a.s);
   pairs.forEach(({e,h})=>{ if(taken.has(e.n)) return; const p=per.get(h.id); if(p.counter.length>=3) return; p.counter.push(e); taken.add(e.n); });
   pairs.forEach(({e,h})=>{ if(taken.has(e.n)) return; const p=per.get(h.id); if(p.extra.length>=2) return; p.extra.push({n:e.n,why:[...e.why][0]||''}); taken.add(e.n); });
@@ -2021,23 +2022,46 @@ function bindPos(el,h,after){ el.querySelectorAll('.pb').forEach(b=>b.onclick=e=
 const SUPONLY=new Set(['Glimmer Cape','Force Staff','Ghost Scepter','Mekansm','Guardian Greaves','Boots of Bearing','Holy Locket','Arcane Boots','Tranquil Boots','Medallion of Courage','Urn of Shadows','Pavise','Aether Lens','Wraith Pact']);
 const SUPKEEP=new Set([...SUPONLY,"Eul's Scepter of Divinity",'Blink Dagger','Pipe of Insight','Lotus Orb','Solar Crest','Spirit Vessel','Rod of Atos','Wind Waker',"Aghanim's Shard","Aghanim's Scepter",'Magic Wand','Orchid Malevolence','Veil of Discord','Phylactery','Kaya','Octarine Core','Scythe of Vyse',"Vladmir's Offering",'Crimson Guard','Ethereal Blade','Dagon','Bottle']);
 const BOOTRE=/Boots|Treads|Greaves/;
+// аралық бөлшектер мен әлсіз ерте заттар жинақта көрсетілмейді
+const INTER=new Set(['Soul Booster','Oblivion Staff','Crystalys','Perseverance','Ultimate Orb','Point Booster','Vitality Booster','Energy Booster','Diadem','Shawl','Wraith Band','Bracer','Null Talisman','Headdress','Buckler','Cornucopia','Mithril Hammer','Javelin','Eagle Song','Reaver','Sacred Relic','Mystic Staff','Hyperstone','Demon Edge','Platemail','Talisman of Evasion','Fluffy Hat','Chainmail','Blitz Knuckles','Ring of Basilius','Orb of Venom','Blight Stone']);
+const SUPBAN=['Bottle','Hand of Midas','Battle Fury','Radiance','Butterfly','Daedalus','Satanic','Divine Rapier','Abyssal Blade','Eye of Skadi','Manta Style','Monkey King Bar','Bloodthorn','Skull Basher','Mjollnir','Maelstrom','Desolator','Heart of Tarrasque'];
+const POSBAN={1:new Set(['Bottle','Mekansm','Guardian Greaves','Boots of Bearing','Pipe of Insight']),2:new Set(['Mekansm','Guardian Greaves','Boots of Bearing']),
+  3:new Set(['Bottle','Hand of Midas','Battle Fury','Butterfly','Divine Rapier']),4:new Set(SUPBAN),5:new Set(SUPBAN)};
+const DETECT=new Set(['Dust of Appearance','Sentry Ward','Gem of True Sight','Observer Ward','Smoke of Deceit','Urn of Shadows','Medallion of Courage']);
+const itemCost=n=>{ const k=DN2KEY[norm(n)]; return k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; };
+function itemOk(n,pp,h){
+  if(INTER.has(n)) return false;
+  if(n==='Arcane Boots'&&h&&h.primary_attr!=='int'&&(!pp||pp<=3)) return false;
+  if(pp&&POSBAN[pp]&&POSBAN[pp].has(n)) return false;
+  if(pp>=4){ if(/Power Treads|Phase Boots|Boots of Travel/.test(n)) return false; if(!SUPKEEP.has(n)&&itemCost(n)>(pp===5?2200:3000)) return false; }
+  if(pp&&pp<=2&&SUPONLY.has(n)&&n!=='Arcane Boots') return false;
+  if(pp===3&&SUPONLY.has(n)&&!/Mekansm|Guardian Greaves|Boots of Bearing|Force Staff|Glimmer|Arcane Boots/.test(n)) return false;
+  return true;
+}
+let CPN=null;
+function compOf(){ if(CPN&&CPN._n===Object.keys(ITEMDATA||{}).length) return CPN; CPN={_n:Object.keys(ITEMDATA||{}).length};
+  Object.values(ITEMDATA||{}).forEach(v=>{ if(v.cp) CPN[v.n]=v.cp.map(x=>pretty(x)); }); return CPN; }
 function adaptCore(c,pp,h){
-  if(!c||c.fail||!pp) return c;
-  const cost=n=>{ const k=DN2KEY[norm(n)]; return k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; };
-  const t=Object.assign({},c.t||{});
-  let L=coreList(c);
-  if(pp>=4){
-    const cap=pp===5?2200:3000;
-    L=L.filter(n=>(SUPKEEP.has(n)||cost(n)<=cap)&&!/Power Treads|Phase Boots|Boots of Travel/.test(n));
-    if(!L.some(n=>BOOTRE.test(n)&&!/Travel/.test(n))){ const b=h.primary_attr==='int'?'Arcane Boots':'Tranquil Boots'; L.unshift(b); t[b]=1.1; }
-    for(const n of ['Glimmer Cape','Force Staff','Aether Lens','Ghost Scepter',"Aghanim's Shard"]){ if(L.length>=8) break; if(!L.includes(n)){ L.push(n); if(t[n]==null) t[n]=cost(n)<1600?1.5:2; } }
-  } else {
-    L=L.filter(n=>!SUPONLY.has(n)||(pp===3&&/Mekansm|Guardian Greaves|Boots of Bearing/.test(n)));
-    if(!L.some(n=>BOOTRE.test(n)&&!/Travel/.test(n))){ const b=h.primary_attr==='int'?'Arcane Boots':h.attack_type==='Melee'&&pp!==2?'Phase Boots':'Power Treads'; L.unshift(b); t[b]=1.1; }
+  if(!c||c.fail) return c;
+  const t=Object.assign({},c.t||{}), C=compOf();
+  const isComp=(x,L)=>L.some(y=>y!==x&&(C[y]||[]).includes(x));
+  const earlyBoot=n=>BOOTRE.test(n)&&!/Travel/.test(n);
+  let L=coreList(c).filter(n=>itemOk(n,pp,h));
+  L=L.filter(x=>!isComp(x,L));
+  const eb=L.filter(earlyBoot); if(eb.length>1) L=L.filter(n=>!eb.slice(1).includes(n));
+  if(!L.some(earlyBoot)){
+    const b=pp>=4?(h.primary_attr==='int'?'Arcane Boots':'Tranquil Boots'):h.primary_attr==='int'?'Arcane Boots':h.attack_type==='Melee'&&pp!==2?'Phase Boots':'Power Treads';
+    L.unshift(b); if(t[b]==null) t[b]=1.1;
   }
-  L.forEach(n=>{ if(t[n]==null){ const k=cost(n); t[n]=k<1500?1.3:k<3000?1.9:k<4500?2.3:2.7; } });
+  if(pp>=4) for(const n of ['Glimmer Cape','Force Staff','Aether Lens','Ghost Scepter',"Aghanim's Shard"]){ if(L.length>=7) break; if(!L.includes(n)){ L.push(n); if(t[n]==null) t[n]=itemCost(n)<1600?1.5:2; } }
+  // керек болса — келесі ең жиі (рұқсат етілген) заттармен толтыру
+  const pool=(c.pool||[]).filter(n=>itemOk(n,pp,h)&&!earlyBoot(n));
+  for(const n of pool){ if(L.length>=9) break; if(L.includes(n)||isComp(n,L)) continue; L.push(n); L=L.filter(x=>!isComp(x,L)); }
+  L.forEach(n=>{ if(t[n]==null){ const k=itemCost(n); t[n]=k<1500?1.3:k<3000?1.9:k<4500?2.3:2.7; } });
+  L.filter(earlyBoot).forEach(n=>{ t[n]=0.95; }); // аяқ киім — бірінші
   L.sort((a,b)=>t[a]-t[b]);
-  return {...c,early:L.filter(n=>t[n]<1.67),mid:L.filter(n=>t[n]>=1.67&&t[n]<2.34),late:L.filter(n=>t[n]>=2.34),t};
+  const more=pool.filter(n=>!L.includes(n)&&!isComp(n,L)&&itemCost(n)>=1500).slice(0,3);
+  return {...c,early:L.filter(n=>t[n]<1.67),mid:L.filter(n=>t[n]>=1.67&&t[n]<2.34),late:L.filter(n=>t[n]>=2.34),t,more};
 }
 const coreFor=h=>adaptCore(CORE[h.id],heroPosRaw(h),h);
 // скилл көтеру реті (Dotabuff, ең жиі): 1–18 деңгей
@@ -2055,7 +2079,9 @@ const tile=(n,cls,cnt,no)=>`<div class="ti${cls?' '+cls:''}" title="${n}">${item
 function seqOf(p){
   const c=p.core; if(!c||c.fail) return [];
   const T=n=>{ if(c.t&&c.t[n]!=null) return c.t[n]; const k=DN2KEY[norm(n)], cost=k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; return cost<1500?1.3:cost<3000?1.9:cost<4500?2.3:2.7; };
-  return [...coreList(c).map(n=>({n,t:T(n),hit:p.hit.get(n)})),...p.counter.map(e=>({n:e.n,t:T(e.n),ctr:e}))].sort((a,b)=>a.t-b.t);
+  const all=[...coreList(c).map(n=>({n,t:T(n),hit:p.hit.get(n)})),...p.counter.map(e=>({n:e.n,t:T(e.n),ctr:e}))];
+  const C=compOf(); // бөлшегі мен өзі қатар тұрмайды (Shadow Blade + Silver Edge → тек Silver Edge)
+  return all.filter(x=>!all.some(y=>y!==x&&(C[y.n]||[]).includes(x.n))).sort((a,b)=>a.t-b.t);
 }
 function seqTiles(p,n){
   return seqOf(p).map((x,i)=>{ const e=x.ctr||x.hit; return tile(x.n,x.ctr?'hotc':x.hit?'hit':'',e&&e.who.size?e.who.size+'/'+n:'',i+1); }).join('');
@@ -2159,7 +2185,7 @@ function counterFor(h,foes){
     if(c) c.i.forEach((n,i)=>add(n,f,1.2-i*.1,c.w));
     THREATS.forEach(t=>{ if(has(t.list,f)) t.items.forEach((n,i)=>add(n,f,.6-i*.05,t.ttl)); });
   });
-  return [...C.values()].filter(e=>e.v>=1&&fits(e.n,h)).sort((a,b)=>b.v-a.v).slice(0,5);
+  return [...C.values()].filter(e=>e.v>=1&&fits(e.n,h)&&itemOk(e.n,0,h)&&(itemCost(e.n)>=1200||DETECT.has(e.n))).sort((a,b)=>b.v-a.v).slice(0,5);
 }
 async function openMatch(mid){
   const box=document.getElementById('match'), acct=+LS.get('acct');
