@@ -142,6 +142,9 @@ input{font-family:inherit}
 .tip{font-size:12.5px;padding:6px 0 6px 10px;border-left:3px solid var(--line);margin:6px 0;line-height:1.4}.tip.good{border-color:var(--rad)}.tip.bad{border-color:var(--dire)}.tip.warn{border-color:var(--gold)}
 .hs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.hs div{flex:0 0 auto;width:66px;text-align:center;font-size:10.5px;color:var(--dim);line-height:1.3}
 .hs img{width:66px;height:37px;border-radius:5px;object-fit:cover;display:block;margin-bottom:3px;background:#0B0F18}
+.sts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.st{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 4px;text-align:center}
+.st b{display:block;font-family:var(--disp);font-size:16px}.st span{font-size:10px;color:var(--dim)}
+.gm .gi{display:flex;gap:3px;margin-top:4px}.gm .gi img{width:26px;height:19px;border-radius:3px;object-fit:cover}.gm .k small{display:block;font-family:Inter,sans-serif;font-size:10px;color:var(--dim);text-align:right}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -454,7 +457,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.7';
+const V='4.8';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -845,6 +848,9 @@ Object.assign(I18N.en,{"Ойындар": "Games", "Менің аккаунтым
 
 Object.assign(I18N.ru,{"Профиль жабық не OpenDota-да әлі жоқ": "Профиль закрыт или ещё не в OpenDota", "бірақ ойындарың көрінбейді. Былай қос:": "но игры не видны. Включи так:", "ID дұрыс": "ID верный", "1. Dota 2 → ⚙ Баптаулар → Options → Social → «Expose Public Match Data» белгіле.": "1. Dota 2 → ⚙ Настройки → Options → Social → отметь «Expose Public Match Data».", "2. Бір ойын ойна не 10–15 минут күт.": "2. Сыграй одну игру или подожди 10–15 минут.", "3. Төмендегі «Жаңарту» түймесін бас — OpenDota тарихыңды жүктейді (бірнеше минут).": "3. Нажми «Обновить» ниже — OpenDota загрузит историю (несколько минут).", "Жаңарту": "Обновить"});
 Object.assign(I18N.en,{"Профиль жабық не OpenDota-да әлі жоқ": "Profile is private or not in OpenDota yet", "бірақ ойындарың көрінбейді. Былай қос:": "but your games are hidden. Enable it:", "ID дұрыс": "ID is valid", "1. Dota 2 → ⚙ Баптаулар → Options → Social → «Expose Public Match Data» белгіле.": "1. Dota 2 → ⚙ Settings → Options → Social → tick \"Expose Public Match Data\".", "2. Бір ойын ойна не 10–15 минут күт.": "2. Play one game or wait 10–15 minutes.", "3. Төмендегі «Жаңарту» түймесін бас — OpenDota тарихыңды жүктейді (бірнеше минут).": "3. Tap \"Refresh\" below — OpenDota will load your history (a few minutes).", "Жаңарту": "Refresh"});
+
+Object.assign(I18N.ru,{"OpenDota уақытша істемей тұр": "OpenDota временно не работает", "Бұл сенің аккаунтыңа байланысты емес — біраздан соң қайта көр.": "Это не связано с твоим аккаунтом — попробуй позже.", "Сервер қатесі": "Ошибка сервера", "желі": "сеть", "Қайта көру": "Повторить", "ойынның орташасы": "игр — средние", "жеңіс": "побед", "өлтіру": "убийства", "өлім": "смерти", "көмек": "помощь", "ұзақтығы": "длительность", "Ең жиі алатын заттар": "Частые предметы", "Турбо": "Турбо", "Рейтинг": "Рейтинг", "Қалыпты": "Обычная"});
+Object.assign(I18N.en,{"OpenDota уақытша істемей тұр": "OpenDota is temporarily down", "Бұл сенің аккаунтыңа байланысты емес — біраздан соң қайта көр.": "Not related to your account — try again later.", "Сервер қатесі": "Server error", "желі": "network", "Қайта көру": "Retry", "ойынның орташасы": "games — averages", "жеңіс": "wins", "өлтіру": "kills", "өлім": "deaths", "көмек": "assists", "ұзақтығы": "duration", "Ең жиі алатын заттар": "Most bought items", "Турбо": "Turbo", "Рейтинг": "Ranked", "Қалыпты": "Normal"});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -2144,6 +2150,9 @@ document.getElementById('acctGo').onclick=()=>{
   LS.set('acct',id); document.getElementById('acctIn').value=id; document.getElementById('match').innerHTML=''; renderGames(true);
 };
 document.getElementById('acctIn').onkeydown=e=>{ if(e.key==='Enter') document.getElementById('acctGo').click(); };
+// сұрау нәтижесі + статус (500 — OpenDota құлап тұр, 404 — профиль жоқ/жабық)
+async function safeJSON(url,def){ try{ return {ok:1,v:await getJSON(url)}; }catch(e){ return {ok:0,v:def,st:+e.message||0}; } }
+const MP=['hero_id','kills','deaths','assists','duration','start_time','player_slot','radiant_win','game_mode','lobby_type','average_rank','gold_per_min','xp_per_min','last_hits','hero_damage','item_0','item_1','item_2','item_3','item_4','item_5'];
 async function renderGames(force){
   const id=LS.get('acct'), inp=document.getElementById('acctIn');
   const prof=document.getElementById('prof'), games=document.getElementById('games');
@@ -2152,10 +2161,16 @@ async function renderGames(force){
   let D=GM.data[id];
   if(!D||force||Date.now()-D.t>120000){
     prof.innerHTML=skel(1); games.innerHTML=skel(5);
-    try{
-      const [pl,wl,rm,hs]=await Promise.all([getJSON(API+'/players/'+id).catch(()=>null),getJSON(API+'/players/'+id+'/wl').catch(()=>({win:0,lose:0})),getJSON(API+'/players/'+id+'/recentMatches').catch(()=>[]),getJSON(API+'/players/'+id+'/heroes').catch(()=>[])]);
-      D=GM.data[id]={t:Date.now(),pl,wl,rm:rm||[],hs:hs||[]};
-    }catch(e){ prof.innerHTML='<div class="empty"><b>Жүктелмеді</b>ID дұрыс па, интернет бар ма — тексер.</div>'; games.innerHTML=''; return; }
+    const [pl,wl,ms,hs]=await Promise.all([safeJSON(API+'/players/'+id,null),safeJSON(API+'/players/'+id+'/wl',{win:0,lose:0}),
+      safeJSON(API+'/players/'+id+'/matches?limit=50&'+MP.map(f=>'project='+f).join('&'),null),safeJSON(API+'/players/'+id+'/heroes',[])]);
+    let rm=Array.isArray(ms.v)?ms.v:null;
+    if(!rm){ const r2=await safeJSON(API+'/players/'+id+'/recentMatches',[]); rm=Array.isArray(r2.v)?r2.v:[]; }
+    if(!pl.ok&&(pl.st>=500||pl.st===0)){
+      prof.innerHTML=`<div class="card"><h3>OpenDota уақытша істемей тұр</h3><p class="why" style="margin:6px 0 0">Сервер қатесі (${pl.st||'желі'}). Бұл сенің аккаунтыңа байланысты емес — біраздан соң қайта көр.</p>
+        <button class="btn" id="acctRetry" style="margin-top:10px">Қайта көру</button></div>`;
+      games.innerHTML=''; document.getElementById('acctRetry').onclick=()=>renderGames(true); return;
+    }
+    D=GM.data[id]={t:Date.now(),pl:pl.v,wl:wl.v||{win:0,lose:0},rm:rm||[],hs:Array.isArray(hs.v)?hs.v:[]};
   }
   try{ await Promise.all([loadItemIds(),loadItems()]); }catch(e){}
   const {pl,wl,rm,hs}=D;
@@ -2173,24 +2188,36 @@ async function renderGames(force){
     return;
   }
   const tot=(wl.win||0)+(wl.lose||0), wr=tot?wl.win/tot*100:0;
-  const rt=pl.rank_tier, medal=rt?MEDAL[Math.floor(rt/10)]+(rt%10?' '+(rt%10):''):'—';
-  const r20=rm.slice(0,20), w20=r20.filter(m=>(m.player_slot<128)===m.radiant_win).length;
-  const avg=k=>r20.length?(r20.reduce((a,m)=>a+(m[k]||0),0)/r20.length):0;
+  const medalOf=rt=>rt?MEDAL[Math.floor(rt/10)]+(rt%10?' '+(rt%10):''):'';
+  const R=rm.slice(0,50), W=R.filter(m=>(m.player_slot<128)===m.radiant_win).length, n=R.length||1;
+  const avg=k=>R.reduce((a,m)=>a+(m[k]||0),0)/n;
+  const kda=(avg('kills')+avg('assists'))/Math.max(1,avg('deaths'));
+  const itemsOf=m=>[0,1,2,3,4,5].map(i=>m['item_'+i]).filter(Boolean).map(x=>ITEMIDS&&ITEMIDS[x]).filter(k=>k&&!JUNK.has(k)&&!/^(tpscroll|ward_|dust|smoke|tango|flask|clarity)/.test(k));
+  const freq={}; R.forEach(m=>itemsOf(m).forEach(k=>freq[k]=(freq[k]||0)+1));
+  const topI=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
   const topH=[...hs].sort((a,b)=>(b.games||0)-(a.games||0)).slice(0,6).map(x=>({h:BYID[+x.hero_id],g:x.games||0,w:x.win||0})).filter(x=>x.h);
+  const stat=(v,l,c)=>`<div class="st"><b class="${c||''}">${v}</b><span>${l}</span></div>`;
   prof.innerHTML=`<div class="card"><div class="mah"><img class="av" src="${pl.profile.avatarfull||''}" alt="" onerror="this.style.display='none'">
-      <div><div class="pn">${pl.profile.personaname||id}</div><div class="pw">${medal}${pl.leaderboard_rank?' · #'+pl.leaderboard_rank:''} · ${tot} ойын · <b class="${wr>=50?'gw':'gl'}">${wr.toFixed(1)}%</b></div></div></div>
-    <div class="grow"><span class="gt">Соңғы ${r20.length} ойын</span><p class="why" style="margin:0">${w20} жеңіс · ${r20.length-w20} жеңіліс · орташа ${avg('kills').toFixed(1)}/${avg('deaths').toFixed(1)}/${avg('assists').toFixed(1)} · GPM ${Math.round(avg('gold_per_min'))}</p></div>
+      <div><div class="pn">${pl.profile.personaname||id}</div><div class="pw">${medalOf(pl.rank_tier)||'—'}${pl.leaderboard_rank?' · #'+pl.leaderboard_rank:''} · ${wl.win||0}–${wl.lose||0} · <b class="${wr>=50?'gw':'gl'}">${wr.toFixed(2)}%</b></div></div></div>
+    <div class="grow"><span class="gt">Соңғы ${R.length} ойынның орташасы</span><div class="sts">
+      ${stat((W/n*100).toFixed(1)+'%','жеңіс',W/n>=.5?'gw':'gl')}${stat(kda.toFixed(2),'KDA')}${stat(avg('kills').toFixed(1),'өлтіру')}${stat(avg('deaths').toFixed(1),'өлім','gl')}${stat(avg('assists').toFixed(1),'көмек')}
+      ${stat(Math.round(avg('gold_per_min'))||'—','GPM')}${stat(Math.round(avg('xp_per_min'))||'—','XPM')}${stat(durTxt(Math.round(avg('duration'))),'ұзақтығы')}</div></div>
+    ${topI.length?`<div class="grow"><span class="gt">Ең жиі алатын заттар</span><div class="tis sm">${topI.map(([k,c])=>tile(pretty(k),'',c)).join('')}</div></div>`:''}
     ${topH.length?`<div class="grow"><span class="gt">Көп ойнайтын геройлар</span><div class="hs">${topH.map(x=>`<div><img src="${x.h.img}" alt="" loading="lazy">${x.h.localized_name}<br><b class="${x.w/x.g>=.5?'gw':'gl'}">${(x.w/x.g*100).toFixed(0)}%</b> · ${x.g}</div>`).join('')}</div></div>`:''}</div>`;
   games.innerHTML=`<div class="sec" style="margin-top:6px"><h2>Соңғы ойындар</h2><span class="hint">басып талда</span></div>`;
-  r20.forEach(m=>{
+  R.forEach(m=>{
     const h=BYID[m.hero_id], win=(m.player_slot<128)===m.radiant_win;
+    const typ=m.game_mode===23?'Турбо':m.lobby_type===7?'Рейтинг':'Қалыпты';
+    const its=itemsOf(m);
     const b=document.createElement('button'); b.className='gm'+(win?'':' lo');
     b.innerHTML=`<img src="${h?h.img:''}" alt="" loading="lazy"><div class="i"><div class="nm">${h?h.localized_name:'?'} <b class="${win?'gw':'gl'}">${win?'Жеңіс':'Жеңіліс'}</b></div>
-      <div class="s">${durTxt(m.duration)} · GPM ${m.gold_per_min} · ${agoTxt(m.start_time)}</div></div><div class="k">${m.kills}/${m.deaths}/${m.assists}</div>`;
+      <div class="s">${typ}${m.average_rank?' · '+medalOf(m.average_rank):''} · ${durTxt(m.duration)} · ${agoTxt(m.start_time)}</div>
+      ${its.length?`<div class="gi">${its.map(k=>`<img src="${IMG(k)}" alt="" title="${pretty(k)}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`:''}</div>
+      <div class="k">${m.kills}/${m.deaths}/${m.assists}${m.gold_per_min?`<small>GPM ${m.gold_per_min}</small>`:''}</div>`;
     b.onclick=()=>openMatch(m.match_id);
     games.appendChild(b);
   });
-  if(!r20.length) games.innerHTML+='<div class="empty">Ойындар табылмады.</div>';
+  if(!R.length) games.innerHTML+='<div class="empty">Ойындар табылмады.</div>';
 }
 function counterFor(h,foes){
   const C=new Map();
