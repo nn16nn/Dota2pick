@@ -145,6 +145,8 @@ input{font-family:inherit}
 .sts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.st{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 4px;text-align:center}
 .st b{display:block;font-family:var(--disp);font-size:16px}.st span{font-size:10px;color:var(--dim)}
 .gm .gi{display:flex;gap:3px;margin-top:4px}.gm .gi img{width:26px;height:19px;border-radius:3px;object-fit:cover}.gm .k small{display:block;font-family:Inter,sans-serif;font-size:10px;color:var(--dim);text-align:right}
+.fb .fr{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.fb .fr:first-of-type{border-top:0}
+.fb .fp{width:46px;height:26px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}.fb .ti{cursor:pointer}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -457,7 +459,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.8';
+const V='4.9';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -851,6 +853,9 @@ Object.assign(I18N.en,{"Профиль жабық не OpenDota-да әлі жо
 
 Object.assign(I18N.ru,{"OpenDota уақытша істемей тұр": "OpenDota временно не работает", "Бұл сенің аккаунтыңа байланысты емес — біраздан соң қайта көр.": "Это не связано с твоим аккаунтом — попробуй позже.", "Сервер қатесі": "Ошибка сервера", "желі": "сеть", "Қайта көру": "Повторить", "ойынның орташасы": "игр — средние", "жеңіс": "побед", "өлтіру": "убийства", "өлім": "смерти", "көмек": "помощь", "ұзақтығы": "длительность", "Ең жиі алатын заттар": "Частые предметы", "Турбо": "Турбо", "Рейтинг": "Рейтинг", "Қалыпты": "Обычная"});
 Object.assign(I18N.en,{"OpenDota уақытша істемей тұр": "OpenDota is temporarily down", "Бұл сенің аккаунтыңа байланысты емес — біраздан соң қайта көр.": "Not related to your account — try again later.", "Сервер қатесі": "Server error", "желі": "network", "Қайта көру": "Retry", "ойынның орташасы": "games — averages", "жеңіс": "wins", "өлтіру": "kills", "өлім": "deaths", "көмек": "assists", "ұзақтығы": "duration", "Ең жиі алатын заттар": "Most bought items", "Турбо": "Turbo", "Рейтинг": "Ranked", "Қалыпты": "Normal"});
+
+Object.assign(I18N.ru,{"Қарсылас әдетте не жинайды": "Что обычно собирает соперник", "OpenDota-дағы ең жиі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бассаң — белгіленеді.": "Самая частая сборка по OpenDota. Красная рамка — есть контр-предмет. Нажми, если реально купил — отметится.", "Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.": "Добавь своих героев — у каждого будет сборка против предметов соперника.", "(әдетте)": "(обычно)"});
+Object.assign(I18N.en,{"Қарсылас әдетте не жинайды": "What the enemy usually builds", "OpenDota-дағы ең жиі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бассаң — белгіленеді.": "Most common build on OpenDota. Red border — we have a counter. Tap if they really bought it.", "Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.": "Add your heroes — each gets a build against the enemy items.", "(әдетте)": "(usually)"});
 
 const I18MAP={}, I18RE={};
 function trStr(t){
@@ -1358,12 +1363,17 @@ const skel=n=>Array.from({length:n},()=>'<div class="sk"></div>').join('');
 const stagger=(els,ms=26,max=16)=>els.forEach((el,i)=>{ el.style.animationDelay=(i<max?i*ms:0)+'ms' });
 
 /* ---------- зат кімге қарсы: кішкене герой белгішелері ---------- */
+function predOf(f){
+  const c=CORE[f.id]; if(!c||c.fail) return [];
+  const own=S.fi[f.id]||[];
+  return coreList(adaptCore(c,0,f)).filter(it=>!own.includes(it));
+}
 function foesOf(name){
   const out=new Map();
   foeHeroes().forEach(f=>{
     const c=HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)];
     if(c&&c.i.includes(name)) out.set(f.id,f);
-    (S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&(r.items||[]).includes(name)) out.set(f.id,f); });
+    [...(S.fi[f.id]||[]),...predOf(f)].forEach(it=>{ const r=IREACT[it]; if(r&&(r.items||[]).includes(name)) out.set(f.id,f); });
     THREATS.forEach(t=>{ if(t.items.includes(name)&&has(t.list,f)) out.set(f.id,f); });
   });
   return [...out.values()];
@@ -1988,6 +1998,7 @@ function teamPlan(){
     if(c) c.i.forEach((n,i)=>add(n,f,1.2-i*.1,c.w));
     THREATS.forEach(t=>{ if(has(t.list,f)) t.items.forEach((n,i)=>add(n,f,.6-i*.05,t.ttl)); });
     (S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r) (r.items||[]).forEach(n=>{ add(n,f,3,'→ '+it).hot=1; }); });
+    predOf(f).forEach(it=>{ const r=IREACT[it]; if(r) (r.items||[]).forEach(n=>{ add(n,f,1.6,'→ '+it+' (әдетте)').hot=1; }); });
   });
   auraItems(me,fs).forEach(([n,w])=>add(n,null,1.6,w));
   // тек мықтылары
@@ -2095,13 +2106,28 @@ function seqOf(p){
 function seqTiles(p,n){
   return seqOf(p).map((x,i)=>{ const e=x.ctr||x.hit; return tile(x.n,x.ctr?'hotc':x.hit?'hit':'',e&&e.who.size?e.who.size+'/'+n:'',i+1); }).join('');
 }
+function bindFoeCard(root){
+  const fs=foeHeroes();
+  root.querySelectorAll('.fb .fr').forEach((row,i)=>{ const f=fs[i]; if(!f) return;
+    row.querySelectorAll('.ti').forEach(t=>t.onclick=e=>{ e.stopPropagation(); const n=t.getAttribute('title'); const l=S.fi[f.id]||[];
+      S.fi[f.id]=l.includes(n)?l.filter(x=>x!==n):[...l,n]; save(); buzz(8); toast(f.localized_name+': '+n+(l.includes(n)?' ✕':' ✓')); board(); }); });
+}
 function renderTeamBuild(){
   const tm=document.getElementById('itTeam'), hint=document.getElementById('tmHint');
   const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
   hint.textContent=me.length?'басып аш — толық жинақ пен скилдар':'';
-  if(!me.length){ tm.innerHTML='<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қайталанбайтын жинақ шығады.</div>'; return; }
+  const fmiss=[...me,...fs].filter(h=>!CORE[h.id]);
+  if(fmiss.length) Promise.all(fmiss.map(loadCore)).then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); });
+  // қарсылас әдетте не жинайды: басқанда «нақты алды» деп белгіленеді (салмағы өседі)
+  const foeCard=fs.length?`<div class="card fb"><h3>Қарсылас әдетте не жинайды</h3><p class="why" style="margin:2px 0 6px">OpenDota-дағы ең жиі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бассаң — белгіленеді.</p>
+    ${fs.map(f=>{ const own=S.fi[f.id]||[], pr=predOf(f), c=CORE[f.id];
+      const list=[...own,...pr.filter(x=>IREACT[x])].slice(0,8);
+      return `<div class="fr"><img class="fp" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">${!c?'<div class="sk" style="height:30px;flex:1"></div>':`<div class="tis sm">${list.map(x=>tile(x,own.includes(x)?'hit':IREACT[x]&&(IREACT[x].items||[]).length?'hotc':'',own.includes(x)?'✓':'')).join('')||'<span class="why">—</span>'}</div>`}</div>`;
+    }).join('')}</div>`:'';
+  if(!me.length){ tm.innerHTML=foeCard+'<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.</div>'; bindFoeCard(tm); return; }
   const P=teamPlan(), n=fs.length;
-  tm.innerHTML='<p class="why lg">Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.</p>';
+  tm.innerHTML=foeCard+'<p class="why lg">Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.</p>';
+  bindFoeCard(tm);
   me.forEach(h=>{
     const p=P.per.get(h.id), c=p.core, sk=SKILLS&&SKILLS[h.name];
     const coreHtml=!c?'<div class="sk" style="height:58px"></div>'
@@ -2121,8 +2147,6 @@ function renderTeamBuild(){
     tm.appendChild(card);
   });
   stagger([...tm.querySelectorAll('.card')]);
-  const miss=me.filter(h=>!CORE[h.id]);
-  if(miss.length) Promise.all(miss.map(loadCore)).then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); });
   if(!SKILLS) loadSkills().then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); }).catch(()=>{});
 }
 function skillsCard(h){
