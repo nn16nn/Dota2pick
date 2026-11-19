@@ -415,7 +415,7 @@ input{font-family:inherit}
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
       <h3>Дереккөз</h3>
-      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады. 7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді.</p>
+      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады. 7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді. Гайдтар мен лайфхактар — dota2.ru (ImmortalFaith гайдтары, патч шолуы, Fishman/Kaffs/WoE пікірі).</p>
     </div>
     <div class="card">
       <h3>Қалай жұмыс істейді</h3>
@@ -460,7 +460,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='5.0';
+const V='5.1';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -862,6 +862,8 @@ Object.assign(I18N.ru,{"7.42: жақындарға вампиризм аурас
 Object.assign(I18N.en,{"7.42: жақындарға вампиризм аурасы": "7.42: lifesteal aura for melee", "ИМБА 7.42": "IMBA 7.42", "7.42: жалтару береді әрі Disarm салады — дәлдік затын ал, ұрысты оның Disarm-ы біткенде баста.": "7.42: evasion plus Disarm — get true strike, fight after its Disarm is used.", "7.42: өмірін жұмсап күшейеді — емдеуді кесетін зат әлсіретеді.": "7.42: trades health for power — healing cuts weaken it.", "7.42: командасына вампиризм аурасы — емдеуді кес.": "7.42: lifesteal aura for the team — cut healing.", "7.42: қабілеттеріне қосымша зиян мен баяулату қосады.": "7.42: adds damage and slow to spells.", "7.42: күшейтілген метеор, ұсталғанда күйдіреді.": "7.42: stronger meteor, burns on disables."});
 
 Object.assign(I18N.ru,{"7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді.": "Патч 7.42 (18.11.2026): добавлены новые предметы (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger), убраны Khanda, Helm of the Overlord, Javelin; усиленные/ослабленные герои помечены «7.42 ↑/↓», сильнейшие — «ИМБА»."});
+Object.assign(I18N.ru,{"7.42 лайфхактар":"7.42 лайфхаки","7.42 — қалай ойнау керек":"7.42 — как играть"});
+Object.assign(I18N.en,{"7.42 лайфхактар":"7.42 tips","7.42 — қалай ойнау керек":"7.42 — how to play"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -2062,6 +2064,7 @@ const itemCost=n=>{ const k=DN2KEY[norm(n)]; return k&&ITEMDATA&&ITEMDATA[k]?ITE
 const REMOVED742=new Set(['Khanda','Helm of the Overlord','Javelin','Medallion of Courage','Stygian Desolator']);
 function itemOk(n,pp,h){
   if(INTER.has(n)||REMOVED742.has(n)) return false;
+  if(h&&HERO742[h.localized_name]&&(HERO742[h.localized_name].ban||[]).includes(n)) return false;
   if(n==='Arcane Boots'&&h&&h.primary_attr!=='int'&&(!pp||pp<=3)) return false;
   if(pp&&POSBAN[pp]&&POSBAN[pp].has(n)) return false;
   if(pp>=4){ if(/Power Treads|Phase Boots|Boots of Travel/.test(n)) return false; if(!SUPKEEP.has(n)&&itemCost(n)>(pp===5?2200:3000)) return false; }
@@ -2072,11 +2075,90 @@ function itemOk(n,pp,h){
 const UPG742=[["Heaven's Halberd",'Skypiercer'],["Vladmir's Offering","Ristul's Devotion"],['Armlet of Mordiggian','Sabatons of Mordiggian'],['Meteor Hammer','Starforge'],['Phylactery','Caduceus']];
 /* 7.42 патчы: күшейтілген / әлсіретілген / имба геройлар (патч жазбалары мен 7.41f жеңіс пайызы бойынша) */
 const P742={
-  up:['Ancient Apparition','Broodmother','Beastmaster','Bristleback','Bloodseeker','Drow Ranger','Faceless Void','Venomancer','Clockwerk','Chaos Knight','Lycan','Marci','Mars','Monkey King','Magnus','Disruptor','Razor','Void Spirit'],
-  down:['Axe','Brewmaster','Bounty Hunter','Centaur Warrunner','Pudge','Lion','Invoker','Lina','Crystal Maiden','Hoodwink'],
-  imba:['Wraith King','Chaos Knight','Clockwerk','Beastmaster','Broodmother','Lycan']};
+  up:['Sven','Spectre','Phantom Lancer','Chen','Pugna','Lifestealer','Ancient Apparition','Broodmother','Beastmaster','Bristleback','Bloodseeker','Drow Ranger','Faceless Void','Venomancer','Clockwerk','Chaos Knight','Lycan','Marci','Mars','Monkey King','Magnus','Disruptor','Razor','Void Spirit'],
+  down:['Axe','Brewmaster','Bounty Hunter','Centaur Warrunner','Pudge','Lion','Invoker','Lina','Crystal Maiden','Hoodwink','Luna','Techies','Tinker'],
+  imba:['Wraith King','Chaos Knight','Clockwerk','Beastmaster','Broodmother','Lycan','Pugna','Chen']};
 const patchMod=h=>{ const n=h.localized_name; return (P742.imba.includes(n)?1.2:0)+(P742.up.includes(n)?0.6:0)-(P742.down.includes(n)?0.8:0); };
 const patchTag=h=>{ const n=h.localized_name; return P742.imba.includes(n)?' · <b class="imba">ИМБА 7.42</b>':P742.up.includes(n)?' · <b class="gw">7.42 ↑</b>':P742.down.includes(n)?' · <b class="gl">7.42 ↓</b>':''; };
+/* 7.42 гайдтар мен лайфхактар — dota2.ru (ImmortalFaith гайдтары, патч шолуы, про ойыншылар пікірі, 19.11.2026) */
+const HERO742={
+ 'Chaos Knight':{must:['Sabatons of Mordiggian','Harpoon',"Aghanim's Scepter",'Shadow Blade'],
+   kk:'Патчтың басты жеңімпазы. Жаңа туа біткен: жүгірген сайын жылдамдай түседі. Жаңа белсенді скилл: ульттың иллюзиясы тірі болса — картаның кез келген нүктесіне ландшафтқа қарамай жүгіріп барасың. Sabatons-ты Power Treads-сіз де ал, Аганим — көп ойында, Shadow Blade + Sabatons + туа біткен = кенет шабуыл. Io-мен бірге — екі глобал қозғалыс. Мидте де ойнауға болады.',
+   ru:'Главный победитель патча. Новая врождённая: разгоняется при движении. Новая активка: если жива иллюзия от ульты — бежит в любую точку карты сквозь ландшафт. Sabatons даже без Power Treads, Аганим почти всегда, Shadow Blade + Sabatons + врождённая. С Io — два глобальных перемещения. Даже мидовый CK разумен.',
+   en:'Biggest winner of the patch. New innate: speeds up while moving. New active: while an ult illusion lives, run anywhere on the map ignoring terrain. Sabatons even without Treads, Aghanim\'s most games, Shadow Blade + Sabatons. Great with Io; even mid CK works.'},
+ 'Beastmaster':{must:["Aghanim's Scepter"],
+   kk:'Аганим «өте қатты күшейтілді» — алдымен соны ал, Blink міндетті емес. Inner Beast 10-деңгейде +37 шабуыл жылдамдығы береді.',
+   ru:'Аганим «чрезвычайно сильно баффнут» — берите первым, Blink может быть не нужен. Inner Beast к 10 уровню даёт +37 скорости атаки.',
+   en:'Aghanim\'s Scepter got a huge buff — rush it, Blink may be skipped. Inner Beast gives +37 attack speed by level 10.'},
+ 'Chen':{must:[],
+   kk:'Қайта мета. Орман криптері мен туа біткені күшейді: Кобольд-сарбаз — аймақтық әлсірету, кіші сатир — күшті баяулату, саз голем тасы — аймақтық стан. 15:00-де Терзательді ал (Greater Horn — мегакриптер). Mekansm/Greaves-ті өткізіп жіберуге болады.',
+   ru:'Снова в мете. Лесные крипы и врождённая усилены: кобольд-солдат — истощение по области, малый сатир — сильнее замедление, камень голема станит по области. Забирайте Терзателя на 15:00 (Greater Horn). Mek/Greaves можно пропустить.',
+   en:'Back in the meta. Neutral creeps and innate buffed: Kobold Soldier AoE, small satyr bigger slow, clay golem rock AoE stun. Take Tormentor at 15:00 (Greater Horn). Mek/Greaves can be skipped.'},
+ 'Luna':{must:['Maelstrom','Eye of Skadi','Wraith Band'],ban:["Shiva's Guard"],
+   kk:'Әлсіретілді: Shiva арқылы жинақ енді жұмыс істемейді, глефаларға крит пен вампиризм өтпейді. Жаңа жол — Maelstrom/Mjollnir не Eye of Skadi (секірістерге әсер етеді). Wraith Band тым күшті.',
+   ru:'Понерфлена: сборка через Shiva больше не работает, на глефы не действуют криты и вампиризм. Тестируйте Maelstrom/Mjollnir или Eye of Skadi (работают на отскоки). Wraith Band слишком силён.',
+   en:'Nerfed: Shiva build no longer works, glaives don\'t crit or lifesteal. Go Maelstrom/Mjollnir or Eye of Skadi (they proc on bounces). Wraith Band is very strong.'},
+ 'Lycan':{must:['Sabatons of Mordiggian'],
+   kk:'Жаңа туа біткен: өзі мен қасқырлары әр шабуылда белгі қояды — урон, вампиризм, көрінбейтінді ашады (кіріктірілген Gem). Керри ретінде Sabatons арқылы — өте күшті.',
+   ru:'Новая врождённая: герой и волки ставят метки — больше урона, вампиризм и раскрытие невидимости (встроенный Gem). Керри через Sabatons — однозначно заиграет.',
+   en:'New innate: Lycan and wolves apply marks — more damage, lifesteal, reveal invisibility (built-in Gem). Carry Lycan via Sabatons is very strong.'},
+ 'Pugna':{must:["Aghanim's Scepter"],
+   kk:'Жаңа Аганим: 2 заряд (20 сек сайын) — кез келген скиллді кулдаунда қолданасың. Nether Ward сынса — бірден жаңасы, драка да 3 Decrepify, мұнараға 3 Nether Blast. Жаңа гиперактив мидер.',
+   ru:'Новый Аганим: 2 заряда (каждые 20 с) — любая способность на перезарядке. Сломали Nether Ward — ставь новый, три Decrepify в драке, три Nether Blast по вышке. Новый гиперактивный мидер.',
+   en:'New Aghanim\'s: 2 charges (every 20s) to cast any spell on cooldown — re-place Nether Ward, triple Decrepify, triple Nether Blast on towers. A hyperactive mid.'},
+ 'Phantom Lancer':{must:['Diffusal Blade'],
+   kk:'Иллюзиялар енді заттардың 20% әсерін алады — Diffusal Blade қайта мета. Skull Basher иллюзияда жұмыс істемейді.',
+   ru:'Иллюзии теперь получают 20% действенности предметов — PL снова собирает Diffusal Blade. Skull Basher у иллюзий не работает.',
+   en:'Illusions now get 20% item effectiveness — Diffusal Blade is back on PL. Skull Basher still doesn\'t work on illusions.'},
+ 'Sven':{must:['Sabatons of Mordiggian'],kk:'Про ойыншылар (Fishman, Kaffs) ең мықты керрилердің бірі деп атады. Sabatons кеш ойында слот үнемдейді.',ru:'Про-игроки (Fishman, Kaffs) называют одним из сильнейших керри. Sabatons экономит слот в лейте.',en:'Pros (Fishman, Kaffs) rate him a top carry. Sabatons saves a slot late.'},
+ 'Spectre':{must:['Eye of Skadi'],kk:'Про ойыншылар мықты деп атады; Eye of Skadi — патчтың күшті заттарының бірі.',ru:'Про-игроки называют сильным; Eye of Skadi — один из сильнейших предметов патча.',en:'Pros call her strong; Eye of Skadi is one of the strongest items this patch.'},
+ 'Lifestealer':{must:['Sabatons of Mordiggian'],kk:'Sabatons (Armlet + Phase) кеш ойында слот үнемдейді, баяулатуға 40% төзімділік.',ru:'Sabatons (Armlet + Phase) экономит слот в лейте, +40% сопротивления замедлениям.',en:'Sabatons (Armlet + Phase) saves a slot, +40% slow resistance.'},
+ 'Wraith King':{must:['Sabatons of Mordiggian'],kk:'Sabatons (Armlet + Phase) — слот үнемдейді, баяулатуға 40% төзімділік.',ru:'Sabatons экономит слот, +40% сопротивления замедлениям.',en:'Sabatons saves a slot, +40% slow resistance.'},
+ 'Pangolier':{ban:['Desolator'],kk:'Swashbuckle соққылары заттардың тек 60% әсерін алады — Desolator бар болғаны −3,6 броня. Башер сирек іске қосылады.',ru:'Удары Swashbuckle имеют 60% действенности предметов — Desolator снижает лишь 3,6 брони; башит реже.',en:'Swashbuckle hits have 60% item effectiveness — Desolator only −3.6 armor; fewer bashes.'},
+ 'Lina':{kk:'Әлсіретілді: Flame Cloak енді максимум заряд бермейді, −5% урон; Laguna 1-деңгейде 360. Ерте ойында белсенді бол.',ru:'Понерфлена: Flame Cloak не даёт макс. заряды, −5% урона; Laguna на 1 уровне — 360.',en:'Nerfed: Flame Cloak no longer grants max stacks, −5% damage; Laguna 360 at level 1.'},
+ 'Invoker':{kk:'Sun Strike мен Chaos Meteor уроны азайды, екі қосымша метеор таланты 25-деңгейде, Deafening Blast дизармы оңай диспелденеді.',ru:'Меньше урона от Sun Strike и Chaos Meteor, талант на две «тефтели» на 25 уровне, дизарм Deafening Blast легко развеивается.',en:'Less Sun Strike / Chaos Meteor damage, double-meteor talent moved to 25, Deafening Blast disarm is easily dispelled.'},
+ 'Tinker':{kk:'Warp Flare енді оцепенение бермейді — 3 сек 100% баяулатады.',ru:'Warp Flare не накладывает оцепенение — замедляет на 100% на 3 с.',en:'Warp Flare no longer roots — 100% slow for 3s.'},
+ 'Techies':{kk:'Proximity Mines-та кішкене кулдаун пайда болды — жауды бірден жару мүмкін емес.',ru:'У Proximity Mines появилась перезарядка — мгновенно взорвать нельзя.',en:'Proximity Mines now have a small cooldown — no instant blow-ups.'},
+ 'Sand King':{kk:'Жаңа Аганим: Stinger Burrowstrike жолы бойымен қолданылады.',ru:'Новый Аганим: Stinger применяется по траектории Burrowstrike.',en:'New Aghanim\'s: Stinger is cast along the Burrowstrike path.'}
+};
+const tip742=h=>{ const d=HERO742[h.localized_name]; return d?(d[LANG]||d.kk):''; };
+const LIFE742={kk:[
+ 'Терзатель енді 15:00-де шығады (бұрын 20:00). Өлгенде <b>Greater Horn of Battle</b> жерге түседі — рюкзактан да қолданылады, әр линияңа мегакрип толқынын шақырады (байрақшы + катапульт). Екінші Терзательден қосымша Aghanim\'s Shard.',
+ 'Ерте ойынды ұтып, 15:00-де Терзательді ал да бір линиямен итер — бір глиф мегакриптерді тоқтата алмайды. Саммон/пуш геройлары (Chen, Lycan, Broodmother, Beastmaster) күшейді.',
+ 'Порталдар жеңіл линиядағы Т1 мұнараның артына, карта шетіне жылжыды — ротация баяу. Керрилер үлкен орманды көбірек фармдайды → сонда ганк жаса, өз керриіңді сонда қорға.',
+ 'Smoke of Deceit: дүкенде 4 дана (бұрын 3), 330 сек сайын толады; +25% жылдамдық, 50 сек. Смокпен көбірек ганк.',
+ 'Барлық геройлар старт горнынан кейін минутына 50 тәжірибе пассив алады (өлі кезде де) — саппорттар линияда аз фармдаса да болады, ульт тезірек.',
+ 'Катапульттар: 0–30 мин — 5 мин сайын, 30–60 мин — 2,5 мин сайын, 60+ — екеуден. 30-минуттан кейін пуш әлдеқайда оңай — ойынды ертерек аяқта.',
+ 'Иллюзиялар заттардың 20% әсерін алады (Diffusal, Skadi, Desolator). Skull Basher иллюзияда әлі жұмыс істемейді.',
+ '<b>Bloodslinger</b> (925 алтын) — 5-позицияға: шексіз Blood Grenade, оффлейнерді линиядан қуу, мидте сетап.',
+ '<b>Sabatons of Mordiggian</b> = Armlet + Phase + 40% баяулатуға төзімділік. Рецепт 2000 — асықпа, кеш ойында слот үнемдейді (LS, WK, Sven, Lycan, CK).',
+ '<b>Starforge</b> (Meteor Hammer жаңартуы): кез келген станнан кейін жау жанып, баяулайды — станы көп геройларға. <b>Ristul\'s Devotion</b> — магтарға да жұмыс істейтін Vladmir. <b>Caduceus</b> (5400) — қымбат, тек кеш апгрейд.',
+ 'Про ойыншылар пікірі: ең мықтылар — Chaos Knight, Sven, Lycan, Spectre; заттар — Eye of Skadi, Heaven\'s Halberd/Skypiercer.'],
+ ru:[
+ 'Терзатель теперь появляется на 15:00 (было 20:00). После смерти на землю падает <b>Greater Horn of Battle</b> — используется прямо из рюкзака, призывает волну мегакрипов на каждую вашу линию (знаменосец + катапульта). Со второго — ещё и Aghanim\'s Shard.',
+ 'Задоминируйте начало, заберите Терзателя на 15:00 и идите катком по линии — один глиф не спасёт. Сильнее стали саммонеры и пуш (Chen, Lycan, Broodmother, Beastmaster).',
+ 'Порталы перенесли за Т1 лёгкой линии к краю карты — ротации медленнее. Керри чаще фармят большой лес → гангайте там, своего керри защищайте там.',
+ 'Smoke of Deceit: запас 4 (было 3), пополнение 330 с; +25% скорости, 50 с. Больше смок-гангов.',
+ 'Все герои после горна пассивно получают 50 опыта в минуту (даже мёртвые) — саппортам меньше нужно фармить, ульты быстрее.',
+ 'Катапульты: 0–30 мин — каждые 5 мин, 30–60 — каждые 2,5 мин, 60+ — по две. После 30-й минуты пушить проще — заканчивайте раньше.',
+ 'Иллюзии имеют 20% действенности предметов (Diffusal, Skadi, Desolator). Skull Basher у иллюзий по-прежнему не работает.',
+ '<b>Bloodslinger</b> (925) — для «пятёрок»: бесконечная Blood Grenade, выгонять оффлейнера, сетап в миде.',
+ '<b>Sabatons of Mordiggian</b> = Armlet + Phase + 40% сопротивления замедлениям. Рецепт 2000 — не спешите, в лейте экономит слот (LS, WK, Sven, Lycan, CK).',
+ '<b>Starforge</b> (апгрейд Meteor Hammer): после любого контроля враг горит и замедляется. <b>Ristul\'s Devotion</b> — Vladmir, работающий на магов. <b>Caduceus</b> (5400) — дорого, только апгрейд в лейте.',
+ 'Мнение про: сильнейшие — Chaos Knight, Sven, Lycan, Spectre; предметы — Eye of Skadi, Heaven\'s Halberd/Skypiercer.'],
+ en:[
+ 'Tormentor now spawns at 15:00 (was 20:00). It drops <b>Greater Horn of Battle</b> — usable from backpack, summons a megacreep wave in each of your lanes. The second one also drops Aghanim\'s Shard.',
+ 'Win early, take Tormentor at 15:00 and push one lane — one glyph won\'t stop megacreeps. Summon/push heroes (Chen, Lycan, Broodmother, Beastmaster) got stronger.',
+ 'Twin Gates moved behind the safelane T1 to the map edge — slower rotations. Carries farm the big jungle more → gank there, protect your carry there.',
+ 'Smoke of Deceit: stock 4 (was 3), restock 330s; +25% move speed, 50s.',
+ 'All heroes gain 50 passive XP per minute after the horn (even dead).',
+ 'Catapults: every 5 min until 30:00, every 2.5 min until 60:00, then two. Pushing after 30 min is much easier.',
+ 'Illusions have 20% item effectiveness (Diffusal, Skadi, Desolator). Skull Basher still doesn\'t work on illusions.',
+ '<b>Bloodslinger</b> (925) for pos 5: infinite Blood Grenade.',
+ '<b>Sabatons of Mordiggian</b> = Armlet + Phase + 40% slow resistance. 2000 recipe — not urgent, saves a slot late.',
+ '<b>Starforge</b>: after any disable enemies burn and slow. <b>Ristul\'s Devotion</b> — Vladmir that works for casters. <b>Caduceus</b> (5400) — late upgrade only.',
+ 'Pros: strongest are Chaos Knight, Sven, Lycan, Spectre; items — Eye of Skadi, Heaven\'s Halberd/Skypiercer.']};
+const life742Card=()=>`<details class="card l742"><summary><h3 style="display:inline">7.42 лайфхактар</h3> <span class="why">· dota2.ru</span></summary><ul class="why" style="margin:6px 0 0;padding-left:18px">${(LIFE742[LANG]||LIFE742.kk).map(x=>`<li style="margin:4px 0">${x}</li>`).join('')}</ul></details>`;
 let CPN=null;
 function compOf(){ if(CPN&&CPN._n===Object.keys(ITEMDATA||{}).length) return CPN; CPN={_n:Object.keys(ITEMDATA||{}).length};
   Object.values(ITEMDATA||{}).forEach(v=>{ if(v.cp) CPN[v.n]=v.cp.map(x=>pretty(x)); }); return CPN; }
@@ -2098,6 +2180,9 @@ function adaptCore(c,pp,h){
   for(const n of pool){ if(L.length>=9) break; if(L.includes(n)||isComp(n,L)) continue; L.push(n); L=L.filter(x=>!isComp(x,L)); }
   L.forEach(n=>{ if(t[n]==null){ const k=itemCost(n); t[n]=k<1500?1.3:k<3000?1.9:k<4500?2.3:2.7; } });
   L.filter(earlyBoot).forEach(n=>{ t[n]=0.95; }); // аяқ киім — бірінші
+  // 7.42 гайд (dota2.ru): геройға міндетті заттар
+  const H7=HERO742[h.localized_name]; if(H7&&H7.must&&(!pp||pp<=3)) for(const n of H7.must){ if(!L.includes(n)&&itemOk(n,pp,h)){ L.push(n); const k=itemCost(n); if(t[n]==null) t[n]=k<1500?1.3:k<3000?1.8:k<4500?2.1:2.5; } }
+  if(H7&&H7.must&&H7.must.includes('Sabatons of Mordiggian')&&!L.includes('Armlet of Mordiggian')&&itemOk('Armlet of Mordiggian',pp,h)){ L.push('Armlet of Mordiggian'); t['Armlet of Mordiggian']=1.6; }
   // 7.42 жаңа заттары: негізгі зат бар болса, оның жаңа жалғасы кеш ойынға қосылады
   for(const [base,up] of UPG742){ if(L.includes(base)&&!L.includes(up)&&itemOk(up,pp,h)&&(!FIT[up]||fits(up,h))){ L.push(up); t[up]=Math.max(2.5,(t[base]||2)+0.5); } }
   L.sort((a,b)=>t[a]-t[b]);
@@ -2146,9 +2231,9 @@ function renderTeamBuild(){
       const list=[...own,...pr.filter(x=>IREACT[x])].slice(0,8);
       return `<div class="fr"><img class="fp" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">${!c?'<div class="sk" style="height:30px;flex:1"></div>':`<div class="tis sm">${list.map(x=>tile(x,own.includes(x)?'hit':IREACT[x]&&(IREACT[x].items||[]).length?'hotc':'',own.includes(x)?'✓':'')).join('')||'<span class="why">—</span>'}</div>`}</div>`;
     }).join('')}</div>`:'';
-  if(!me.length){ tm.innerHTML=foeCard+'<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.</div>'; bindFoeCard(tm); return; }
+  if(!me.length){ tm.innerHTML=life742Card()+foeCard+'<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.</div>'; bindFoeCard(tm); return; }
   const P=teamPlan(), n=fs.length;
-  tm.innerHTML=foeCard+'<p class="why lg">Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.</p>';
+  tm.innerHTML=life742Card()+foeCard+'<p class="why lg">Нөмір — алу реті. Қызыл жиек — қарсыласқа қарсы зат, алтын — жинақта бар әрі қарсы.</p>';
   bindFoeCard(tm);
   me.forEach(h=>{
     const p=P.per.get(h.id), c=p.core, sk=SKILLS&&SKILLS[h.name];
@@ -2163,7 +2248,8 @@ function renderTeamBuild(){
       ${sk&&sk.b?`<div class="grow"><span class="gt">Скилл көтеру реті</span>${skillRow(h,true)}</div>`:''}
       ${c&&c.start&&c.start.length?`<div class="grow"><span class="gt">Бастапқы</span><div class="tis sm">${c.start.map(x=>tile(x,'','')).join('')}</div></div>`:''}
       <div class="grow"><span class="gt">Сатып алу реті</span>${coreHtml}</div>
-      ${p.extra.length?`<div class="grow"><span class="gt">Тағы</span><div class="tis">${p.extra.map(e=>tile(e.n,'ex','')).join('')}</div></div>`:''}`;
+      ${p.extra.length?`<div class="grow"><span class="gt">Тағы</span><div class="tis">${p.extra.map(e=>tile(e.n,'ex','')).join('')}</div></div>`:''}
+      ${tip742(h)?`<p class="why t742"><b>7.42:</b> ${tip742(h)}</p>`:''}`;
     card.onclick=()=>{ PLANH=h.id; go('p-items',1); setTimeout(()=>{ const m=document.getElementById('myHeroes'); if(m) window.scrollTo({top:m.getBoundingClientRect().top+scrollY-70,behavior:RM?'auto':'smooth'}); },450); };
     bindPos(card,h,()=>renderTeamBuild());
     tm.appendChild(card);
@@ -2550,7 +2636,8 @@ async function showPlan(h){
       <p class="why" style="margin:7px 0 0">Өзгерту: «Таңдау» бетінде өз геройыңды бас.</p></div>`:'';
   const notes=[]; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&r.note) notes.push({f:f.localized_name,it,note:r.note}); }));
   const noteCard=notes.length?`<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`+notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')+'</div>':'';
-  bd.innerHTML=head+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h);
+  const t7=tip742(h), card742=t7?`<div class="card"><h3>7.42 — қалай ойнау керек</h3><p class="why" style="margin:6px 0 0">${t7}</p><p class="why" style="margin:6px 0 0;opacity:.7">dota2.ru</p></div>`:'';
+  bd.innerHTML=head+card742+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h)+life742Card();
   const ph=document.getElementById('planHead'); if(ph) bindPos(ph,h,()=>showPlan(h));
 }
 
