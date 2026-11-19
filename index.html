@@ -147,6 +147,7 @@ input{font-family:inherit}
 .gm .gi{display:flex;gap:3px;margin-top:4px}.gm .gi img{width:26px;height:19px;border-radius:3px;object-fit:cover}.gm .k small{display:block;font-family:Inter,sans-serif;font-size:10px;color:var(--dim);text-align:right}
 .fb .fr{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.fb .fr:first-of-type{border-top:0}
 .fb .fp{width:46px;height:26px;border-radius:4px;object-fit:cover;flex:0 0 auto;background:#0B0F18}.fb .ti{cursor:pointer}
+.imba{color:#0B0F18;background:var(--gold);border-radius:4px;padding:0 4px;font-size:10px}
 .mc{font-size:10.5px;font-weight:700;color:var(--gold);background:#2A2412;border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle}
 .tagn{font-family:var(--disp);font-size:11px;color:var(--gold);letter-spacing:.1em;float:right}
 
@@ -414,7 +415,7 @@ input{font-family:inherit}
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
       <h3>Дереккөз</h3>
-      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады.</p>
+      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады. 7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді.</p>
     </div>
     <div class="card">
       <h3>Қалай жұмыс істейді</h3>
@@ -459,7 +460,7 @@ input{font-family:inherit}
 </div>
 
 <script>
-const V='4.9';
+const V='5.0';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -857,6 +858,10 @@ Object.assign(I18N.en,{"OpenDota уақытша істемей тұр": "OpenDot
 Object.assign(I18N.ru,{"Қарсылас әдетте не жинайды": "Что обычно собирает соперник", "OpenDota-дағы ең жиі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бассаң — белгіленеді.": "Самая частая сборка по OpenDota. Красная рамка — есть контр-предмет. Нажми, если реально купил — отметится.", "Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.": "Добавь своих героев — у каждого будет сборка против предметов соперника.", "(әдетте)": "(обычно)"});
 Object.assign(I18N.en,{"Қарсылас әдетте не жинайды": "What the enemy usually builds", "OpenDota-дағы ең жиі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бассаң — белгіленеді.": "Most common build on OpenDota. Red border — we have a counter. Tap if they really bought it.", "Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.": "Add your heroes — each gets a build against the enemy items.", "(әдетте)": "(usually)"});
 
+Object.assign(I18N.ru,{"7.42: жақындарға вампиризм аурасы": "7.42: аура вампиризма для ближников", "ИМБА 7.42": "ИМБА 7.42", "7.42: жалтару береді әрі Disarm салады — дәлдік затын ал, ұрысты оның Disarm-ы біткенде баста.": "7.42: даёт уклонение и Disarm — бери предмет на точность, начинай драку после его Disarm.", "7.42: өмірін жұмсап күшейеді — емдеуді кесетін зат әлсіретеді.": "7.42: усиливается за счёт здоровья — ослабляется срезом лечения.", "7.42: командасына вампиризм аурасы — емдеуді кес.": "7.42: аура вампиризма команде — режь лечение.", "7.42: қабілеттеріне қосымша зиян мен баяулату қосады.": "7.42: добавляет урон и замедление к способностям.", "7.42: күшейтілген метеор, ұсталғанда күйдіреді.": "7.42: усиленный метеор, жжёт при контроле."});
+Object.assign(I18N.en,{"7.42: жақындарға вампиризм аурасы": "7.42: lifesteal aura for melee", "ИМБА 7.42": "IMBA 7.42", "7.42: жалтару береді әрі Disarm салады — дәлдік затын ал, ұрысты оның Disarm-ы біткенде баста.": "7.42: evasion plus Disarm — get true strike, fight after its Disarm is used.", "7.42: өмірін жұмсап күшейеді — емдеуді кесетін зат әлсіретеді.": "7.42: trades health for power — healing cuts weaken it.", "7.42: командасына вампиризм аурасы — емдеуді кес.": "7.42: lifesteal aura for the team — cut healing.", "7.42: қабілеттеріне қосымша зиян мен баяулату қосады.": "7.42: adds damage and slow to spells.", "7.42: күшейтілген метеор, ұсталғанда күйдіреді.": "7.42: stronger meteor, burns on disables."});
+
+Object.assign(I18N.ru,{"7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді.": "Патч 7.42 (18.11.2026): добавлены новые предметы (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger), убраны Khanda, Helm of the Overlord, Javelin; усиленные/ослабленные герои помечены «7.42 ↑/↓», сильнейшие — «ИМБА»."});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -937,7 +942,7 @@ const THREATS=[
   items:['Black King Bar','Pipe of Insight','Glimmer Cape','Consecrated Wraps','Shawl'],
   list:['lina','zuus','zeus','lion','leshrac','invoker','skywrath_mage','tinker','queenofpain','storm_spirit','jakiro','warlock','witch_doctor','pugna','necrolyte','necrophos','death_prophet','ancient_apparition','crystal_maiden','grimstroke','disruptor','shadow_demon','nevermore','shadow_fiend','enigma','keeper_of_the_light','lich','obsidian_destroyer','outworld_destroyer','puck','silencer','techies','shredder','timbersaw','tiny','venomancer','viper','void_spirit','winter_wyvern','muerta','ringmaster','dark_willow','batrider','bane','sand_king','earthshaker','nyx_assassin','pudge','visage','dark_seer','phoenix','rubick','snapfire','ogre_magi']},
  {id:'phys',ttl:'Қатты зиян (керри)',why:'Ұрысы ауыр — брон мен қалқан ұстап тұруға көмектеседі.',
-  items:['Crimson Guard','Assault Cuirass','Solar Crest','Ghost Scepter',"Crella's Crozier"],
+  items:['Crimson Guard',"Heaven's Halberd",'Assault Cuirass','Solar Crest','Ghost Scepter',"Crella's Crozier"],
   list:['antimage','anti_mage','phantom_assassin','juggernaut','sven','ursa','troll_warlord','slark','morphling','faceless_void','luna','drow_ranger','sniper','gyrocopter','medusa','terrorblade','spectre','monkey_king','bloodseeker','life_stealer','lifestealer','chaos_knight','skeleton_king','wraith_king','clinkz','razor','weaver','arc_warden','meepo','naga_siren','phantom_lancer','ember_spirit','templar_assassin','riki','muerta','marci','dawnbreaker','primal_beast','kez','tiny','alchemist','huskar','lone_druid','lycan','brewmaster','slardar','night_stalker','viper','pangolier','magnataur','magnus','kunkka','tusk','mirana']},
  {id:'illu',ttl:'Елес пен шақырылғандар',why:'Саны көп — AoE зиян бір соққыда тазалайды.',
   items:['Mjollnir','Battle Fury','Radiance',"Shiva's Guard"],
@@ -981,7 +986,8 @@ const FIT={
  'Eye of Skadi':{r:['core'],atk:1},'Nullifier':{r:['core'],atk:1},'Manta Style':{r:['core'],atk:1},
  'Radiance':{r:['core']},'Orchid Malevolence':{r:['core']},"Crella's Crozier":{r:['core']},
  "Heaven's Halberd":{r:['core']},"Linken's Sphere":{r:['core']},'Aeon Disk':{r:['core']},
- 'Sange and Yasha':{r:['core']},'Spirit Vessel':{r:['sup','core']},'Medallion of Courage':{r:['sup']},
+ 'Sange and Yasha':{r:['core']},'Spirit Vessel':{r:['sup','core']},
+ 'Skypiercer':{r:['core']},'Sabatons of Mordiggian':{r:['core'],melee:1},'Starforge':{r:['core']},"Ristul's Devotion":{r:['core','sup']},'Caduceus':{r:['sup','core']},'Bloodslinger':{r:['sup']},
  'Solar Crest':{r:['sup','core']},'Glimmer Cape':{r:['sup']},'Force Staff':{r:['sup','core']},
  'Pipe of Insight':{r:['sup','core']},'Crimson Guard':{r:['sup','core']},'Shawl':{r:['sup','core']},
  'Ghost Scepter':{r:['sup','core']},'Lotus Orb':{r:['sup','core']},'Scythe of Vyse':{r:['sup','core']}
@@ -1014,16 +1020,16 @@ const ITEMLIST=[...new Set(['Black King Bar','Blade Mail','Butterfly','Heart of 
  'Spirit Vessel',"Heaven's Halberd",'Guardian Greaves','Mask of Madness','Diffusal Blade','Disperser',
  'Dagon','Veil of Discord','Bloodstone','Eternal Shroud','Mage Slayer','Parasma','Wind Waker','Harpoon',
  'Echo Sabre','Battle Fury','Mjollnir','Boots of Travel','Hand of Midas','Sange and Yasha','Kaya and Sange',
- 'Meteor Hammer','Khanda',"Hydra's Breath","Crella's Crozier",'Consecrated Wraps',"Specialist's Array",
+ 'Meteor Hammer','Starforge',"Hydra's Breath","Crella's Crozier",'Consecrated Wraps',"Specialist's Array",
  // аяқ киім
  'Power Treads','Phase Boots','Arcane Boots','Tranquil Boots','Boots of Speed','Boots of Bearing',
  'Overwhelming Blink','Arcane Blink','Swift Blink',
  // жиі кездесетін негізгі заттар
  'Armlet of Mordiggian','Maelstrom','Basher','Sange','Yasha','Kaya','Yasha and Kaya','Sange and Kaya',
  'Dragon Lance','Hurricane Pike','Witch Blade','Falcon Blade','Orb of Corrosion','Blight Stone',
- 'Urn of Shadows','Medallion of Courage','Mekansm','Holy Locket','Aether Lens','Moon Shard',
+ 'Urn of Shadows','Mekansm','Holy Locket','Aether Lens','Moon Shard',
  'Bloodstone','Ethereal Blade','Shadow Blade','Silver Edge','Nemesis Curse','Revenant\'s Brooch',
- "Aghanim's Shard",'Helm of the Overlord','Helm of the Dominator','Vanguard','Crimson Guard',
+ "Aghanim's Shard",'Helm of the Dominator','Skypiercer','Sabatons of Mordiggian',"Ristul's Devotion",'Caduceus','Bloodslinger','Quarterstaff','Vanguard','Crimson Guard',
  'Black Dragon Hide','Heart of Tarrasque','Assault Cuirass','Abyssal Blade','Bloodthorn',
  // шығын заттары мен вардтар
  'Dust of Appearance','Sentry Ward','Observer Ward','Gem of True Sight','Smoke of Deceit',
@@ -1081,7 +1087,11 @@ const IREACT={
  "Specialist's Array":{items:["Shiva's Guard",'Assault Cuirass'],note:'Броныңды түсіреді.'},
  'Octarine Core':{items:['Black King Bar'],note:'Заклинаниелерін жиі қосады.'},
  'Meteor Hammer':{items:['Black King Bar','Force Staff'],note:'Каналды заклинание — үзіп жіберуге болады.'},
- 'Khanda':{items:['Black King Bar'],note:'Заклинаниеден кейінгі соққысы қатты.'},
+ 'Skypiercer':{items:['Monkey King Bar','Bloodthorn'],note:'7.42: жалтару береді әрі Disarm салады — дәлдік затын ал, ұрысты оның Disarm-ы біткенде баста.'},
+ 'Sabatons of Mordiggian':{items:['Spirit Vessel','Eye of Skadi'],note:'7.42: өмірін жұмсап күшейеді — емдеуді кесетін зат әлсіретеді.'},
+ "Ristul's Devotion":{items:['Spirit Vessel','Eye of Skadi',"Shiva's Guard"],note:'7.42: командасына вампиризм аурасы — емдеуді кес.'},
+ 'Caduceus':{items:['Black King Bar','Lotus Orb'],note:'7.42: қабілеттеріне қосымша зиян мен баяулату қосады.'},
+ 'Starforge':{items:['Black King Bar'],note:'7.42: күшейтілген метеор, ұсталғанда күйдіреді.'},
  'Eye of Skadi':{items:['Black King Bar','Manta Style'],note:'Ұзақ баяулатады — дispel не BKB.'},
  'Daedalus':{items:["Shiva's Guard",'Assault Cuirass','Crimson Guard'],note:'Крит қатты — брон мен қалқан.'},
  'Battle Fury':{items:['Crimson Guard'],note:'Линияны тез тазалайды.'},
@@ -1251,7 +1261,7 @@ const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Sh
  spirit_vessel:'Spirit Vessel',urn_of_shadows:'Urn of Shadows',silver_edge:'Silver Edge',
  monkey_king_bar:'Monkey King Bar',mjollnir:'Mjollnir',radiance:'Radiance',
  rod_of_atos:'Rod of Atos',eternal_shroud:'Eternal Shroud',ghost:'Ghost Scepter',
- heavens_halberd:"Heaven's Halberd",medallion_of_courage:'Medallion of Courage',
+ heavens_halberd:"Heaven's Halberd",skypiercer:'Skypiercer',berserkers_sabatons:'Sabatons of Mordiggian',ristuls_devotion:"Ristul's Devotion",caduceus:'Caduceus',starforge:'Starforge',bloodslinger:'Bloodslinger',quarterstaff:'Quarterstaff',
  hurricane_pike:'Hurricane Pike',dragon_lance:'Dragon Lance',diffusal_blade:'Diffusal Blade',
  vladmir:"Vladmir's Offering",echo_sabre:'Echo Sabre',harpoon:'Harpoon',
  blade_mail:'Blade Mail',pers:'Perseverance',oblivion_staff:'Oblivion Staff',
@@ -1265,7 +1275,7 @@ const NAMEFIX={ultimate_scepter:"Aghanim's Scepter",aghanims_shard:"Aghanim's Sh
  shivas_guard:"Shiva's Guard",manta:'Manta Style',blink:'Blink Dagger',pipe:'Pipe of Insight',
  heart:'Heart of Tarrasque',assault:'Assault Cuirass',gungir:'Gleipnir',
  yasha_and_kaya:'Yasha and Kaya',sange_and_kaya:'Sange and Kaya',
- boots_of_bearing:'Boots of Bearing',helm_of_the_overlord:'Helm of the Overlord'};
+ boots_of_bearing:'Boots of Bearing'};
 const pretty=k=>(ITEMDATA&&ITEMDATA[k]&&ITEMDATA[k].n)||NAMEFIX[k]||k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 
 const ROLEKK={Carry:'Керри',Support:'Қолдау',Nuker:'Зияншы',Disabler:'Тежеуші',Initiator:'Бастамашы',
@@ -1649,7 +1659,7 @@ function recommend(){
     if(used.has(h.id)) continue;
     const r=scoreVs(h,fs), syn=(me.length&&me.length<5)?teamScore([...me,h],NOV).s-base:0;
     const cm=me.find(m=>comboWith(m.localized_name,h.localized_name));
-    out.push({h,score:r.score,det:r.det,syn,cmb:cm?cm.localized_name:'',rank:r.score+syn*.4+(cm?2:0)});
+    out.push({h,score:r.score,det:r.det,syn,cmb:cm?cm.localized_name:'',rank:r.score+syn*.4+(cm?2:0)+patchMod(h)});
   }
   return out.sort((a,b)=>b.rank-a.rank);
 }
@@ -1679,7 +1689,7 @@ function renderRecs(){
     const pos=posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ');
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
-      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.cmb?' · комбо: '+x.cmb:x.syn>=3.5?' · байланыс ✓':''}${warn}</div>
+      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.cmb?' · комбо: '+x.cmb:x.syn>=3.5?' · байланыс ✓':''}${patchTag(x.h)}${warn}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
       <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
@@ -1744,7 +1754,7 @@ function auraItems(team,fs){
   if(mag>=3) out.push(['Pipe of Insight','сиқыр көп']);
   if(ph>=3&&melee>=1) out.push(['Crimson Guard','қатты зиянға қарсы']);
   if(lk>=2) out.push(['Lotus Orb','байлауға қарсы']);
-  if(melee>=2) out.push(["Vladmir's Offering",'жақын геройларға вампиризм']);
+  if(melee>=2) out.push(["Ristul's Devotion",'7.42: жақындарға вампиризм аурасы']);
   if(t.some(x=>x.r==='sup')&&team.length>=3) out.push(['Mekansm','команда емі']);
   if(team.length>=4&&!t.some(x=>x.init)) out.push(['Blink Dagger','бастама жоқ — блинк']);
   return out.slice(0,3);
@@ -1752,7 +1762,7 @@ function auraItems(team,fs){
 function idealTeams(){
   const fs=foeHeroes(), foeIds=new Set(S.foe), me=S.mine.map(id=>BYID[id]).filter(Boolean);
   if(me.length>=5) return [];
-  const vs=new Map(); HEROES.forEach(h=>{ if(!foeIds.has(h.id)) vs.set(h.id,(fs.length?scoreVs(h,fs).score:0)+(h.base-.5)*20); });
+  const vs=new Map(); HEROES.forEach(h=>{ if(!foeIds.has(h.id)) vs.set(h.id,(fs.length?scoreVs(h,fs).score:0)+(h.base-.5)*20+patchMod(h)*2); });
   const mine=new Set(me.map(h=>h.id));
   const cand=HEROES.filter(h=>!foeIds.has(h.id)&&!mine.has(h.id)).sort((a,b)=>vs.get(b.id)-vs.get(a.id));
   const pool=new Map(); cand.slice(0,30).forEach(h=>pool.set(h.id,h));
@@ -1981,7 +1991,7 @@ async function loadSkills(){
   if(SKILLS) return SKILLS;
   const r=await fetch('skills.json'); SKILLS=await r.json(); return SKILLS;
 }
-const TEAMIT=new Set(['Pipe of Insight','Mekansm','Guardian Greaves','Crimson Guard',"Vladmir's Offering",'Glimmer Cape','Force Staff','Solar Crest','Spirit Vessel','Lotus Orb','Sentry Ward','Dust of Appearance','Gem of True Sight','Medallion of Courage','Holy Locket','Boots of Bearing']);
+const TEAMIT=new Set(["Ristul's Devotion",'Caduceus','Pipe of Insight','Mekansm','Guardian Greaves','Crimson Guard',"Vladmir's Offering",'Glimmer Cape','Force Staff','Solar Crest','Spirit Vessel','Lotus Orb','Sentry Ward','Dust of Appearance','Gem of True Sight','Holy Locket','Boots of Bearing']);
 function teamPlan(){
   const fs=foeHeroes(), me=S.mine.map(id=>BYID[id]).filter(Boolean), per=new Map();
   me.forEach(h=>per.set(h.id,{h,core:coreFor(h)||null,counter:[],extra:[],hit:new Map(),have:[]}));
@@ -2039,18 +2049,19 @@ const POSLBL={1:'Керри',2:'Мидер',3:'Хард линия',4:'Қолд�
 const posChips=h=>`<div class="pos">${[1,2,3,4,5].map(n=>`<button class="pb${heroPos(h)===n?' on':''}" data-p="${n}">${n}</button>`).join('')}</div>`;
 function bindPos(el,h,after){ el.querySelectorAll('.pb').forEach(b=>b.onclick=e=>{ e.stopPropagation(); S.pos[h.id]=+b.dataset.p; save(); buzz(8); after(); }); }
 // позицияға қарай жинақты түзету: 4–5 саппорт заттары, 1–2 саппорт заттарсыз
-const SUPONLY=new Set(['Glimmer Cape','Force Staff','Ghost Scepter','Mekansm','Guardian Greaves','Boots of Bearing','Holy Locket','Arcane Boots','Tranquil Boots','Medallion of Courage','Urn of Shadows','Pavise','Aether Lens','Wraith Pact']);
-const SUPKEEP=new Set([...SUPONLY,"Eul's Scepter of Divinity",'Blink Dagger','Pipe of Insight','Lotus Orb','Solar Crest','Spirit Vessel','Rod of Atos','Wind Waker',"Aghanim's Shard","Aghanim's Scepter",'Magic Wand','Orchid Malevolence','Veil of Discord','Phylactery','Kaya','Octarine Core','Scythe of Vyse',"Vladmir's Offering",'Crimson Guard','Ethereal Blade','Dagon','Bottle']);
+const SUPONLY=new Set(['Glimmer Cape','Force Staff','Ghost Scepter','Mekansm','Guardian Greaves','Boots of Bearing','Holy Locket','Arcane Boots','Tranquil Boots','Urn of Shadows','Pavise','Aether Lens','Wraith Pact']);
+const SUPKEEP=new Set([...SUPONLY,'Caduceus','Bloodslinger',"Ristul's Devotion","Eul's Scepter of Divinity",'Blink Dagger','Pipe of Insight','Lotus Orb','Solar Crest','Spirit Vessel','Rod of Atos','Wind Waker',"Aghanim's Shard","Aghanim's Scepter",'Magic Wand','Orchid Malevolence','Veil of Discord','Phylactery','Kaya','Octarine Core','Scythe of Vyse',"Vladmir's Offering",'Crimson Guard','Ethereal Blade','Dagon','Bottle']);
 const BOOTRE=/Boots|Treads|Greaves/;
 // аралық бөлшектер мен әлсіз ерте заттар жинақта көрсетілмейді
 const INTER=new Set(['Soul Booster','Oblivion Staff','Crystalys','Perseverance','Ultimate Orb','Point Booster','Vitality Booster','Energy Booster','Diadem','Shawl','Wraith Band','Bracer','Null Talisman','Headdress','Buckler','Cornucopia','Mithril Hammer','Javelin','Eagle Song','Reaver','Sacred Relic','Mystic Staff','Hyperstone','Demon Edge','Platemail','Talisman of Evasion','Fluffy Hat','Chainmail','Blitz Knuckles','Ring of Basilius','Orb of Venom','Blight Stone']);
-const SUPBAN=['Bottle','Hand of Midas','Battle Fury','Radiance','Butterfly','Daedalus','Satanic','Divine Rapier','Abyssal Blade','Eye of Skadi','Manta Style','Monkey King Bar','Bloodthorn','Skull Basher','Mjollnir','Maelstrom','Desolator','Heart of Tarrasque'];
+const SUPBAN=['Skypiercer','Sabatons of Mordiggian','Starforge','Bottle','Hand of Midas','Battle Fury','Radiance','Butterfly','Daedalus','Satanic','Divine Rapier','Abyssal Blade','Eye of Skadi','Manta Style','Monkey King Bar','Bloodthorn','Skull Basher','Mjollnir','Maelstrom','Desolator','Heart of Tarrasque'];
 const POSBAN={1:new Set(['Bottle','Mekansm','Guardian Greaves','Boots of Bearing','Pipe of Insight']),2:new Set(['Mekansm','Guardian Greaves','Boots of Bearing']),
   3:new Set(['Bottle','Hand of Midas','Battle Fury','Butterfly','Divine Rapier']),4:new Set(SUPBAN),5:new Set(SUPBAN)};
-const DETECT=new Set(['Dust of Appearance','Sentry Ward','Gem of True Sight','Observer Ward','Smoke of Deceit','Urn of Shadows','Medallion of Courage']);
+const DETECT=new Set(['Dust of Appearance','Sentry Ward','Gem of True Sight','Observer Ward','Smoke of Deceit','Urn of Shadows']);
 const itemCost=n=>{ const k=DN2KEY[norm(n)]; return k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; };
+const REMOVED742=new Set(['Khanda','Helm of the Overlord','Javelin','Medallion of Courage','Stygian Desolator']);
 function itemOk(n,pp,h){
-  if(INTER.has(n)) return false;
+  if(INTER.has(n)||REMOVED742.has(n)) return false;
   if(n==='Arcane Boots'&&h&&h.primary_attr!=='int'&&(!pp||pp<=3)) return false;
   if(pp&&POSBAN[pp]&&POSBAN[pp].has(n)) return false;
   if(pp>=4){ if(/Power Treads|Phase Boots|Boots of Travel/.test(n)) return false; if(!SUPKEEP.has(n)&&itemCost(n)>(pp===5?2200:3000)) return false; }
@@ -2058,6 +2069,14 @@ function itemOk(n,pp,h){
   if(pp===3&&SUPONLY.has(n)&&!/Mekansm|Guardian Greaves|Boots of Bearing|Force Staff|Glimmer|Arcane Boots/.test(n)) return false;
   return true;
 }
+const UPG742=[["Heaven's Halberd",'Skypiercer'],["Vladmir's Offering","Ristul's Devotion"],['Armlet of Mordiggian','Sabatons of Mordiggian'],['Meteor Hammer','Starforge'],['Phylactery','Caduceus']];
+/* 7.42 патчы: күшейтілген / әлсіретілген / имба геройлар (патч жазбалары мен 7.41f жеңіс пайызы бойынша) */
+const P742={
+  up:['Ancient Apparition','Broodmother','Beastmaster','Bristleback','Bloodseeker','Drow Ranger','Faceless Void','Venomancer','Clockwerk','Chaos Knight','Lycan','Marci','Mars','Monkey King','Magnus','Disruptor','Razor','Void Spirit'],
+  down:['Axe','Brewmaster','Bounty Hunter','Centaur Warrunner','Pudge','Lion','Invoker','Lina','Crystal Maiden','Hoodwink'],
+  imba:['Wraith King','Chaos Knight','Clockwerk','Beastmaster','Broodmother','Lycan']};
+const patchMod=h=>{ const n=h.localized_name; return (P742.imba.includes(n)?1.2:0)+(P742.up.includes(n)?0.6:0)-(P742.down.includes(n)?0.8:0); };
+const patchTag=h=>{ const n=h.localized_name; return P742.imba.includes(n)?' · <b class="imba">ИМБА 7.42</b>':P742.up.includes(n)?' · <b class="gw">7.42 ↑</b>':P742.down.includes(n)?' · <b class="gl">7.42 ↓</b>':''; };
 let CPN=null;
 function compOf(){ if(CPN&&CPN._n===Object.keys(ITEMDATA||{}).length) return CPN; CPN={_n:Object.keys(ITEMDATA||{}).length};
   Object.values(ITEMDATA||{}).forEach(v=>{ if(v.cp) CPN[v.n]=v.cp.map(x=>pretty(x)); }); return CPN; }
@@ -2079,6 +2098,8 @@ function adaptCore(c,pp,h){
   for(const n of pool){ if(L.length>=9) break; if(L.includes(n)||isComp(n,L)) continue; L.push(n); L=L.filter(x=>!isComp(x,L)); }
   L.forEach(n=>{ if(t[n]==null){ const k=itemCost(n); t[n]=k<1500?1.3:k<3000?1.9:k<4500?2.3:2.7; } });
   L.filter(earlyBoot).forEach(n=>{ t[n]=0.95; }); // аяқ киім — бірінші
+  // 7.42 жаңа заттары: негізгі зат бар болса, оның жаңа жалғасы кеш ойынға қосылады
+  for(const [base,up] of UPG742){ if(L.includes(base)&&!L.includes(up)&&itemOk(up,pp,h)&&(!FIT[up]||fits(up,h))){ L.push(up); t[up]=Math.max(2.5,(t[base]||2)+0.5); } }
   L.sort((a,b)=>t[a]-t[b]);
   const more=pool.filter(n=>!L.includes(n)&&!isComp(n,L)&&itemCost(n)>=1500).slice(0,3);
   return {...c,early:L.filter(n=>t[n]<1.67),mid:L.filter(n=>t[n]>=1.67&&t[n]<2.34),late:L.filter(n=>t[n]>=2.34),t,more};
@@ -2101,7 +2122,8 @@ function seqOf(p){
   const T=n=>{ if(c.t&&c.t[n]!=null) return c.t[n]; const k=DN2KEY[norm(n)], cost=k&&ITEMDATA&&ITEMDATA[k]?ITEMDATA[k].c:2500; return cost<1500?1.3:cost<3000?1.9:cost<4500?2.3:2.7; };
   const all=[...coreList(c).map(n=>({n,t:T(n),hit:p.hit.get(n)})),...p.counter.map(e=>({n:e.n,t:T(e.n),ctr:e}))];
   const C=compOf(); // бөлшегі мен өзі қатар тұрмайды (Shadow Blade + Silver Edge → тек Silver Edge)
-  return all.filter(x=>!all.some(y=>y!==x&&(C[y.n]||[]).includes(x.n))).sort((a,b)=>a.t-b.t);
+  const keep=new Set(UPG742.map(u=>u[0]).concat(['Phase Boots'])); // 7.42 жаңарту негізі алдымен алынады
+  return all.filter(x=>keep.has(x.n)||!all.some(y=>y!==x&&(C[y.n]||[]).includes(x.n))).sort((a,b)=>a.t-b.t);
 }
 function seqTiles(p,n){
   return seqOf(p).map((x,i)=>{ const e=x.ctr||x.hit; return tile(x.n,x.ctr?'hotc':x.hit?'hit':'',e&&e.who.size?e.who.size+'/'+n:'',i+1); }).join('');
