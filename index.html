@@ -366,7 +366,7 @@ input{font-family:inherit}
 .bn.on{border-color:var(--dire)}.bn.on img{filter:grayscale(1) brightness(.45)}
 .bn.on::after{content:"";position:absolute;left:8px;right:8px;top:23px;height:2px;background:var(--dire);transform:rotate(-24deg);box-shadow:0 0 8px var(--dire);animation:slash .3s ease-out both}
 @keyframes slash{from{transform:rotate(-24deg) scaleX(0)}to{transform:rotate(-24deg) scaleX(1)}}
-.idc{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none;margin:0 -16px;padding:0 16px 4px;scroll-padding:0 16px}
+.idc{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none;margin:0 -14px;padding:0 14px 4px;scroll-padding:0 14px}
 .idc::-webkit-scrollbar{display:none}
 .idc .card.ideal{flex:0 0 86%;scroll-snap-align:start;margin-bottom:0;position:relative}
 .idc .rk{position:absolute;top:8px;right:10px;font-family:var(--disp);font-size:12px;color:var(--gold);opacity:.8}
@@ -377,6 +377,29 @@ details.fb summary{list-style:none;cursor:pointer;display:flex;align-items:cente
 details.fb summary::after{content:"▾";margin-left:auto;color:var(--dim);transition:transform .25s}details.fb[open] summary::after{transform:rotate(180deg)}
 details.fb[open] .fr{animation:fadeUp .3s ease both}
 .rec:active,.card.tb:active,.bn:active{transform:scale(.975)}
+/* v5.3: ui_motion_prompts стилі — қалқыған мәзір, серіппелі пилл, екі қабат көлеңке, 3D батырма */
+:root{--sh:0 2px 6px rgba(0,0,0,.35),0 12px 28px rgba(0,0,0,.45);--sh2:0 3px 8px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.6)}
+body{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.card,.rec,.side,.bn,.win{box-shadow:var(--sh)}
+.tabs{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:620px;margin:0 auto;border:1px solid #ffffff14;border-radius:24px;
+  padding:7px 0;background:#161C2BEE;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--sh2);overflow:visible}
+.tabind{top:6px;bottom:6px;height:auto;width:20px;transform:none;transition:none;border-radius:18px;
+  background:linear-gradient(90deg,#E3B23C,#F5CC5C);box-shadow:0 0 18px #E3B23C80,0 4px 10px #0006}
+.tab{z-index:1;background:none;border:0;border-radius:18px;overflow:visible;transition:color .25s}
+.tab.on{color:#1A1405}.tab.on svg{transform:translateY(-1px) scale(1.12);stroke-width:2}
+.tab.on{font-weight:700}
+.btn{box-shadow:0 3px 0 #0A0E16,var(--sh);transition:transform .35s cubic-bezier(.34,1.8,.5,1),box-shadow .35s cubic-bezier(.34,1.8,.5,1),background .18s}
+.btn:active{transform:translateY(3px)!important;box-shadow:0 0 0 #0A0E16,0 1px 3px #0006;transition-duration:.06s}
+.btn.gold{box-shadow:0 3px 0 #8A6514,0 0 16px #E3B23C55}
+.sec{flex-wrap:wrap;row-gap:2px}.sec h2{flex:0 1 auto}.sec .hint{white-space:nowrap}
+.card>.pl:first-child,.card>h3+.pl,.card>h3+.plist .pl:first-child{border-top:0}
+ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
+.cbs h3{margin-bottom:4px}
+.cb{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 0;border-top:1px solid var(--line);background:none;color:var(--txt)}
+.cbs h3+.cb{border-top:0}
+.cb .fp{width:48px;height:34px;border-radius:6px;object-fit:cover;background:#0B0F18;flex:0 0 auto}
+.cbi{flex:1;min-width:0}.cbi b{display:block;font-size:13.5px;margin-bottom:3px}.cbi .ans{margin-top:4px;color:var(--rad);font-size:11.5px}
+.chev{color:var(--dim);font-size:20px;transition:transform .2s}.cb:active .chev{transform:translateX(3px)}
 </style>
 </head>
 <body>
@@ -394,7 +417,6 @@ details.fb[open] .fr{animation:fadeUp .3s ease both}
 <header class="top">
   <img class="mark" src="icon-192.png" alt="">
   <h1>Dota 2 Pick</h1>
-  <div class="sub">Драфт</div>
 </header>
 
 <main class="wrap">
@@ -469,11 +491,12 @@ details.fb[open] .fr{animation:fadeUp .3s ease both}
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
       <h3>Дереккөз</h3>
-      <p class="why" style="margin:6px 0 0">Контрпик екі деректі біріктіреді: (1) Dotabuff — әр геройға қарсы ең жақсы 8 геройдың жеңіс айырмасы (ондаған мың ойын, 2026 қазан); (2) OpenDota — тірі матчап (іріктемесі аз, сондықтан әлсіретіліп қосылады). Егер таңдалған герой қарсыласқа жеңілсе — ⚠ белгісі шығады. Бұл екі сайттың әдісі бірдей (жеңіс пайызының айырмасы), ал dotapuls сайтының ашық деректері табылмады. 7.42 патчы (18.11.2026): жаңа заттар (Skypiercer, Sabatons of Mordiggian, Ristul's Devotion, Caduceus, Starforge, Bloodslinger) қосылды, Khanda, Helm of the Overlord, Javelin алынды; күшейтілген/әлсіретілген геройлар «7.42 ↑/↓», ең мықтылары «ИМБА» деп белгіленеді. Гайдтар мен лайфхактар — dota2.ru (ImmortalFaith гайдтары, патч шолуы, Fishman/Kaffs/WoE пікірі).</p>
-    </div>
-    <div class="card">
-      <h3>Қалай жұмыс істейді</h3>
-      <p class="why" style="margin:6px 0 0">Әр геройға арналған қарсы заттар Dotabuff/Dota2counters/Dota 2 Wiki counter гайдтарынан жинақталған (127 герой). Заттар кеңесі 7.41e патчына (2026 ж. шілде) сай: Shiva’s Guard енді емдеуді кеспейді, оның орнына Crella’s Crozier; сиқырға қарсы Consecrated Wraps пен Shawl; тығыз геройларға Hydra’s Breath. Дерек бір рет жүктеліп телефонда сақталады (геройлар — 7 күн, матчаптар — 3 күн), содан кейін интернетсіз де ашылады. Жұлдызша қойылған геройлар «Таңдаулы» сүзгісінен көрінеді.</p>
+      <ul class="why src">
+        <li>Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.</li>
+        <li>Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.</li>
+        <li>Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.</li>
+        <li>Дерек телефонда сақталады — интернетсіз де ашылады.</li>
+      </ul>
     </div>
     <div class="note" id="ver"></div>
   </section>
@@ -514,7 +537,7 @@ details.fb[open] .fr{animation:fadeUp .3s ease both}
 </div>
 
 <script>
-const V='5.2';
+const V='5.3';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -920,6 +943,8 @@ Object.assign(I18N.ru,{"7.42 лайфхактар":"7.42 лайфхаки","7.42
 Object.assign(I18N.en,{"7.42 лайфхактар":"7.42 tips","7.42 — қалай ойнау керек":"7.42 — how to play"});
 Object.assign(I18N.ru,{"Кімді бан қылу":"Кого банить","Жеңіс мүмкіндігі":"Шанс победы","Драфт бойынша болжам":"Прогноз по драфту","сенің геройларыңа қауіпті":"опасны твоим героям","7.42 мета":"мета 7.42","бан":"бан","Қызыл — оған қарсы зат бар. Нақты алғанын бас — белгіленеді.":"Красный — есть контр-предмет. Нажми, что он реально купил."});
 Object.assign(I18N.en,{"Кімді бан қылу":"Who to ban","Жеңіс мүмкіндігі":"Win chance","Драфт бойынша болжам":"Draft-based estimate","сенің геройларыңа қауіпті":"dangerous to your heroes","7.42 мета":"7.42 meta","бан":"ban"});
+Object.assign(I18N.ru,{"Нақты жинақ":"Реальные сборки","басып белгіле":"нажми, чтобы отметить","+ зат белгілеу":"+ отметить предметы","Біздің команда":"Наша команда","Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.":"Контрпик: Dotabuff (десятки тысяч игр) + живые матчапы OpenDota.","Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.":"Предметы: самые частые сборки OpenDota + советы Dotabuff/Dota 2 Wiki.","Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.":"Патч 7.42: новые предметы, ↑/↓/ИМБА герои, гайды — dota2.ru.","Дерек телефонда сақталады — интернетсіз де ашылады.":"Данные хранятся в телефоне — работает и без интернета."});
+Object.assign(I18N.en,{"Нақты жинақ":"Actual builds","басып белгіле":"tap to mark","+ зат белгілеу":"+ mark items","Біздің команда":"Our team","Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.":"Counters: Dotabuff (tens of thousands of games) + live OpenDota matchups.","Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.":"Items: most common OpenDota builds + Dotabuff/Dota 2 Wiki tips.","Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.":"Patch 7.42: new items, ↑/↓/IMBA heroes, guides — dota2.ru.","Дерек телефонда сақталады — интернетсіз де ашылады.":"Data is stored on the phone — works offline."});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -1478,6 +1503,14 @@ function buildCard(h,side){
   </div>`;
 }
 
+// бір карта: әр герой — бір жол (белгіленген заттар + оларға жауап); басқанда белгілеу беті ашылады
+function compactBuilds(list,side,ttl){
+  return `<div class="card cbs"><h3 class="${side==='foe'?'gl':'gw'}">${ttl}</h3>${list.map(h=>{ const its=S.fi[h.id]||[], ans=new Set();
+    its.forEach(it=>{ const r=IREACT[it]; if(r) (r.items||[]).forEach(n=>ans.add(n)); });
+    return `<button class="cb" data-id="${h.id}" data-side="${side}"><img class="fp" src="${h.img}" alt="" loading="lazy">
+      <div class="cbi"><b>${h.localized_name}</b>${its.length?`<div class="tis sm">${its.map((x,i)=>tile(x,'hit','').replace('<div class="ti','<div style="--i:'+i+'" class="ti')).join('')}</div>`:'<span class="why">+ зат белгілеу</span>'}
+      ${ans.size&&side==='foe'?`<div class="why ans">→ ${[...ans].slice(0,4).join(' · ')}</div>`:''}</div><span class="chev">›</span></button>`; }).join('')}</div>`;
+}
 /* ---------- беттер ---------- */
 let CURTAB='p-pick';
 function go(id,i,push){
@@ -1506,7 +1539,25 @@ function restoreView(){
   const y=LS.get('scroll');
   if(typeof y==='number'&&y>0) setTimeout(()=>window.scrollTo(0,y),80);
 }
-function moveInd(i){ const el=document.querySelector('.tabind'); if(el) el.style.transform=`translateX(${i*100}%)`; }
+/* таб пиллі: екі шеті екі бөлек серіппемен (алдыңғысы жылдам, артқысы баяу) — созылып барып орнына түседі */
+const PILL={l:0,r:0,raf:0,i:-1};
+function spring(t,w,z){ if(t<=0) return 0; const wd=w*Math.sqrt(1-z*z); return 1-Math.exp(-z*w*t)*(Math.cos(wd*t)+(z*w/wd)*Math.sin(wd*t)); }
+function moveInd(i){
+  const el=document.querySelector('.tabind'), bar=document.querySelector('.tabs'); if(!el||!bar||i<0) return;
+  const tabs=bar.querySelectorAll('.tab'), W=bar.clientWidth, n=tabs.length, tw=W/n, pad=6;
+  const L=k=>Math.max(pad,k*tw+pad), Rr=k=>Math.min(W-pad,(k+1)*tw-pad);
+  const draw=(l,r)=>{ l=Math.max(pad,l); r=Math.min(W-pad,r); el.style.left=l+'px'; el.style.width=Math.max(20,r-l)+'px'; };
+  if(PILL.i<0||RM){ PILL.i=i; draw(L(i),Rr(i)); return; }
+  const from=PILL.i; PILL.i=i; if(from===i){ draw(L(i),Rr(i)); return; }
+  cancelAnimationFrame(PILL.raf); const t0=performance.now(), right=i>from;
+  const step=now=>{ const t=(now-t0)/1000;
+    const fast=spring(t,19,.55), slow=spring(t,11,.72);
+    const kl=right?slow:fast, kr=right?fast:slow;
+    draw(L(from)+(L(i)-L(from))*kl, Rr(from)+(Rr(i)-Rr(from))*kr);
+    if(t<1.1) PILL.raf=requestAnimationFrame(step); else draw(L(i),Rr(i)); };
+  PILL.raf=requestAnimationFrame(step);
+}
+addEventListener('resize',()=>{ const i=PILL.i; PILL.i=-1; moveInd(i); });
 
 /* ---------- драфт тақтасы ---------- */
 const PREV={mine:null,foe:null};
@@ -2681,14 +2732,10 @@ async function renderItems(){
       <div class="stat"><div class="k">Жақын / қашық</div><div class="v">${melee} : ${fs.length-melee}</div>
         <div class="mbar"><i style="width:${melee/fs.length*100}%;background:var(--gold)"></i><i style="width:${(1-melee/fs.length)*100}%;background:#5B8DEF"></i></div></div>
     </div>`;
-    comp.innerHTML+=`<div class="sec" style="margin-top:12px"><h2>Қарсылас нені жинап жатыр</h2>
-        <span>әр геройды басып белгіле</span></div>`
-      + fs.map(f=>buildCard(f,'foe')).join('')
-      + `<p class="why" style="margin:2px 2px 4px">Қосу/өзгерту: «Таңдау» бетінде қарсылас геройын бас.</p>`;
     const ourB=S.mine.map(id=>BYID[id]).filter(Boolean);
-    if(ourB.length) comp.innerHTML+=`<div class="sec" style="margin-top:12px"><h2>Біздің команда нені жинап жатыр</h2>
-        <span>қарсылас не алатынын көрсетеді</span></div>`
-      + ourB.map(f=>buildCard(f,'mine')).join('');
+    comp.innerHTML+=`<div class="sec" style="margin-top:14px"><h2>Нақты жинақ</h2><span class="hint">басып белгіле</span></div>`
+      + compactBuilds(fs,'foe','Қарсылас') + (ourB.length?compactBuilds(ourB,'mine','Біздің команда'):'');
+    comp.querySelectorAll('.cb').forEach(r=>r.onclick=()=>{ const h=BYID[+r.dataset.id]; if(h) openItems(h,r.dataset.side); });
     const per=fs.map(f=>({f,c:HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)]})).filter(x=>x.c);
     const perCard = per.length?`<div class="card"><h3>Әр қарсыласқа қарсы зат</h3>`
       + per.map(({f,c})=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
@@ -2749,7 +2796,7 @@ async function showPlan(h){
   const notes=[]; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&r.note) notes.push({f:f.localized_name,it,note:r.note}); }));
   const noteCard=notes.length?`<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`+notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')+'</div>':'';
   const t7=tip742(h), card742=t7?`<div class="card"><h3>7.42 — қалай ойнау керек</h3><p class="why" style="margin:6px 0 0">${t7}</p><p class="why" style="margin:6px 0 0;opacity:.7">dota2.ru</p></div>`:'';
-  bd.innerHTML=head+card742+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h)+life742Card();
+  bd.innerHTML=head+card742+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h);
   const ph=document.getElementById('planHead'); if(ph) bindPos(ph,h,()=>showPlan(h));
 }
 
