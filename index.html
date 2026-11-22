@@ -400,6 +400,30 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 .cb .fp{width:48px;height:34px;border-radius:6px;object-fit:cover;background:#0B0F18;flex:0 0 auto}
 .cbi{flex:1;min-width:0}.cbi b{display:block;font-size:13.5px;margin-bottom:3px}.cbi .ans{margin-top:4px;color:var(--rad);font-size:11.5px}
 .chev{color:var(--dim);font-size:20px;transition:transform .2s}.cb:active .chev{transform:translateX(3px)}
+/* v5.4: Мета беті, таймер, бөлісу */
+.hset{margin-left:auto;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);color:var(--dim);transition:transform .35s cubic-bezier(.34,1.8,.5,1),color .2s}
+.hset svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;transition:transform .5s cubic-bezier(.34,1.5,.5,1)}
+.hset.on{color:var(--gold);border-color:var(--gold)}.hset.on svg{transform:rotate(90deg)}.hset:active{transform:scale(.9)}
+.drow{display:flex;gap:8px;justify-content:flex-end;margin:-2px 0 10px}.drow .chip{font-size:12px}
+.fr{position:relative}.fadd{flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:1px dashed var(--line);color:var(--dim);font-size:18px;background:none;margin-left:auto}
+.tier{display:flex;gap:9px;margin-bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:9px;box-shadow:var(--sh)}
+.tl{flex:0 0 34px;display:grid;place-items:center;border-radius:10px;font-family:var(--disp);font-size:20px;font-weight:700;color:#14100A}
+.tS .tl{background:linear-gradient(160deg,#FFD66B,#E3A23C);box-shadow:0 0 14px #E3B23C70}.tA .tl{background:#4FB477}.tB .tl{background:#7AB8FF}.tC .tl{background:#59647A;color:#DDE3EE}
+.th{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.tb2{position:relative;width:62px;text-align:center;background:none;border:0;color:var(--txt);padding:0;animation:tileIn .3s cubic-bezier(.2,.9,.25,1) both;animation-delay:calc(var(--i,0)*18ms)}
+.tb2 img{width:62px;height:35px;object-fit:cover;border-radius:6px;display:block;background:#0B0F18}
+.tb2 small{position:absolute;top:21px;right:2px;font-size:9px;background:#000a;border-radius:4px;padding:0 3px;color:#fff}
+.tb2 b{display:block;font-size:10px;font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dim)}
+.tb2.used{opacity:.35}.tb2:active{transform:scale(.92)}
+.ib7{position:absolute;top:-4px;left:-3px;font-style:normal;font-size:8px;font-weight:800;padding:1px 4px;border-radius:5px;background:linear-gradient(90deg,#E3B23C,#FFE7A3);color:#1A1405}
+.ib7.up{background:var(--rad);color:#04140A}.ib7.dn{background:var(--dire);color:#fff}
+.tmr{text-align:center}.clk{font-family:var(--disp);font-size:46px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums;line-height:1.1;margin:2px 0 8px;text-shadow:0 0 18px #E3B23C40}
+.tbtn{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}.tbtn .btn{margin:0}
+.chip.gold{background:var(--gold);color:#171203;border-color:var(--gold)}
+.ev{display:flex;align-items:center;gap:9px;padding:8px 2px;border-top:1px solid var(--line);text-align:left;font-size:13.5px}
+.ev i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}.ev span{flex:1}.ev b{font-variant-numeric:tabular-nums;font-family:var(--disp);font-size:15px}
+.ev small{width:44px;text-align:right;color:var(--dim);font-variant-numeric:tabular-nums}
+.ev.soon{color:var(--gold)}.ev.soon i{animation:hot 1s ease-in-out infinite;box-shadow:0 0 8px currentColor}
 </style>
 </head>
 <body>
@@ -417,6 +441,7 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 <header class="top">
   <img class="mark" src="icon-192.png" alt="">
   <h1>Dota 2 Pick</h1>
+  <button class="hset" id="hSet" aria-label="Баптау"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg></button>
 </header>
 
 <main class="wrap">
@@ -429,6 +454,7 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
       <div class="seam"></div>
     </div>
 
+    <div class="drow"><button class="chip" id="dShare">⤴ Драфтпен бөлісу</button><button class="chip" id="dClear">✕ Тазалау</button></div>
     <div id="winbox"></div>
 
     <div class="sec" id="recsec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
@@ -448,8 +474,6 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
     <div class="sec" id="tbsec"><h2>Команда жинағы</h2><span class="hint" id="tmHint"></span></div>
     <div id="itTeam"></div>
 
-    <div class="sec" id="itsec"><h2>Бір зат — көп геройға</h2><span class="hint" id="itHint"></span></div>
-    <div id="itTop"></div>
 
   </section>
 
@@ -462,6 +486,16 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
     <div id="build"></div>
     <div class="sec" id="thsec"><h2>Жалпы қауіптер</h2><span class="hint">бүкіл команда үшін</span></div>
     <div id="threats"></div>
+  </section>
+
+  <!-- МЕТА -->
+  <section id="p-meta" class="page">
+    <div class="sec"><h2>Ойын таймері</h2><span class="hint" id="tmrHint">горнда баста</span></div>
+    <div id="timer"></div>
+    <div class="sec"><h2>Мета 7.42</h2><span class="hint">басып командаға қос</span></div>
+    <div class="chips" id="tierF"></div>
+    <div id="tiers"></div>
+    <div id="life"></div>
   </section>
 
   <!-- ОЙЫНДАР -->
@@ -487,7 +521,6 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
         <button class="chip" data-lang="en">English</button>
       </div>
     </div>
-    <button class="btn" id="bClear">Таңдауды тазалау</button>
     <button class="btn" id="bRefresh">Деректі жаңарту</button>
     <div class="card">
       <h3>Дереккөз</h3>
@@ -505,8 +538,8 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 <nav class="tabs"><i class="tabind"></i>
   <button class="tab on" data-go="p-pick"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 14h6v6h-6zM4 20l16-16"/></svg>Таңдау</button>
   <button class="tab" data-go="p-items"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg>Заттар</button>
+  <button class="tab" data-go="p-meta"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Мета</button>
   <button class="tab" data-go="p-games"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Ойындар</button>
-  <button class="tab" data-go="p-set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>Баптау</button>
 </nav>
 
 <div class="sheet" id="isheet">
@@ -537,7 +570,7 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 </div>
 
 <script>
-const V='5.3';
+const V='5.4';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -945,6 +978,8 @@ Object.assign(I18N.ru,{"Кімді бан қылу":"Кого банить","Ж�
 Object.assign(I18N.en,{"Кімді бан қылу":"Who to ban","Жеңіс мүмкіндігі":"Win chance","Драфт бойынша болжам":"Draft-based estimate","сенің геройларыңа қауіпті":"dangerous to your heroes","7.42 мета":"7.42 meta","бан":"ban"});
 Object.assign(I18N.ru,{"Нақты жинақ":"Реальные сборки","басып белгіле":"нажми, чтобы отметить","+ зат белгілеу":"+ отметить предметы","Біздің команда":"Наша команда","Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.":"Контрпик: Dotabuff (десятки тысяч игр) + живые матчапы OpenDota.","Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.":"Предметы: самые частые сборки OpenDota + советы Dotabuff/Dota 2 Wiki.","Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.":"Патч 7.42: новые предметы, ↑/↓/ИМБА герои, гайды — dota2.ru.","Дерек телефонда сақталады — интернетсіз де ашылады.":"Данные хранятся в телефоне — работает и без интернета."});
 Object.assign(I18N.en,{"Нақты жинақ":"Actual builds","басып белгіле":"tap to mark","+ зат белгілеу":"+ mark items","Біздің команда":"Our team","Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.":"Counters: Dotabuff (tens of thousands of games) + live OpenDota matchups.","Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.":"Items: most common OpenDota builds + Dotabuff/Dota 2 Wiki tips.","Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.":"Patch 7.42: new items, ↑/↓/IMBA heroes, guides — dota2.ru.","Дерек телефонда сақталады — интернетсіз де ашылады.":"Data is stored on the phone — works offline."});
+Object.assign(I18N.ru,{"Мета":"Мета","Ойын таймері":"Таймер игры","горнда баста":"запусти на горне","Мета 7.42":"Мета 7.42","басып командаға қос":"нажми — добавить в команду","Саппорт":"Саппорт","⤴ Драфтпен бөлісу":"⤴ Поделиться драфтом","✕ Тазалау":"✕ Очистить","Драфт тазаланды":"Драфт очищен","Сілтеме көшірілді":"Ссылка скопирована","Драфт ашылды":"Драфт открыт","Күш руна":"Руна силы","Bounty руна":"Руна богатства","Wisdom руна":"Руна мудрости","Лотос":"Лотос","Күн":"День","Түн":"Ночь","Терзатель (Greater Horn)":"Терзатель (Greater Horn)","Aegis бітеді":"Aegis истекает","Рошан — ерте уақыт":"Рошан — раннее время","Рошан — соңғы уақыт":"Рошан — позднее время","Рошан өлді":"Рошан убит","Тоқтату":"Стоп","▶ Горн — бастау (0:00)":"▶ Горн — старт (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"За 15 с до события — вибрация и уведомление. Если время расходится с игрой — ±10с.","Қарсылас не жинайды":"Что собирает враг","Команда толы":"Команда полная"});
+Object.assign(I18N.en,{"Мета":"Meta","Ойын таймері":"Game timer","горнда баста":"start at the horn","Мета 7.42":"7.42 meta","басып командаға қос":"tap to add to team","Саппорт":"Support","⤴ Драфтпен бөлісу":"⤴ Share draft","✕ Тазалау":"✕ Clear","Драфт тазаланды":"Draft cleared","Сілтеме көшірілді":"Link copied","Драфт ашылды":"Draft opened","Күш руна":"Power rune","Bounty руна":"Bounty rune","Wisdom руна":"Wisdom rune","Лотос":"Lotus","Күн":"Day","Түн":"Night","Aegis бітеді":"Aegis expires","Рошан — ерте уақыт":"Roshan — earliest","Рошан — соңғы уақыт":"Roshan — latest","Рошан өлді":"Roshan died","Тоқтату":"Stop","▶ Горн — бастау (0:00)":"▶ Horn — start (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"Vibration + alert 15s before each event. Off from game clock? Use ±10s.","Қарсылас не жинайды":"Enemy builds","Команда толы":"Team is full"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -1379,7 +1414,7 @@ async function loadHeroes(force){
     const sn=h.name.replace('npc_dota_hero_','');
     return {id:h.id,name:h.name,localized_name:h.localized_name,primary_attr:h.primary_attr,
       attack_type:h.attack_type,roles:h.roles||[],img:CDN+h.img.split('?')[0],
-      vert:CDN+'/apps/dota2/images/heroes/'+sn+'_vert.jpg',base:p?w/p:.5};
+      vert:CDN+'/apps/dota2/images/heroes/'+sn+'_vert.jpg',base:p?w/p:.5,pk:p};
   }).sort((a,b)=>a.localized_name.localeCompare(b.localized_name));
   BYID={}; HEROES.forEach(h=>BYID[h.id]=h);
 }
@@ -1503,14 +1538,6 @@ function buildCard(h,side){
   </div>`;
 }
 
-// бір карта: әр герой — бір жол (белгіленген заттар + оларға жауап); басқанда белгілеу беті ашылады
-function compactBuilds(list,side,ttl){
-  return `<div class="card cbs"><h3 class="${side==='foe'?'gl':'gw'}">${ttl}</h3>${list.map(h=>{ const its=S.fi[h.id]||[], ans=new Set();
-    its.forEach(it=>{ const r=IREACT[it]; if(r) (r.items||[]).forEach(n=>ans.add(n)); });
-    return `<button class="cb" data-id="${h.id}" data-side="${side}"><img class="fp" src="${h.img}" alt="" loading="lazy">
-      <div class="cbi"><b>${h.localized_name}</b>${its.length?`<div class="tis sm">${its.map((x,i)=>tile(x,'hit','').replace('<div class="ti','<div style="--i:'+i+'" class="ti')).join('')}</div>`:'<span class="why">+ зат белгілеу</span>'}
-      ${ans.size&&side==='foe'?`<div class="why ans">→ ${[...ans].slice(0,4).join(' · ')}</div>`:''}</div><span class="chev">›</span></button>`; }).join('')}</div>`;
-}
 /* ---------- беттер ---------- */
 let CURTAB='p-pick';
 function go(id,i,push){
@@ -1526,14 +1553,24 @@ function go(id,i,push){
   }
   if(id==='p-items') renderItems();
   if(id==='p-games') renderGames();
+  if(id==='p-meta') renderMeta();
+  document.getElementById('hSet').classList.toggle('on',id==='p-set');
 }
+document.getElementById('hSet').onclick=()=>{ if(CURTAB==='p-set') go(LS.get('tabPrev')||'p-pick'); else { LS.set('tabPrev',CURTAB); go('p-set'); } };
 document.querySelectorAll('.tab').forEach((t,i)=>t.onclick=()=>{ if(t.dataset.go!==CURTAB) go(t.dataset.go,i); });
 // қай жерде тұрғанын есте сақтау (жаңартқанда сол жерге қайтамыз)
 let scrT; const TOPH=document.querySelector('.top');
 window.addEventListener('scroll',()=>{ TOPH.classList.toggle('sc',scrollY>24); clearTimeout(scrT);
   scrT=setTimeout(()=>{ if(!document.getElementById('sheet').classList.contains('on')) LS.set('scroll',window.scrollY); },350);
 },{passive:true});
+function loadShared(){
+  const m=location.hash.match(/^#d=([\d.]*)_([\d.]*)/); if(!m) return false;
+  const ids=x=>x.split('.').map(Number).filter(id=>BYID[id]).slice(0,5);
+  S.mine=ids(m[1]); S.foe=ids(m[2]).filter(id=>!S.mine.includes(id)); save();
+  history.replaceState(null,'',location.pathname); setTimeout(()=>toast('Драфт ашылды'),600); return true;
+}
 function restoreView(){
+  if(loadShared()){ go('p-pick',undefined,false); return; }
   const t=LS.get('tab')||'p-pick';
   go(t,undefined,false);
   const y=LS.get('scroll');
@@ -1543,7 +1580,7 @@ function restoreView(){
 const PILL={l:0,r:0,raf:0,i:-1};
 function spring(t,w,z){ if(t<=0) return 0; const wd=w*Math.sqrt(1-z*z); return 1-Math.exp(-z*w*t)*(Math.cos(wd*t)+(z*w/wd)*Math.sin(wd*t)); }
 function moveInd(i){
-  const el=document.querySelector('.tabind'), bar=document.querySelector('.tabs'); if(!el||!bar||i<0) return;
+  const el=document.querySelector('.tabind'), bar=document.querySelector('.tabs'); if(!el||!bar) return; el.style.opacity=i<0?0:1; if(i<0) return;
   const tabs=bar.querySelectorAll('.tab'), W=bar.clientWidth, n=tabs.length, tw=W/n, pad=6;
   const L=k=>Math.max(pad,k*tw+pad), Rr=k=>Math.min(W-pad,(k+1)*tw-pad);
   const draw=(l,r)=>{ l=Math.max(pad,l); r=Math.min(W-pad,r); el.style.left=l+'px'; el.style.width=Math.max(20,r-l)+'px'; };
@@ -1830,6 +1867,69 @@ function renderBans(){
   box.querySelectorAll('.bn').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id, i=ban.indexOf(id);
     if(i>=0) ban.splice(i,1); else ban.push(id); save(); buzz(10); toast(BYID[id].localized_name+(i>=0?' — бан алынды':' — бан')); board(); });
 }
+/* ---------- МЕТА: позиция бойынша тир-лист (OpenDota жеңіс % + танымалдық + 7.42) ---------- */
+let TIERPOS=LS.get('tierpos')||'c';
+const TPOS=[['c','Керри'],['m','Мидер'],['o','Хард линия'],['s','Саппорт']];
+function renderMeta(){ renderTimer(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
+function renderTiers(){
+  const f=document.getElementById('tierF'), box=document.getElementById('tiers');
+  f.innerHTML=TPOS.map(([k,n])=>`<button class="chip${k===TIERPOS?' on':''}" data-k="${k}">${n}</button>`).join('');
+  f.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ TIERPOS=c.dataset.k; LS.set('tierpos',TIERPOS); buzz(6); renderTiers(); });
+  const tot=HEROES.reduce((a,h)=>a+(h.pk||0),0)||1;
+  const L=HEROES.filter(h=>slotsOf(h).includes(TIERPOS)).map(h=>({h,sc:(h.base-.5)*100+patchMod(h)*1.2+Math.log10(1+(h.pk||0)/tot*1000)*.8}))
+    .sort((a,b)=>b.sc-a.sc);
+  const n=L.length, cut=[Math.ceil(n*.12),Math.ceil(n*.35),Math.ceil(n*.7)];
+  const T=[['S',L.slice(0,cut[0])],['A',L.slice(cut[0],cut[1])],['B',L.slice(cut[1],cut[2])],['C',L.slice(cut[2])]];
+  const used=new Set([...S.mine,...S.foe]);
+  box.innerHTML=T.map(([t,a])=>a.length?`<div class="tier t${t}"><span class="tl">${t}</span><div class="th">${a.map(({h},i)=>`<button class="tb2${used.has(h.id)?' used':''}" data-id="${h.id}" style="--i:${i}"><img src="${h.img}" alt="" loading="lazy"><small>${(h.base*100).toFixed(1)}%</small><b>${h.localized_name}</b>${P742.imba.includes(h.localized_name)?'<i class="ib7">ИМБА</i>':P742.up.includes(h.localized_name)?'<i class="ib7 up">↑</i>':P742.down.includes(h.localized_name)?'<i class="ib7 dn">↓</i>':''}</button>`).join('')}</div></div>`:'').join('');
+  box.querySelectorAll('.tb2').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id, h=BYID[id];
+    if(used.has(id)) return toast(h.localized_name+' таңдалған');
+    if(S.mine.length>=5) return toast('Команда толы');
+    S.mine.push(id); save(); board(); buzz(12); toast(h.localized_name+' командаға қосылды'); renderTiers(); });
+}
+/* ---------- ойын таймері: руналар, Терзатель, Рошан (дірілмен ескертеді) ---------- */
+let TMR=LS.get('tmr')||null, TMRI=0, TMRW={};
+const fmt=t=>{ const a=Math.abs(t), m=Math.floor(a/60), s=Math.floor(a%60); return (t<0?'-':'')+m+':'+String(s).padStart(2,'0'); };
+const nextEvery=(t,start,step)=>t<start?start:start+Math.ceil((t-start+0.001)/step)*step;
+function gameT(){ return TMR?(Date.now()-TMR.t0)/1000:0; }
+function tEvents(t){
+  const ev=[
+    {k:'pw',n:'Күш руна',at:nextEvery(t,360,120),c:'#7AB8FF'},
+    {k:'bt',n:'Bounty руна',at:nextEvery(t,0,180),c:'#E3B23C'},
+    {k:'ws',n:'Wisdom руна',at:nextEvery(t,420,420),c:'#B98CFF'},
+    {k:'lt',n:'Лотос',at:nextEvery(t,180,180),c:'#F28BC0'},
+    {k:'dn',n:(Math.floor(Math.max(t,0)/300)%2?'Күн':'Түн'),at:nextEvery(t,0,300),c:'#9AA4B8'}];
+  if(t<900) ev.push({k:'tr',n:'Терзатель (Greater Horn)',at:900,c:'#D9584A',big:1});
+  if(TMR&&TMR.rosh!=null){ const d=TMR.rosh;
+    if(t<d+300) ev.push({k:'ag',n:'Aegis бітеді',at:d+300,c:'#E3B23C'});
+    if(t<d+480) ev.push({k:'r1',n:'Рошан — ерте уақыт',at:d+480,c:'#4FB477',big:1});
+    else if(t<d+660) ev.push({k:'r2',n:'Рошан — соңғы уақыт',at:d+660,c:'#4FB477',big:1}); }
+  return ev.sort((a,b)=>a.at-b.at);
+}
+function renderTimer(){
+  const box=document.getElementById('timer'); if(!box) return;
+  const on=!!TMR, t=gameT();
+  box.innerHTML=`<div class="card tmr"><div class="clk" id="clk">${on?fmt(t):'0:00'}</div>
+    <div class="tbtn">${on?`<button class="chip" data-a="m">−10с</button><button class="chip" data-a="p">+10с</button><button class="chip gold" data-a="r">Рошан өлді</button><button class="chip" data-a="x">Тоқтату</button>`
+      :`<button class="btn gold" data-a="s">▶ Горн — бастау (0:00)</button>`}</div>
+    <div id="evs"></div><p class="why" style="margin:8px 0 0">Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.</p></div>`;
+  box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ const a=b.dataset.a; buzz(10);
+    if(a==='s'){ TMR={t0:Date.now(),rosh:null}; TMRW={}; }
+    if(a==='m') TMR.t0+=10000; if(a==='p') TMR.t0-=10000;
+    if(a==='r'){ TMR.rosh=gameT(); toast('Рошан: '+fmt(TMR.rosh+480)+' – '+fmt(TMR.rosh+660)); }
+    if(a==='x'){ TMR=null; }
+    LS.set('tmr',TMR); renderTimer(); });
+  tickTimer(); clearInterval(TMRI); if(on) TMRI=setInterval(tickTimer,500);
+}
+function tickTimer(){
+  const c=document.getElementById('clk'), e=document.getElementById('evs'); if(!TMR){ if(e) e.innerHTML=''; return; }
+  const t=gameT(); if(c) c.textContent=fmt(t);
+  const ev=tEvents(t);
+  ev.forEach(x=>{ const left=x.at-t, id=x.k+Math.round(x.at); if(left<=15&&left>0&&!TMRW[id]){ TMRW[id]=1; buzz(x.big?[60,60,60]:[40]); toast(x.n+' — '+Math.ceil(left)+' сек'); } });
+  if(e&&CURTAB==='p-meta') e.innerHTML=ev.map(x=>{ const left=x.at-t, soon=left<=30;
+    return `<div class="ev${soon?' soon':''}"><i style="background:${x.c}"></i><span>${x.n}</span><b>${fmt(left)}</b><small>${fmt(x.at)}</small></div>`; }).join('');
+}
+if(TMR) TMRI=setInterval(tickTimer,1000);
 let recAll=false;
 document.getElementById('recMore').onclick=()=>{ recAll=!recAll; renderRecs(); };
 function renderRecs(){
@@ -2093,22 +2193,6 @@ function teamItems(skip){
     .sort((a,b)=>b.w-a.w).slice(0,3);
 }
 function renderPickItems(){
-  const t=document.getElementById('itTop'), sec=document.getElementById('itsec');
-  const fs=foeHeroes(), me=S.mine.map(id=>BYID[id]).filter(Boolean);
-  const showTop=!me.length;  // өз геройлар бар болса — заттар әр геройға бөлінеді, бұл карта қайталанбайды
-  sec.style.display=t.style.display=showTop?'':'none';
-  if(showTop){
-    if(!fs.length){
-      document.getElementById('itHint').textContent='';
-      t.innerHTML='<div class="empty"><b>Қарсылас бос</b>Геройларды қосқанда, бірнешеуіне бірден қарсы зат осында шығады.</div>';
-    } else {
-      const tops=topItems();
-      document.getElementById('itHint').textContent=fs.length+' қарсыласқа қарсы';
-      t.innerHTML=tops.length?`<div class="card"><div class="plist">${tops.map(x=>`<div class="pl">${itemIcon(x.n)}
-        <div><div class="pn">${x.n} <span class="mc">${x.who.length}/${fs.length}</span>${heroBadges(x.who,5)}</div>
-        <div class="pw">${x.why.join(' · ')}</div></div></div>`).join('')}</div></div>`:'<div class="empty">Бұл құрамға ортақ зат табылмады.</div>';
-    }
-  }
   renderTeamBuild();
 }
 
@@ -2382,8 +2466,10 @@ function bindFoeCard(root){
   const fs=foeHeroes();
   root.querySelectorAll('.fb .fr').forEach((row,i)=>{ const f=fs[i]; if(!f) return;
     row.querySelectorAll('.ti').forEach(t=>t.onclick=e=>{ e.stopPropagation(); const n=t.getAttribute('title'); const l=S.fi[f.id]||[];
-      S.fi[f.id]=l.includes(n)?l.filter(x=>x!==n):[...l,n]; save(); buzz(8); toast(f.localized_name+': '+n+(l.includes(n)?' ✕':' ✓')); board(); }); });
+      S.fi[f.id]=l.includes(n)?l.filter(x=>x!==n):[...l,n]; save(); buzz(8); toast(f.localized_name+': '+n+(l.includes(n)?' ✕':' ✓')); board(); if(CURTAB==='p-items') renderItems(); }); });
+  root.querySelectorAll('.fadd').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const h=BYID[+b.dataset.id]; if(h) openItems(h,'foe'); });
 }
+let FOECARD='';
 function renderTeamBuild(){
   const tm=document.getElementById('itTeam'), hint=document.getElementById('tmHint');
   const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
@@ -2391,15 +2477,15 @@ function renderTeamBuild(){
   const fmiss=[...me,...fs].filter(h=>!CORE[h.id]);
   if(fmiss.length) Promise.all(fmiss.map(loadCore)).then(()=>{ if(CURTAB==='p-pick') renderTeamBuild(); });
   // қарсылас әдетте не жинайды: басқанда «нақты алды» деп белгіленеді (салмағы өседі)
-  const foeOpen=fs.some(f=>(S.fi[f.id]||[]).length);
-  const foeCard=fs.length?`<details class="card fb"${foeOpen?' open':''}><summary><h3>Қарсылас әдетте не жинайды</h3></summary><p class="why" style="margin:6px 0 6px">Қызыл — оған қарсы зат бар. Нақты алғанын бас — белгіленеді.</p>
+  const foeCard=fs.length?`<div class="card fb"><p class="why" style="margin:0 0 6px">Әдеттегі жинағы. Қызыл — оған қарсы зат бар. Нақты алғанын бас — белгіленеді, <b>+</b> — басқа зат.</p>
     ${fs.map(f=>{ const own=S.fi[f.id]||[], pr=predOf(f), c=CORE[f.id];
       const list=[...own,...pr.filter(x=>IREACT[x])].slice(0,8);
-      return `<div class="fr"><img class="fp" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">${!c?'<div class="sk" style="height:30px;flex:1"></div>':`<div class="tis sm">${list.map(x=>tile(x,own.includes(x)?'hit':IREACT[x]&&(IREACT[x].items||[]).length?'hotc':'',own.includes(x)?'✓':'')).join('')||'<span class="why">—</span>'}</div>`}</div>`;
-    }).join('')}</details>`:'';
-  if(!me.length){ tm.innerHTML=life742Card()+foeCard+'<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.</div>'; bindFoeCard(tm); return; }
+      return `<div class="fr"><img class="fp" src="${f.img}" alt="" title="${f.localized_name}" loading="lazy">${!c?'<div class="sk" style="height:30px;flex:1"></div>':`<div class="tis sm">${list.map(x=>tile(x,own.includes(x)?'hit':IREACT[x]&&(IREACT[x].items||[]).length?'hotc':'',own.includes(x)?'✓':'')).join('')||'<span class="why">—</span>'}</div>`}<button class="fadd" data-id="${f.id}" aria-label="+">+</button></div>`;
+    }).join('')}</div>`:'';
+  FOECARD=foeCard;
+  if(!me.length){ tm.innerHTML='<div class="empty">Өз геройларыңды қос — әр геройға бөлек, қарсыластың жинағына қарсы жинақ шығады.</div>'; return; }
   const P=teamPlan(), n=fs.length;
-  tm.innerHTML=life742Card()+foeCard;
+  tm.innerHTML='';
   bindFoeCard(tm);
   me.forEach(h=>{
     const p=P.per.get(h.id), c=p.core, sk=SKILLS&&SKILLS[h.name];
@@ -2732,10 +2818,10 @@ async function renderItems(){
       <div class="stat"><div class="k">Жақын / қашық</div><div class="v">${melee} : ${fs.length-melee}</div>
         <div class="mbar"><i style="width:${melee/fs.length*100}%;background:var(--gold)"></i><i style="width:${(1-melee/fs.length)*100}%;background:#5B8DEF"></i></div></div>
     </div>`;
-    const ourB=S.mine.map(id=>BYID[id]).filter(Boolean);
-    comp.innerHTML+=`<div class="sec" style="margin-top:14px"><h2>Нақты жинақ</h2><span class="hint">басып белгіле</span></div>`
-      + compactBuilds(fs,'foe','Қарсылас') + (ourB.length?compactBuilds(ourB,'mine','Біздің команда'):'');
-    comp.querySelectorAll('.cb').forEach(r=>r.onclick=()=>{ const h=BYID[+r.dataset.id]; if(h) openItems(h,r.dataset.side); });
+    renderTeamBuild();
+    comp.innerHTML+=`<div class="sec" style="margin-top:14px"><h2>Қарсылас не жинайды</h2><span class="hint">басып белгіле</span></div>`+FOECARD;
+    bindFoeCard(comp);
+    const fm=fs.filter(h=>!CORE[h.id]); if(fm.length) Promise.all(fm.map(loadCore)).then(()=>{ if(CURTAB==='p-items') renderItems(); });
     const per=fs.map(f=>({f,c:HCOUNTER[key(f)]||HCOUNTER[slug(f.localized_name)]})).filter(x=>x.c);
     const perCard = per.length?`<div class="card"><h3>Әр қарсыласқа қарсы зат</h3>`
       + per.map(({f,c})=>`<div class="pl"><img src="${f.img}" alt="" loading="lazy">
@@ -2801,7 +2887,13 @@ async function showPlan(h){
 }
 
 /* ---------- баптау ---------- */
-document.getElementById('bClear').onclick=()=>{ S={mine:[],foe:[],fi:{}}; normState(); save(); board(); go('p-pick'); };
+document.getElementById('dClear').onclick=()=>{ if(!S.mine.length&&!S.foe.length&&!(S.ban||[]).length) return; S={mine:[],foe:[],fi:{}}; normState(); save(); board(); buzz(10); toast('Драфт тазаланды'); };
+document.getElementById('dShare').onclick=async()=>{
+  const u=location.origin+location.pathname+'#d='+S.mine.join('.')+'_'+S.foe.join('.');
+  const txt=S.mine.map(id=>BYID[id]&&BYID[id].localized_name).filter(Boolean).join(', ')+' vs '+S.foe.map(id=>BYID[id]&&BYID[id].localized_name).filter(Boolean).join(', ');
+  try{ if(navigator.share){ await navigator.share({title:'Dota 2 Pick',text:txt,url:u}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(u); toast('Сілтеме көшірілді'); }catch(e){ prompt('Сілтеме',u); }
+};
 document.getElementById('bRefresh').onclick=async e=>{
   e.target.textContent='Жаңартылуда…';
   LS.del('mu'); LS.del('ip'); MU={};
