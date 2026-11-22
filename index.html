@@ -23,7 +23,8 @@
 html{background:var(--void)}
 body{margin:0;min-height:100dvh;background:var(--void);color:var(--txt);
   font-family:var(--body);font-size:15px;line-height:1.45;
-  padding-bottom:calc(74px + env(safe-area-inset-bottom));overscroll-behavior-y:contain}
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
+html{overscroll-behavior-y:none}
 h1,h2,h3,.disp{font-family:var(--disp);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin:0}
 button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
 input{font-family:inherit}
@@ -434,6 +435,8 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
   <div class="sp-name">Dota&nbsp;2&nbsp;Pick</div>
   <div class="sp-bar"><i></i></div>
 </div>
+<script>/* сплэш тек алғаш ашқанда: қайта жүктегенде (pull-to-refresh, жаңарту) көрсетпейміз */
+try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').className='gone'; sessionStorage.setItem('d2s','1'); }catch(e){}</script>
 
 <div class="amb" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
 <div id="toast"></div>
@@ -570,7 +573,7 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 </div>
 
 <script>
-const V='5.4';
+const V='5.4.1';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
