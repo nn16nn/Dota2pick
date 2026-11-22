@@ -331,8 +331,8 @@ input{font-family:inherit}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* v5.2: тазарту + анимация + эффектілер */
 .top{transition:padding .25s ease,background .25s}
-.top.sc{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:7px;background:#0F1420E6;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 18px #0006}
-.top.sc .mark{transform:scale(.86)}.mark{transition:transform .25s}
+.top.scr{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:7px;background:#0F1420E6;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 18px #0006}
+.top.scr .mark{transform:scale(.86)}.mark{transition:transform .25s}
 .page.on.fromR{animation:inR .3s cubic-bezier(.2,.8,.3,1) both}.page.on.fromL{animation:inL .3s cubic-bezier(.2,.8,.3,1) both}
 @keyframes inR{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
 @keyframes inL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
@@ -573,7 +573,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='5.4.1';
+const V='5.4.2';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1563,7 +1563,7 @@ document.getElementById('hSet').onclick=()=>{ if(CURTAB==='p-set') go(LS.get('ta
 document.querySelectorAll('.tab').forEach((t,i)=>t.onclick=()=>{ if(t.dataset.go!==CURTAB) go(t.dataset.go,i); });
 // қай жерде тұрғанын есте сақтау (жаңартқанда сол жерге қайтамыз)
 let scrT; const TOPH=document.querySelector('.top');
-window.addEventListener('scroll',()=>{ TOPH.classList.toggle('sc',scrollY>24); clearTimeout(scrT);
+window.addEventListener('scroll',()=>{ TOPH.classList.toggle('scr',scrollY>24); clearTimeout(scrT);
   scrT=setTimeout(()=>{ if(!document.getElementById('sheet').classList.contains('on')) LS.set('scroll',window.scrollY); },350);
 },{passive:true});
 function loadShared(){
