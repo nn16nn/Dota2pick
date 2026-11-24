@@ -425,6 +425,31 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 .ev i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}.ev span{flex:1}.ev b{font-variant-numeric:tabular-nums;font-family:var(--disp);font-size:15px}
 .ev small{width:44px;text-align:right;color:var(--dim);font-variant-numeric:tabular-nums}
 .ev.soon{color:var(--gold)}.ev.soon i{animation:hot 1s ease-in-out infinite;box-shadow:0 0 8px currentColor}
+/* v5.5: ойын жоспары, tooltip, swipe-to-delete, icon morph */
+.hset{position:relative}.hset svg{position:absolute;inset:0;margin:auto;transition:transform .45s cubic-bezier(.34,1.5,.5,1),opacity .25s}
+.hset .g2{opacity:0;transform:rotate(-90deg) scale(.4)}
+.hset.on .g1{opacity:0;transform:rotate(90deg) scale(.4)}.hset.on .g2{opacity:1;transform:none}
+.gp h3{margin-bottom:8px}
+.cv{display:flex;gap:8px;margin-bottom:10px}
+.cvc{flex:1;text-align:center;padding:6px 4px 5px;border-radius:10px;background:#0B0F1880;border:1px solid transparent;transition:border-color .3s}
+.cvc.on{border-color:var(--gold);box-shadow:0 0 12px #E3B23C33}
+.cvb{display:flex;justify-content:center;align-items:flex-end;gap:5px;height:60px}
+.cvb i{width:14px;border-radius:4px 4px 2px 2px;transform-origin:bottom;animation:grow .6s cubic-bezier(.2,.9,.25,1) both}
+.cvb i+i{animation-delay:.08s}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.cvc small{display:block;font-size:10.5px;color:var(--dim);margin-top:4px}.cvc.on small{color:var(--gold);font-weight:600}
+.gpt{margin:0 0 6px;font-size:13.5px;line-height:1.5}.gpl{margin:0 0 6px;font-size:13px}
+.gpth{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 2px}
+.ghip{font-size:11.5px;padding:4px 8px;border-radius:8px;background:#D9584A1F;border:1px solid #D9584A55;color:var(--txt)}.ghip b{color:var(--dire);font-weight:600}
+.gpg{margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--dim)}.gpg li{margin:3px 0}
+.tip{position:fixed;z-index:150;max-width:240px;padding:8px 11px;border-radius:11px;background:#232D42;border:1px solid #ffffff1c;box-shadow:var(--sh2);
+  font-size:12px;line-height:1.4;opacity:0;transform:translateY(6px) scale(.92);transform-origin:var(--ax,50%) 100%;transition:opacity .18s,transform .25s cubic-bezier(.34,1.6,.5,1);pointer-events:none}
+.tip.on{opacity:1;transform:none}
+.tip::after{content:"";position:absolute;bottom:-6px;left:calc(var(--ax,50%) - 6px);border:6px solid transparent;border-bottom:0;border-top-color:#232D42}
+.tip b{display:block;font-size:12.5px}.tip small{display:block;color:var(--gold)}.tip span{display:block;color:var(--dim);margin-top:2px}
+.ti{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.slot.full{transition:transform .25s cubic-bezier(.2,.8,.3,1),opacity .2s,background .2s}
+.slot.full.del{background:#D9584A33;border-color:var(--dire)}
 </style>
 </head>
 <body>
@@ -444,7 +469,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 <header class="top">
   <img class="mark" src="icon-192.png" alt="">
   <h1>Dota 2 Pick</h1>
-  <button class="hset" id="hSet" aria-label="Баптау"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg></button>
+  <button class="hset" id="hSet" aria-label="Баптау"><svg class="g1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg><svg class="g2" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </header>
 
 <main class="wrap">
@@ -459,6 +484,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 
     <div class="drow"><button class="chip" id="dShare">⤴ Драфтпен бөлісу</button><button class="chip" id="dClear">✕ Тазалау</button></div>
     <div id="winbox"></div>
+    <div id="plan"></div>
 
     <div class="sec" id="recsec"><h2>Кімді алу керек</h2><span class="hint" id="recHint"></span></div>
     <div class="chips" id="filters"></div>
@@ -573,7 +599,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='5.4.2';
+const V='5.5';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -983,6 +1009,22 @@ Object.assign(I18N.ru,{"Нақты жинақ":"Реальные сборки","
 Object.assign(I18N.en,{"Нақты жинақ":"Actual builds","басып белгіле":"tap to mark","+ зат белгілеу":"+ mark items","Біздің команда":"Our team","Контрпик: Dotabuff (ондаған мың ойын) + OpenDota тірі матчаптары.":"Counters: Dotabuff (tens of thousands of games) + live OpenDota matchups.","Заттар мен жинақ: OpenDota ең жиі жинағы + Dotabuff/Dota 2 Wiki кеңестері.":"Items: most common OpenDota builds + Dotabuff/Dota 2 Wiki tips.","Патч 7.42: жаңа заттар, ↑/↓/ИМБА геройлар, гайдтар — dota2.ru.":"Patch 7.42: new items, ↑/↓/IMBA heroes, guides — dota2.ru.","Дерек телефонда сақталады — интернетсіз де ашылады.":"Data is stored on the phone — works offline."});
 Object.assign(I18N.ru,{"Мета":"Мета","Ойын таймері":"Таймер игры","горнда баста":"запусти на горне","Мета 7.42":"Мета 7.42","басып командаға қос":"нажми — добавить в команду","Саппорт":"Саппорт","⤴ Драфтпен бөлісу":"⤴ Поделиться драфтом","✕ Тазалау":"✕ Очистить","Драфт тазаланды":"Драфт очищен","Сілтеме көшірілді":"Ссылка скопирована","Драфт ашылды":"Драфт открыт","Күш руна":"Руна силы","Bounty руна":"Руна богатства","Wisdom руна":"Руна мудрости","Лотос":"Лотос","Күн":"День","Түн":"Ночь","Терзатель (Greater Horn)":"Терзатель (Greater Horn)","Aegis бітеді":"Aegis истекает","Рошан — ерте уақыт":"Рошан — раннее время","Рошан — соңғы уақыт":"Рошан — позднее время","Рошан өлді":"Рошан убит","Тоқтату":"Стоп","▶ Горн — бастау (0:00)":"▶ Горн — старт (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"За 15 с до события — вибрация и уведомление. Если время расходится с игрой — ±10с.","Қарсылас не жинайды":"Что собирает враг","Команда толы":"Команда полная"});
 Object.assign(I18N.en,{"Мета":"Meta","Ойын таймері":"Game timer","горнда баста":"start at the horn","Мета 7.42":"7.42 meta","басып командаға қос":"tap to add to team","Саппорт":"Support","⤴ Драфтпен бөлісу":"⤴ Share draft","✕ Тазалау":"✕ Clear","Драфт тазаланды":"Draft cleared","Сілтеме көшірілді":"Link copied","Драфт ашылды":"Draft opened","Күш руна":"Power rune","Bounty руна":"Bounty rune","Wisdom руна":"Wisdom rune","Лотос":"Lotus","Күн":"Day","Түн":"Night","Aegis бітеді":"Aegis expires","Рошан — ерте уақыт":"Roshan — earliest","Рошан — соңғы уақыт":"Roshan — latest","Рошан өлді":"Roshan died","Тоқтату":"Stop","▶ Горн — бастау (0:00)":"▶ Horn — start (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"Vibration + alert 15s before each event. Off from game clock? Use ±10s.","Қарсылас не жинайды":"Enemy builds","Команда толы":"Team is full"});
+Object.assign(I18N.ru,{"Ойын жоспары":"План игры","Басты қауіп:":"Главная угроза:","драка басында соны фокус қыл немесе бірінші байла.":"в начале драки фокусь его или контроль первым.","0–20 мин":"0–20 мин","20–35 мин":"20–35 мин","35+ мин":"35+ мин",
+"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Твоя сила — ранняя игра: 10–20 мин гангайте впятером, на 15:00 забирайте Терзателя и пушьте с мегакрипами. Старайтесь закончить до 30 минуты.",
+"Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.":"Твоя сила — поздняя игра: безопасный фарм, избегай ранних драк, защищай вышки. После 35 минуты решай через Рошана и Aegis.",
+"Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.":"Твоя сила — мидгейм: собери 1–2 ключевых предмета (Blink, BKB) к 20 минуте, ищи драки на 20–35 минуте, забирай Рошана.",
+"Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"Нет инициации — Blink кому-то из героев или возьми Magnus/Tidehunter/Enigma.",
+"Стан/байлау аз — Rod of Atos, Scythe of Vyse не Abyssal Blade қажет.":"Мало контроля — нужны Rod of Atos, Scythe of Vyse или Abyssal Blade.",
+"Тек физикалық зиян — қарсылас броня жинаса тоқтайды: Desolator / Assault Cuirass.":"Только физический урон — броня врага остановит: Desolator / Assault Cuirass.",
+"Тек сиқыр зияны — қарсылас BKB/Pipe алса әлсірейсің: кеш ойынды созба.":"Только магический урон — BKB/Pipe врага ослабят: не затягивай игру.",
+"Итеретін герой жоқ — мұнараны Терзатель мүйізімен (Greater Horn) және смокпен бұз.":"Нет пушеров — ломай вышки с Greater Horn от Терзателя и через смок.","Оған қарсы:":"Против него:","алтын":"золота"});
+Object.assign(I18N.en,{"Ойын жоспары":"Game plan","Басты қауіп:":"Main threat:","драка басында соны фокус қыл немесе бірінші байла.":"focus or disable him first in fights.",
+"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Early game is yours: group and gank at 10–20 min, take Tormentor at 15:00 and push with megacreeps. Try to end before 30 min.",
+"Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.":"Late game is yours: farm safely, avoid early fights, defend towers. After 35 min decide it with Roshan and Aegis.",
+"Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.":"Mid game is yours: get 1–2 key items (Blink, BKB) by 20 min, look for fights at 20–35 min, take Roshan.",
+"Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"No initiation — get a Blink or pick Magnus/Tidehunter/Enigma.","Стан/байлау аз — Rod of Atos, Scythe of Vyse не Abyssal Blade қажет.":"Little control — get Rod of Atos, Scythe of Vyse or Abyssal Blade.",
+"Тек физикалық зиян — қарсылас броня жинаса тоқтайды: Desolator / Assault Cuirass.":"Physical damage only — armor stops you: Desolator / Assault Cuirass.","Тек сиқыр зияны — қарсылас BKB/Pipe алса әлсірейсің: кеш ойынды созба.":"Magic damage only — BKB/Pipe will blunt you: don't drag the game.",
+"Итеретін герой жоқ — мұнараны Терзатель мүйізімен (Greater Horn) және смокпен бұз.":"No pushers — take towers with the Tormentor Greater Horn and smoke.","Оған қарсы:":"Countered by:","алтын":"gold"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -1470,14 +1512,34 @@ function toast(msg){
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1700);
 }
 const buzz=ms=>{ try{ navigator.vibrate&&navigator.vibrate(ms) }catch(e){} };
-document.addEventListener('pointerdown',e=>{
-  if(RM) return;
+document.addEventListener('click',e=>{
+  if(RM||!e.clientX) return;
   const t=e.target.closest('.chip,.slot,.hb,.ib,.btn,.rec,.tab'); if(!t) return;
   const r=t.getBoundingClientRect(), d=Math.max(r.width,r.height)*.6;
   const sp=document.createElement('span'); sp.className='rp';
   sp.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;
   t.appendChild(sp); setTimeout(()=>sp.remove(),520);
+},{passive:true,capture:true});
+// зат плиткасын ұзақ бассаң — көпіршік-кеңес (аты, бағасы, неге керек)
+let ttT=0, ttEl=null, ttSwallow=false;
+function hideTip(){ clearTimeout(ttT); if(ttEl){ const e=ttEl; ttEl=null; e.classList.remove('on'); setTimeout(()=>e.remove(),200); } }
+document.addEventListener('pointerdown',e=>{
+  const t=e.target.closest('.ti'); hideTip(); if(!t) return;
+  const sx=e.clientX, sy=e.clientY;
+  const mv=ev=>{ if(Math.abs(ev.clientX-sx)>8||Math.abs(ev.clientY-sy)>8){ clearTimeout(ttT); off(); } };
+  const off=()=>{ document.removeEventListener('pointermove',mv); document.removeEventListener('pointerup',off); document.removeEventListener('pointercancel',off); };
+  document.addEventListener('pointermove',mv,{passive:true}); document.addEventListener('pointerup',off); document.addEventListener('pointercancel',off);
+  ttT=setTimeout(()=>{ off(); const n=t.getAttribute('title'); if(!n) return; buzz(12); ttSwallow=true;
+    const r=IREACT[n], cost=itemCost(n), d=document.createElement('div'); d.className='tip';
+    d.innerHTML=`<b>${n}</b><small>${cost&&cost!==2500?cost+' алтын':''}</small>${r&&(r.items||[]).length?`<span>Оған қарсы: ${(r.items||[]).slice(0,3).join(', ')}</span>`:''}`;
+    document.body.appendChild(d); const rc=t.getBoundingClientRect(), w=d.offsetWidth;
+    d.style.left=Math.max(8,Math.min(innerWidth-w-8,rc.left+rc.width/2-w/2))+'px'; d.style.top=(rc.top-d.offsetHeight-8)+'px';
+    d.style.setProperty('--ax',(rc.left+rc.width/2-parseFloat(d.style.left))+'px');
+    requestAnimationFrame(()=>d.classList.add('on')); ttEl=d; setTimeout(hideTip,2600); },450);
 },{passive:true});
+document.addEventListener('click',e=>{ if(ttSwallow){ ttSwallow=false; e.stopPropagation(); e.preventDefault(); } },true);
+document.addEventListener('contextmenu',e=>{ if(e.target.closest('.ti')) e.preventDefault(); });
+addEventListener('scroll',hideTip,{passive:true});
 // санды нөлден өсіру
 function countUp(el,to,dur){
   if(RM){ el.innerHTML=fmtPct(to); return; }
@@ -1630,7 +1692,8 @@ function slots(side){
       ? `<img class="por" src="${h.img}" alt="" loading="lazy"><span class="nm">${h.localized_name}${n?`<i class="cnt">${n}</i>`:''}</span><span class="x" role="button" aria-label="✕">✕</span>`
       : `<span class="plus">+</span><span class="nm" style="color:#4A5670">Бос</span>`;
     if(h){
-      b.onclick=()=>openItems(h,side);
+      swipeDel(b,()=>{ arr.splice(arr.indexOf(h.id),1); delete fi[h.id]; save(); board(); buzz(10); toast(h.localized_name+' алынды'); });
+      b.onclick=()=>{ if(b.dataset.sw) return; openItems(h,side); };
       b.querySelector('.x').onclick=e=>{ e.stopPropagation(); arr.splice(i,1); delete fi[h.id]; save(); board(); buzz(8); toast(h.localized_name+' алынды'); };
     } else b.onclick=()=>openPicker(side);
     box.appendChild(b);
@@ -1639,9 +1702,21 @@ function slots(side){
   document.getElementById(mineSide?'cUs':'cThem').textContent=cnt+'/5';
   if(mineSide&&prev&&cnt===5&&prev.size<5){ confetti(); buzz([20,40,20]); }
 }
+// толы ұяшықты солға сырғытсаң — алынады (Swipe to Delete)
+function swipeDel(el,done){
+  let x0=0,y0=0,dx=0,on=false,lock=0;
+  el.addEventListener('touchstart',e=>{ const t=e.touches[0]; x0=t.clientX; y0=t.clientY; dx=0; on=true; lock=0; el.style.transition='none'; delete el.dataset.sw; },{passive:true});
+  el.addEventListener('touchmove',e=>{ if(!on) return; const t=e.touches[0], mx=t.clientX-x0, my=t.clientY-y0;
+    if(!lock) lock=Math.abs(mx)>8?1:Math.abs(my)>8?2:0; if(lock!==1) return;
+    dx=Math.min(0,mx); el.style.transform=`translateX(${dx}px)`; el.classList.toggle('del',dx<-60); },{passive:true});
+  el.addEventListener('touchend',()=>{ if(!on) return; on=false; el.style.transition='';
+    if(lock===1) el.dataset.sw=1;
+    if(dx<-60){ el.style.transform='translateX(-110%)'; el.style.opacity='0'; setTimeout(done,180); }
+    else { el.style.transform=''; el.classList.remove('del'); setTimeout(()=>delete el.dataset.sw,50); } });
+}
 // бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
 function board(){
-  [()=>slots('mine'),()=>slots('foe'),renderWin,renderRecs,renderBans,renderIdeal,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+  [()=>slots('mine'),()=>slots('foe'),renderWin,renderPlan,renderRecs,renderBans,renderIdeal,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
 }
 
 /* ---------- сүзгілер ---------- */
@@ -1851,6 +1926,46 @@ function renderWin(){
   const R=box.querySelector('#wR'), D=box.querySelector('#wD');
   if(RM){ R.textContent=p.toFixed(0)+'%'; D.textContent=(100-p).toFixed(0)+'%'; return; }
   const t0=performance.now(); const st=n=>{ const k=Math.min(1,(n-t0)/900), v=old+(p-old)*(1-Math.pow(1-k,3)); R.textContent=v.toFixed(0)+'%'; D.textContent=(100-v).toFixed(0)+'%'; if(k<1) requestAnimationFrame(st); }; requestAnimationFrame(st);
+}
+/* ---------- ОЙЫН ЖОСПАРЫ: тайминг, жеңіс жолы, драфт кемшілігі, басты қауіп (MMR кеңестері) ---------- */
+const EARLY=new Set(['Ursa','Lycan','Broodmother','Chen','Beastmaster','Huskar','Viper','Batrider','Bounty Hunter','Bloodseeker','Night Stalker','Clockwerk','Spirit Breaker','Razor','Venomancer','Undying','Leshrac','Pudge','Lina','Bristleback','Dragon Knight','Legion Commander','Monkey King','Mars','Primal Beast','Visage','Enchantress','Nature\'s Prophet','Death Prophet','Jakiro','Shadow Shaman','Lion','Tusk','Earthshaker','Windranger','Queen of Pain','Templar Assassin','Storm Spirit','Ember Spirit','Puck','Kunkka','Tidehunter','Centaur Warrunner','Axe','Pangolier','Hoodwink','Marci','Snapfire','Dawnbreaker','Wraith King','Ringmaster','Kez']);
+const LATE=new Set(['Spectre','Medusa','Anti-Mage','Naga Siren','Phantom Lancer','Terrorblade','Arc Warden','Faceless Void','Morphling','Alchemist','Slark','Gyrocopter','Luna','Troll Warlord','Phantom Assassin','Invoker','Tinker','Sven','Muerta','Weaver','Drow Ranger','Sniper','Chaos Knight','Lifestealer','Juggernaut','Outworld Destroyer','Silencer','Enigma','Wraith King','Void Spirit','Meepo','Lone Druid','Ancient Apparition','Necrophos','Dark Willow','Razor']);
+const tim=h=>(EARLY.has(h.localized_name)?1:0)-(LATE.has(h.localized_name)?1:0);
+function curve(team){ // ерте / орта / кеш күші 0..1
+  if(!team.length) return [.5,.5,.5];
+  const t=team.reduce((a,h)=>a+tim(h),0)/team.length; // -1..1
+  return [.5+t*.35,.5+.08*(1-Math.abs(t)),.5-t*.35];
+}
+function renderPlan(){
+  const box=document.getElementById('plan'); if(!box) return;
+  const me=S.mine.map(id=>BYID[id]).filter(Boolean), fs=foeHeroes();
+  if(me.length<2&&!(me.length&&fs.length)){ box.innerHTML=''; return; }
+  const a=curve(me), b=curve(fs), ph=['0–20 мин','20–35 мин','35+ мин'];
+  const d=a.map((x,i)=>x-b[i]), best=d.indexOf(Math.max(...d));
+  const plan=best===0?'Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.'
+    :best===2?'Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.'
+    :'Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.';
+  // драфт кемшілігі
+  const t=me.map(tagsOf), cnt=f=>t.filter(f).length, gaps=[];
+  if(me.length>=3){
+    if(!cnt(x=>x.init)) gaps.push('Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.');
+    if(cnt(x=>x.lock)<1) gaps.push('Стан/байлау аз — Rod of Atos, Scythe of Vyse не Abyssal Blade қажет.');
+    if(!cnt(x=>x.magic)) gaps.push('Тек физикалық зиян — қарсылас броня жинаса тоқтайды: Desolator / Assault Cuirass.');
+    if(!cnt(x=>x.phys)) gaps.push('Тек сиқыр зияны — қарсылас BKB/Pipe алса әлсірейсің: кеш ойынды созба.');
+    if(!cnt(x=>x.push)&&best!==2) gaps.push('Итеретін герой жоқ — мұнараны Терзатель мүйізімен (Greater Horn) және смокпен бұз.');
+  }
+  // ең қауіпті қарсылас
+  let danger=null, dv=-1e9;
+  fs.forEach(f=>{ let v=0; me.forEach(m=>{ v+=ctr(m.localized_name).get(f.localized_name)||0; }); v+=patchMod(f); if(v>dv){ dv=v; danger=f; } });
+  const thr=THREATS.filter(T=>fs.filter(f=>has(T.list,f)).length>=(T.id==='magic'||T.id==='phys'?3:1)).slice(0,3);
+  const bar=(v,c)=>`<i style="height:${Math.round(18+v*40)}px;background:${c}"></i>`;
+  box.innerHTML=`<div class="card gp"><h3>Ойын жоспары</h3>
+    <div class="cv">${ph.map((p,i)=>`<div class="cvc${i===best?' on':''}"><div class="cvb">${bar(a[i],'var(--rad)')}${fs.length?bar(b[i],'var(--dire)'):''}</div><small>${p}</small></div>`).join('')}</div>
+    <p class="gpt">${plan}</p>
+    ${danger&&me.length?`<p class="gpl"><b class="gl">Басты қауіп:</b> <span>${danger.localized_name}</span> — <span>драка басында соны фокус қыл немесе бірінші байла.</span></p>`:''}
+    ${thr.length?`<div class="gpth">${thr.map(T=>`<span class="ghip" title="${T.why}"><b>${T.ttl}</b> → ${T.items.slice(0,2).join(', ')}</span>`).join('')}</div>`:''}
+    ${gaps.length?`<ul class="gpg">${gaps.slice(0,3).map(g=>`<li>${g}</li>`).join('')}</ul>`:''}
+  </div>`;
 }
 /* бан ұсынысы: біздің геройларды ең көп жеңетіндер + 7.42 имбалар */
 function renderBans(){
@@ -2744,8 +2859,6 @@ async function pick(h){
   toast(h.localized_name+(shSide==='mine'?' — біздің команда':' — қарсылас'));
   if(shSide==='foe'){
     // контрпик бірден көрінеді (Dotabuff дерегі қолда), тірі дерек жүктелгенде қайта есептеледі
-    const rs=document.getElementById('idsec').getBoundingClientRect();
-    if(rs.top>innerHeight*0.62) window.scrollBy({top:rs.top-innerHeight*0.38,behavior:RM?'auto':'smooth'});
     loadMU(h.id).then(()=>{ if(S.foe.includes(h.id)) renderRecs(); }).catch(()=>{});
   }
 }
