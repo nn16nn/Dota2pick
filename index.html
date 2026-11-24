@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0F1420">
+<meta name="theme-color" content="#0A0E15">
 <title>Dota 2 Pick — таңдау көмекшісі</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -450,6 +450,63 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 .ti{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .slot.full{transition:transform .25s cubic-bezier(.2,.8,.3,1),opacity .2s,background .2s}
 .slot.full.del{background:#D9584A33;border-color:var(--dire)}
+/* ===== v6.0: DOTA ОЙЫН СТИЛІ — қола-алтын жиек, тас текстура, Radiant/Dire жарқылы ===== */
+:root{--void:#0A0E15;--panel:#141A24;--panel2:#1A2230;--line:#2A2F38;--gold:#D9A441;--gold2:#F4D58D;--bronze:#8A6A3A;--txt:#ECE6D8;--dim:#9A9384;
+  --metal:linear-gradient(180deg,#1C2330 0%,#121821 100%);
+  --edge:linear-gradient(160deg,#C9A15A 0%,#5C4626 28%,#2A2418 55%,#7A5E33 100%);
+  --sh:0 2px 6px rgba(0,0,0,.5),0 12px 28px rgba(0,0,0,.55)}
+html,body{background:#06090E}
+body{background:radial-gradient(120% 60% at 50% -10%,#1B2638 0%,#0B1019 55%,#06090E 100%) fixed,#06090E;}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6  0 0 0 0 .55  0 0 0 0 .45  0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.9;mix-blend-mode:overlay}
+.amb .a1{opacity:.10}.amb .a2{opacity:.09}.amb .a3{opacity:.05}
+/* қола жиекті панельдер */
+.card,.side,.rec,.win,.tier,.bn,.tabs,.hset,.ev{border:1px solid transparent!important;
+  background:var(--metal) padding-box,var(--edge) border-box!important}
+.card,.side,.rec,.win,.tier{position:relative;box-shadow:inset 0 1px 0 #ffffff0d,var(--sh)}
+.card::before,.win::before{content:"";position:absolute;left:12px;right:12px;top:0;height:1px;background:linear-gradient(90deg,transparent,#F4D58D66,transparent);pointer-events:none}
+/* тақырыптар: алтын әріп + ромб сызық */
+.sec h2{background:linear-gradient(180deg,#F7E2A8 0%,#D9A441 60%,#9C7232 100%);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.09em;display:flex;align-items:center;gap:8px}
+.sec h2::before{content:"◆";font-size:9px;color:var(--gold);-webkit-text-fill-color:var(--gold);filter:drop-shadow(0 0 4px #D9A44199)}
+.card h3{color:var(--gold2);letter-spacing:.08em}
+.top{background:linear-gradient(180deg,#0A0E15 70%,#0A0E1500)}
+.top.scr{background:linear-gradient(180deg,#111722F2,#0B1019EE);border-bottom:1px solid #5C462680;box-shadow:0 1px 0 #C9A15A26,0 8px 20px #0008}
+.top h1{background:linear-gradient(180deg,#FFF1C9 0%,#E2B65A 55%,#A0752F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.12em;filter:drop-shadow(0 1px 0 #0009)}
+.mark{border-radius:50%;box-shadow:0 0 0 1.5px #C9A15A,0 0 12px #D9A44155}
+/* Radiant / Dire */
+.side{padding-top:22px}
+.side::after{position:absolute;top:6px;left:10px;font-family:var(--disp);font-size:9px;letter-spacing:.32em;font-weight:600}
+.side.us::after{content:"RADIANT";color:#6FD49A;text-shadow:0 0 8px #4FB47799}
+.side.them::after{content:"DIRE";color:#F07A6A;text-shadow:0 0 8px #D9584A99}
+.side.us{box-shadow:inset 0 2px 0 var(--rad),inset 0 40px 50px -40px #4FB47740,var(--sh)!important}
+.side.them{box-shadow:inset 0 2px 0 var(--dire),inset 0 40px 50px -40px #D9584A40,var(--sh)!important}
+.side.us,.side.them{border-top:1px solid transparent}
+.slot{background:#0D121B;border-color:#2A2F38}
+.slot.full{background:linear-gradient(90deg,#1E2633,#151B26);border:1px solid #3A3426}
+.slot.full .por{box-shadow:0 0 0 1px #C9A15A80}
+.side.us .slot.full{box-shadow:inset 2px 0 0 var(--rad)}.side.them .slot.full{box-shadow:inset 2px 0 0 var(--dire)}
+.seam{background:linear-gradient(180deg,transparent,#D9A441,transparent)!important;width:1px!important}
+/* батырмалар: металл-алтын */
+.btn{background:linear-gradient(180deg,#2A3142,#1A202C);border:1px solid #4A3E28;color:var(--txt);letter-spacing:.04em}
+.btn.gold,.chip.gold,.chip.on{background:linear-gradient(180deg,#F6D98C 0%,#D9A441 50%,#A9782F 100%)!important;color:#1D1404!important;border-color:#F4D58D!important;
+  box-shadow:inset 0 1px 0 #FFF3C8,inset 0 -2px 0 #7A5420,0 0 14px #D9A44140!important;text-shadow:0 1px 0 #FFE9B080}
+.btn.gold{box-shadow:inset 0 1px 0 #FFF3C8,0 3px 0 #6B4A1A,0 0 16px #D9A44155!important}
+.chip{background:#121823;border-color:#3A3426;color:#CFC6B2}
+/* таб мәзірі: металл панель + алтын пилл */
+.tabs{background:linear-gradient(180deg,#1A2130F2,#0F141DF2) padding-box,var(--edge) border-box!important;box-shadow:0 -1px 0 #C9A15A1F,var(--sh2)}
+.tabind{background:linear-gradient(180deg,#F6D98C 0%,#D9A441 55%,#A9782F 100%);box-shadow:inset 0 1px 0 #FFF3C8,inset 0 -2px 0 #7A5420,0 0 18px #D9A44166}
+.tab{color:#8E8775}.tab.on{color:#1D1404}
+/* жеңіс жолағы: Radiant vs Dire */
+.wbar{height:12px;background:linear-gradient(90deg,#7A2A22,var(--dire));box-shadow:inset 0 1px 2px #000a;border:1px solid #3A3426}
+.wbar i{background:linear-gradient(90deg,#1F6B3E,#4FB477 70%,#8BE3AE)}
+.wbar em{background:var(--gold2);box-shadow:0 0 10px var(--gold)}
+.win .wl .r{text-shadow:0 0 14px #4FB47780}.win .wl .d{text-shadow:0 0 14px #D9584A80}
+/* ұсыныс жолдары мен тир */
+.rec:active{filter:brightness(1.15)}
+.tl{box-shadow:inset 0 1px 0 #ffffff55,inset 0 -2px 0 #0004}
+.tS .tl{background:linear-gradient(180deg,#FFE7A3,#D9A441 60%,#9C7232)}
+.imba{background:linear-gradient(90deg,#D9A441,#FFF1C9,#E06A4A,#D9A441)!important;background-size:300% 100%!important}
+.toast,#toast{background:linear-gradient(180deg,#1E2633F5,#141A24F5);border:1px solid #5C4626;border-left:3px solid var(--gold)}
+.sheet .box{background:linear-gradient(180deg,#161D29,#0E131C)!important;border-top:1px solid #8A6A3A}
 </style>
 </head>
 <body>
@@ -599,7 +656,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='5.5';
+const V='6.0';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
