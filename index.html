@@ -507,6 +507,31 @@ body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;bac
 .imba{background:linear-gradient(90deg,#D9A441,#FFF1C9,#E06A4A,#D9A441)!important;background-size:300% 100%!important}
 .toast,#toast{background:linear-gradient(180deg,#1E2633F5,#141A24F5);border:1px solid #5C4626;border-left:3px solid var(--gold)}
 .sheet .box{background:linear-gradient(180deg,#161D29,#0E131C)!important;border-top:1px solid #8A6A3A}
+/* v6.1: жылдамдық — ауыр эффектілерді алып тастау (blur-жарық, blend, backdrop, шексіз анимация) */
+.amb{display:none}
+body{background:radial-gradient(120% 60% at 50% -10%,#1B2638 0%,#0B1019 55%,#06090E 100%) no-repeat,#06090E!important}
+body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:translateZ(0)}
+.top.scr,.tabs,#toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.imba{animation:none!important;background-position:0 0!important}
+.wbar i::after{display:none}
+.ti.hotc img{animation:none!important;box-shadow:0 0 6px #D9584A88}
+.sp-glow{animation:none}
+.rec,.card,.tier{contain:layout paint}
+.rkrow{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;width:100%;margin-top:6px}.rkrow::-webkit-scrollbar{display:none}
+.chip.sm{font-size:11px;padding:5px 9px;white-space:nowrap}
+.upd{width:100%;font-size:11px;color:var(--dim);margin:6px 2px 2px}.upd::first-letter{color:var(--rad)}
+.myb{position:absolute;top:-4px;right:-3px;font-style:normal;font-size:10px;color:#1D1404;background:var(--gold2);border-radius:50%;width:15px;height:15px;display:grid;place-items:center}
+.myt{color:var(--gold2);font-weight:600}
+.mhr{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #ffffff0d}
+.mhr img{width:46px;height:26px;border-radius:5px;object-fit:cover;background:#0B0F18;box-shadow:0 0 0 1px #C9A15A66}
+.mhr b{flex:1;font-size:13px;font-weight:600}.mhr span{font-family:var(--disp);font-size:15px}.mhr small{width:58px;text-align:right;color:var(--dim);font-size:11px}
+.ck h3{display:flex;justify-content:space-between;align-items:baseline}
+.ckb{height:5px;border-radius:3px;background:#0B0F18;margin:8px 0 6px;overflow:hidden}.ckb i{display:block;height:100%;background:linear-gradient(90deg,#A9782F,#F4D58D);transition:width .35s}
+.cki{display:flex;align-items:flex-start;gap:9px;width:100%;text-align:left;padding:7px 0;border-top:1px solid #ffffff0d;color:var(--txt);font-size:12.5px;line-height:1.4}
+.cki b{flex:0 0 52px;color:var(--gold2);font-family:var(--disp);font-weight:600;letter-spacing:.04em}
+.cki span:last-child{color:var(--dim)}.cki.on span:last-child{text-decoration:line-through;opacity:.6}
+.cb2{flex:0 0 18px;height:18px;border-radius:5px;border:1.5px solid #8A6A3A;margin-top:1px;display:grid;place-items:center;transition:background .2s}
+.cki.on .cb2{background:linear-gradient(180deg,#F6D98C,#D9A441);border-color:#F4D58D}.cki.on .cb2::after{content:"✓";color:#1D1404;font-size:12px;font-weight:800}
 </style>
 </head>
 <body>
@@ -578,6 +603,9 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
   <section id="p-meta" class="page">
     <div class="sec"><h2>Ойын таймері</h2><span class="hint" id="tmrHint">горнда баста</span></div>
     <div id="timer"></div>
+    <div class="sec"><h2>MMR көтеру</h2><span class="hint">әр ойынға</span></div>
+    <div id="chk"></div>
+    <div id="myh"></div>
     <div class="sec"><h2>Мета 7.42</h2><span class="hint">басып командаға қос</span></div>
     <div class="chips" id="tierF"></div>
     <div id="tiers"></div>
@@ -656,7 +684,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='6.0';
+const V='6.1';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1082,6 +1110,9 @@ Object.assign(I18N.en,{"Ойын жоспары":"Game plan","Басты қау�
 "Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"No initiation — get a Blink or pick Magnus/Tidehunter/Enigma.","Стан/байлау аз — Rod of Atos, Scythe of Vyse не Abyssal Blade қажет.":"Little control — get Rod of Atos, Scythe of Vyse or Abyssal Blade.",
 "Тек физикалық зиян — қарсылас броня жинаса тоқтайды: Desolator / Assault Cuirass.":"Physical damage only — armor stops you: Desolator / Assault Cuirass.","Тек сиқыр зияны — қарсылас BKB/Pipe алса әлсірейсің: кеш ойынды созба.":"Magic damage only — BKB/Pipe will blunt you: don't drag the game.",
 "Итеретін герой жоқ — мұнараны Терзатель мүйізімен (Greater Horn) және смокпен бұз.":"No pushers — take towers with the Tormentor Greater Horn and smoke.","Оған қарсы:":"Countered by:","алтын":"gold"});
+Object.assign(I18N.ru,{"MMR көтеру":"Поднять MMR","әр ойынға":"на каждую игру","MMR чек-лист":"MMR чек-лист","Сенің MMR геройларың":"Твои MMR-герои","Рейтингте алма":"Не бери в рейтинге","ойын":"игр","Барлық ранг":"Все ранги","жаңартылды:":"обновлено:","бұрын · OpenDota":"назад · OpenDota","сағ":"ч","Соңғы жыл · 5+ ойын. Спамда — осылар MMR көтереді.":"Последний год · 5+ игр. Спамь их — они поднимают MMR.","«Ойындар» бетінде OpenDota ID жаз — жеңісі көп геройларыңды тауып, пикте ★ белгісімен бірінші ұсынамын.":"Введи OpenDota ID во вкладке «Игры» — найду твоих самых победных героев и буду предлагать их первыми со ★.","сенікі":"твой",
+"Контрпик алдың ба, рөлдер толық па (1–5)?":"Взял контрпик, все роли (1–5) закрыты?","Bounty руна мен бастапқы вардтар қойылды ма?":"Руны богатства и стартовые варды?","Соңғы соққы/денай — 10 минутқа 50+ крип":"Ласт-хит/денай — 50+ крипов к 10 минуте","Әрдайым TP Scroll бар ма?":"Всегда есть TP Scroll?","Күш руна — мидке көмек/ганк":"Руна силы — помощь миду/ганк","Терзатель — Greater Horn-мен итер (7.42)":"Терзатель — пуш с Greater Horn (7.42)","Смок алып ганк, үлкен орманда керриді ұста":"Смок-ганки, лови керри в большом лесу","Негізгі затың 20 минутқа дейін бар ма?":"Ключевой предмет к 20 минуте?","Aegis-ті мұнара бұзуға пайдалан":"Используй Aegis для снятия вышек","Өлгенде — неге? Келесіде вард/позиция":"Умер — почему? Дальше варды/позиция"});
+Object.assign(I18N.en,{"MMR көтеру":"Climb MMR","әр ойынға":"every game","Сенің MMR геройларың":"Your MMR heroes","Рейтингте алма":"Avoid in ranked","Барлық ранг":"All ranks","жаңартылды:":"updated:","бұрын · OpenDota":"ago · OpenDota","сенікі":"yours"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -1508,15 +1539,17 @@ async function getJSON(url){
   if(!r.ok) throw new Error(r.status);
   return r.json();
 }
+let HSTAT_T=0;
 async function loadHeroes(force){
   let d=force?null:LS.get('heroes',7);
   if(!d){ d=await getJSON(API+'/heroStats'); LS.set('heroes',d); }
+  try{ HSTAT_T=JSON.parse(localStorage.getItem('d2pick.heroes')).t; }catch(e){ HSTAT_T=Date.now(); }
   HEROES=d.map(h=>{
-    let p=0,w=0; for(let i=1;i<=8;i++){p+=h[i+'_pick']||0;w+=h[i+'_win']||0;}
+    let p=0,w=0; const bp=[],bw=[]; for(let i=1;i<=8;i++){p+=h[i+'_pick']||0;w+=h[i+'_win']||0;bp[i]=h[i+'_pick']||0;bw[i]=h[i+'_win']||0;}
     const sn=h.name.replace('npc_dota_hero_','');
     return {id:h.id,name:h.name,localized_name:h.localized_name,primary_attr:h.primary_attr,
       attack_type:h.attack_type,roles:h.roles||[],img:CDN+h.img.split('?')[0],
-      vert:CDN+'/apps/dota2/images/heroes/'+sn+'_vert.jpg',base:p?w/p:.5,pk:p};
+      vert:CDN+'/apps/dota2/images/heroes/'+sn+'_vert.jpg',base:p?w/p:.5,pk:p,bp,bw};
   }).sort((a,b)=>a.localized_name.localeCompare(b.localized_name));
   BYID={}; HEROES.forEach(h=>BYID[h.id]=h);
 }
@@ -1772,8 +1805,14 @@ function swipeDel(el,done){
     else { el.style.transform=''; el.classList.remove('del'); setTimeout(()=>delete el.dataset.sw,50); } });
 }
 // бір бөлік құласа, екіншісі бос қалмауы үшін әрқайсысы жеке қорғалған
+let BTOK=0;
 function board(){
-  [()=>slots('mine'),()=>slots('foe'),renderWin,renderPlan,renderRecs,renderBans,renderIdeal,renderPairs,renderPickItems].forEach(f=>{ try{ f(); }catch(e){ console.error(e); } });
+  // алдымен көрінетін бөлік (ұяшықтар, жеңіс, ұсыныс), қалғаны келесі кадрларда — интерфейс тұрып қалмайды
+  const tok=++BTOK, run=f=>{ try{ f(); }catch(e){ console.error(e); } };
+  [()=>slots('mine'),()=>slots('foe'),renderWin,renderPlan,renderRecs].forEach(run);
+  const rest=[renderBans,renderPairs,renderIdeal,renderPickItems];
+  const next=()=>{ if(tok!==BTOK||!rest.length) return; run(rest.shift()); setTimeout(next,0); };
+  requestAnimationFrame(()=>setTimeout(next,0));
 }
 
 /* ---------- сүзгілер ---------- */
@@ -1958,7 +1997,7 @@ function recommend(){
     if(used.has(h.id)) continue;
     const r=scoreVs(h,fs), syn=(me.length&&me.length<5)?teamScore([...me,h],NOV).s-base:0;
     const cm=me.find(m=>comboWith(m.localized_name,h.localized_name));
-    out.push({h,score:r.score,det:r.det,syn,cmb:cm?cm.localized_name:'',rank:r.score+syn*.4+(cm?2:0)+patchMod(h)});
+    out.push({h,score:r.score,det:r.det,syn,cmb:cm?cm.localized_name:'',rank:r.score+syn*.4+(cm?2:0)+patchMod(h)+(MYH[h.id]?1.2:0)});
   }
   return out.sort((a,b)=>b.rank-a.rank);
 }
@@ -2044,24 +2083,72 @@ function renderBans(){
 }
 /* ---------- МЕТА: позиция бойынша тир-лист (OpenDota жеңіс % + танымалдық + 7.42) ---------- */
 let TIERPOS=LS.get('tierpos')||'c';
+const TRK=[['0','Барлық ранг',[1,2,3,4,5,6,7,8]],['1','Herald–Crusader',[1,2,3]],['4','Archon–Legend',[4,5]],['6','Ancient–Divine',[6,7]],['8','Immortal',[8]]];
+let TIERRK=LS.get('tierrk')||(()=>{ const r=LS.get('rank'); if(!r) return '0'; const m=Math.floor(r/10); return m<=3?'1':m<=5?'4':m<=7?'6':'8'; })();
+const wrB=h=>{ const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; let p=0,w=0; if(!h.bp) return h.base; b.forEach(i=>{p+=h.bp[i]||0;w+=h.bw[i]||0;}); return p?w/p:h.base; };
+const pkB=h=>{ const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; return h.bp?b.reduce((a,i)=>a+(h.bp[i]||0),0):(h.pk||0); };
 const TPOS=[['c','Керри'],['m','Мидер'],['o','Хард линия'],['s','Саппорт']];
-function renderMeta(){ renderTimer(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
+function renderMeta(){ renderTimer(); renderChk(); renderMyHeroes(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
+/* MMR: сенің ең жақсы геройларың (OpenDota тарихы) — пикте ★ белгісімен бірінші шығады */
+let MYH=LS.get('myh')||{};
+async function loadMyHeroes(force){
+  const id=LS.get('acct'); if(!id) return null;
+  let d=force?null:LS.get('myh_raw'+id,1);
+  if(!d){ try{ d=await getJSON(API+'/players/'+id+'/heroes?date=365'); LS.set('myh_raw'+id,d); }catch(e){ return null; } }
+  const m={}; (d||[]).forEach(x=>{ const g=x.games||0, w=x.win||0; if(g>=5) m[x.hero_id]={g,w,wr:w/g}; });
+  MYH={}; Object.entries(m).filter(([,v])=>v.wr>=.53).forEach(([k,v])=>MYH[k]=v); LS.set('myh',MYH);
+  return m;
+}
+async function renderMyHeroes(){
+  const box=document.getElementById('myh'); if(!box) return;
+  if(!LS.get('acct')){ box.innerHTML=`<div class="card mh"><h3>Сенің MMR геройларың</h3><p class="why" style="margin:4px 0 0">«Ойындар» бетінде OpenDota ID жаз — жеңісі көп геройларыңды тауып, пикте ★ белгісімен бірінші ұсынамын.</p></div>`; return; }
+  box.innerHTML='<div class="sk" style="height:110px"></div>';
+  const m=await loadMyHeroes(); if(!m){ box.innerHTML=''; return; }
+  const all=Object.entries(m).map(([k,v])=>({h:BYID[k],...v})).filter(x=>x.h);
+  const best=all.filter(x=>x.wr>=.5).sort((a,b)=>(b.wr-a.wr)||(b.g-a.g)).slice(0,6);
+  const worst=all.filter(x=>x.wr<.45&&x.g>=8).sort((a,b)=>a.wr-b.wr).slice(0,4);
+  const row=(x,c)=>`<div class="mhr"><img src="${x.h.img}" alt="" loading="lazy"><b>${x.h.localized_name}</b><span class="${c}">${(x.wr*100).toFixed(0)}%</span><small>${x.g} ойын</small></div>`;
+  box.innerHTML=`<div class="card mh"><h3>Сенің MMR геройларың</h3><p class="why" style="margin:2px 0 8px">Соңғы жыл · 5+ ойын. Спамда — осылар MMR көтереді.</p>
+    ${best.length?best.map(x=>row(x,'gw')).join(''):'<p class="why">Әзірге дерек аз</p>'}
+    ${worst.length?`<div class="gt" style="margin-top:10px">Рейтингте алма</div>${worst.map(x=>row(x,'gl')).join('')}`:''}</div>`;
+}
+/* MMR чек-лист: әр ойынға (горн басылғанда тазаланады) */
+const CHK=[['Пик','Контрпик алдың ба, рөлдер толық па (1–5)?'],['0:00','Bounty руна мен бастапқы вардтар қойылды ма?'],['Линия','Соңғы соққы/денай — 10 минутқа 50+ крип'],['TP','Әрдайым TP Scroll бар ма?'],['6:00','Күш руна — мидке көмек/ганк'],['15:00','Терзатель — Greater Horn-мен итер (7.42)'],['Карта','Смок алып ганк, үлкен орманда керриді ұста'],['BKB','Негізгі затың 20 минутқа дейін бар ма?'],['Рошан','Aegis-ті мұнара бұзуға пайдалан'],['Өлім','Өлгенде — неге? Келесіде вард/позиция']];
+function renderChk(){
+  const box=document.getElementById('chk'); if(!box) return; const st=LS.get('chk')||{};
+  const done=CHK.filter((_,i)=>st[i]).length;
+  box.innerHTML=`<div class="card ck"><h3>MMR чек-лист <span class="why">${done}/${CHK.length}</span></h3>
+    <div class="ckb"><i style="width:${done/CHK.length*100}%"></i></div>
+    ${CHK.map(([t,d],i)=>`<button class="cki${st[i]?' on':''}" data-i="${i}"><span class="cb2"></span><b>${t}</b><span>${d}</span></button>`).join('')}</div>`;
+  box.querySelectorAll('.cki').forEach(b=>b.onclick=()=>{ const s2=LS.get('chk')||{}; s2[b.dataset.i]=!s2[b.dataset.i]; LS.set('chk',s2); buzz(8); renderChk(); });
+}
 function renderTiers(){
   const f=document.getElementById('tierF'), box=document.getElementById('tiers');
-  f.innerHTML=TPOS.map(([k,n])=>`<button class="chip${k===TIERPOS?' on':''}" data-k="${k}">${n}</button>`).join('');
-  f.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ TIERPOS=c.dataset.k; LS.set('tierpos',TIERPOS); buzz(6); renderTiers(); });
-  const tot=HEROES.reduce((a,h)=>a+(h.pk||0),0)||1;
-  const L=HEROES.filter(h=>slotsOf(h).includes(TIERPOS)).map(h=>({h,sc:(h.base-.5)*100+patchMod(h)*1.2+Math.log10(1+(h.pk||0)/tot*1000)*.8}))
+  const ago=Math.max(0,Math.round((Date.now()-HSTAT_T)/6e4));
+  f.innerHTML=TPOS.map(([k,n])=>`<button class="chip${k===TIERPOS?' on':''}" data-k="${k}">${n}</button>`).join('')
+    +`<div class="rkrow">${TRK.map(([k,n])=>`<button class="chip sm${k===TIERRK?' on':''}" data-r="${k}">${n}</button>`).join('')}</div>`
+    +`<div class="upd">● жаңартылды: ${ago<60?ago+' мин':Math.round(ago/60)+' сағ'} бұрын · OpenDota</div>`;
+  f.querySelectorAll('[data-k]').forEach(c=>c.onclick=()=>{ TIERPOS=c.dataset.k; LS.set('tierpos',TIERPOS); buzz(6); renderTiers(); });
+  f.querySelectorAll('[data-r]').forEach(c=>c.onclick=()=>{ TIERRK=c.dataset.r; LS.set('tierrk',TIERRK); buzz(6); renderTiers(); });
+  const tot=HEROES.reduce((a,h)=>a+pkB(h),0)||1;
+  const L=HEROES.filter(h=>slotsOf(h).includes(TIERPOS)).map(h=>({h,sc:(wrB(h)-.5)*100+patchMod(h)*1.2+Math.log10(1+pkB(h)/tot*1000)*.8+(MYH[h.id]?1:0)}))
     .sort((a,b)=>b.sc-a.sc);
   const n=L.length, cut=[Math.ceil(n*.12),Math.ceil(n*.35),Math.ceil(n*.7)];
   const T=[['S',L.slice(0,cut[0])],['A',L.slice(cut[0],cut[1])],['B',L.slice(cut[1],cut[2])],['C',L.slice(cut[2])]];
   const used=new Set([...S.mine,...S.foe]);
-  box.innerHTML=T.map(([t,a])=>a.length?`<div class="tier t${t}"><span class="tl">${t}</span><div class="th">${a.map(({h},i)=>`<button class="tb2${used.has(h.id)?' used':''}" data-id="${h.id}" style="--i:${i}"><img src="${h.img}" alt="" loading="lazy"><small>${(h.base*100).toFixed(1)}%</small><b>${h.localized_name}</b>${P742.imba.includes(h.localized_name)?'<i class="ib7">ИМБА</i>':P742.up.includes(h.localized_name)?'<i class="ib7 up">↑</i>':P742.down.includes(h.localized_name)?'<i class="ib7 dn">↓</i>':''}</button>`).join('')}</div></div>`:'').join('');
+  box.innerHTML=T.map(([t,a])=>a.length?`<div class="tier t${t}"><span class="tl">${t}</span><div class="th">${a.map(({h},i)=>`<button class="tb2${used.has(h.id)?' used':''}" data-id="${h.id}" style="--i:${i}"><img src="${h.img}" alt="" loading="lazy"><small>${(wrB(h)*100).toFixed(1)}%</small>${MYH[h.id]?'<i class="myb">★</i>':''}<b>${h.localized_name}</b>${P742.imba.includes(h.localized_name)?'<i class="ib7">ИМБА</i>':P742.up.includes(h.localized_name)?'<i class="ib7 up">↑</i>':P742.down.includes(h.localized_name)?'<i class="ib7 dn">↓</i>':''}</button>`).join('')}</div></div>`:'').join('');
   box.querySelectorAll('.tb2').forEach(b=>b.onclick=()=>{ const id=+b.dataset.id, h=BYID[id];
     if(used.has(id)) return toast(h.localized_name+' таңдалған');
     if(S.mine.length>=5) return toast('Команда толы');
     S.mine.push(id); save(); board(); buzz(12); toast(h.localized_name+' командаға қосылды'); renderTiers(); });
 }
+// тир-лист өзі жаңарады: дерек 3 сағаттан ескі болса фонда OpenDota-дан қайта алынады
+async function freshStats(){
+  if(Date.now()-HSTAT_T<3*36e5||!navigator.onLine) return;
+  try{ const d=await getJSON(API+'/heroStats'); if(!Array.isArray(d)||!d.length) return; LS.set('heroes',d); await loadHeroes(); TAGC.clear(); IDC.k='';
+    if(CURTAB==='p-meta') renderTiers(); board(); }catch(e){}
+}
+setInterval(freshStats,30*60e3); addEventListener('visibilitychange',()=>{ if(!document.hidden) freshStats(); });
 /* ---------- ойын таймері: руналар, Терзатель, Рошан (дірілмен ескертеді) ---------- */
 let TMR=LS.get('tmr')||null, TMRI=0, TMRW={};
 const fmt=t=>{ const a=Math.abs(t), m=Math.floor(a/60), s=Math.floor(a%60); return (t<0?'-':'')+m+':'+String(s).padStart(2,'0'); };
@@ -2089,7 +2176,7 @@ function renderTimer(){
       :`<button class="btn gold" data-a="s">▶ Горн — бастау (0:00)</button>`}</div>
     <div id="evs"></div><p class="why" style="margin:8px 0 0">Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.</p></div>`;
   box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ const a=b.dataset.a; buzz(10);
-    if(a==='s'){ TMR={t0:Date.now(),rosh:null}; TMRW={}; }
+    if(a==='s'){ TMR={t0:Date.now(),rosh:null}; TMRW={}; LS.set('chk',{}); renderChk(); }
     if(a==='m') TMR.t0+=10000; if(a==='p') TMR.t0-=10000;
     if(a==='r'){ TMR.rosh=gameT(); toast('Рошан: '+fmt(TMR.rosh+480)+' – '+fmt(TMR.rosh+660)); }
     if(a==='x'){ TMR=null; }
@@ -2131,7 +2218,7 @@ function renderRecs(){
     const pos=posOf(x.h).join(' / ')||x.h.roles.slice(0,2).map(r=>ROLEKK[r]||r).join(' · ');
     b.innerHTML=`<img class="por" src="${x.h.img}" alt="" loading="lazy">
       <div class="info"><div class="nm">${x.h.localized_name}${has(FAV,x.h)?' <span style="color:var(--gold)">★</span>':''}</div>
-      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.cmb?' · комбо: '+x.cmb:x.syn>=3.5?' · байланыс ✓':''}${patchTag(x.h)}${warn}</div>
+      <div class="rl"><b style="color:var(--gold);font-weight:600">${pos}</b>${good?' — '+good:''}${x.cmb?' · комбо: '+x.cmb:x.syn>=3.5?' · байланыс ✓':''}${patchTag(x.h)}${MYH[x.h.id]?` · <span class="myt">★ сенікі ${(MYH[x.h.id].wr*100).toFixed(0)}%</span>`:''}${warn}</div>
       <div class="bar"><i data-w="${Math.min(100,Math.abs(x.score)/max*100).toFixed(1)}" style="width:0"></i></div></div>
       <div class="val" data-to="${x.score.toFixed(2)}">${fmtPct(0)}</div>`;
     b.onclick=()=>{ if(S.mine.length<5){ S.mine.push(x.h.id); save(); board(); buzz(12); toast(x.h.localized_name+' командаға қосылды'); } else toast('Команда толы'); };
@@ -2153,7 +2240,10 @@ function slotsOf(h){
   const a=[]; if(has(POS.carry,h)) a.push('c'); if(has(POS.mid,h)) a.push('m'); if(has(POS.off,h)) a.push('o'); if(has(POS.sup,h)) a.push('s');
   return a.length?a:['m','o'];
 }
+const TAGC=new Map();
 function tagsOf(h){
+  const c=TAGC.get(h.id); if(c) return c; const v=tagsOf0(h); TAGC.set(h.id,v); return v; }
+function tagsOf0(h){
   const r=roleOf(h);
   return {r,sl:slotsOf(h),
     magic:has(TL('magic'),h)||(h.primary_attr==='int'&&!has(TL('phys'),h)),
@@ -2201,7 +2291,11 @@ function auraItems(team,fs){
   if(team.length>=4&&!t.some(x=>x.init)) out.push(['Blink Dagger','бастама жоқ — блинк']);
   return out.slice(0,3);
 }
+let IDC={k:'',v:null};
 function idealTeams(){
+  const ck=S.mine.join('.')+'|'+S.foe.join('.')+'|'+(S.ban||[]).join('.')+'|'+Object.keys(MU).length+'|'+HEROES.length;
+  if(IDC.k===ck) return IDC.v; const v=idealTeams0(); IDC={k:ck,v}; return v; }
+function idealTeams0(){
   const fs=foeHeroes(), foeIds=new Set([...S.foe,...(S.ban||[])]), me=S.mine.map(id=>BYID[id]).filter(Boolean);
   if(me.length>=5) return [];
   const vs=new Map(); HEROES.forEach(h=>{ if(!foeIds.has(h.id)) vs.set(h.id,(fs.length?scoreVs(h,fs).score:0)+(h.base-.5)*20+patchMod(h)*2); });
@@ -2744,6 +2838,7 @@ async function renderGames(force){
     return;
   }
   const tot=(wl.win||0)+(wl.lose||0), wr=tot?wl.win/tot*100:0;
+  if(pl.rank_tier) LS.set('rank',pl.rank_tier); loadMyHeroes();
   const medalOf=rt=>rt?MEDAL[Math.floor(rt/10)]+(rt%10?' '+(rt%10):''):'';
   const R=rm.slice(0,50), W=R.filter(m=>(m.player_slot<128)===m.radiant_win).length, n=R.length||1;
   const avg=k=>R.reduce((a,m)=>a+(m[k]||0),0)/n;
