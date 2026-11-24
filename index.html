@@ -565,7 +565,8 @@ body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:tra
 .cmres{text-align:center;padding:12px 0}.cmres .btn{margin-top:8px}
 .wwrap{position:relative;max-width:460px;margin:4px auto 0}
 .wsvg{width:100%;display:block;border-radius:10px;box-shadow:0 0 0 1px #8A6A3A,0 8px 24px #0008;background:#16301F}
-.wsvg text{font-family:var(--disp);pointer-events:none}.wd,.mo{cursor:pointer}
+.wsvg text{font-family:var(--disp);pointer-events:none}.wd,.mo{cursor:pointer}.mring{opacity:.0;transition:opacity .2s}.mo.on .mring{opacity:1;animation:wp 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.wsvg:not(.big) .mring{opacity:.45}
 .wpulse{animation:wp 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes wp{50%{transform:scale(1.5);opacity:.05}}
 .wzoom{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:10px;background:#0B0F18D9;border:1px solid #C9A15A;color:var(--gold2);font-size:18px}
 .wleg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:8px;font-size:11px;color:var(--dim)}.wleg span{display:flex;align-items:center;gap:4px}
@@ -738,7 +739,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='6.3';
+const V='6.4';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -2247,28 +2248,22 @@ const MAPB=[ // ғимараттар: [x,y,түр,жақ]
  [8,79.5,'x','r'],[12,79.5,'x','r'],[19.5,80,'x','r'],[21,82.5,'x','r'],[21,88,'x','r'],[21,92,'x','r'],[13,87,'a','r'],[4,96,'f','r'],
  [30,10,'t','d'],[54,10,'t','d'],[75,10,'t','d'],[58,42,'t','d'],[68,32,'t','d'],[77,23,'t','d'],[90,53,'t','d'],[90,38,'t','d'],[90,25,'t','d'],
  [79,8,'x','d'],[79,12,'x','d'],[80.5,19.5,'x','d'],[79,17.5,'x','d'],[88,20.5,'x','d'],[92,20.5,'x','d'],[87,13,'a','d'],[96,4,'f','d']];
-const MAPO=[ // нысандар: [x,y,түр,сипаттама]
- [24,41,'rosh','Рошан — жоғарғы шұңқыр (күндіз). 7.42: әр өлген сайын қайта тірілу 1 минутқа қысқарады (ең азы 5 мин).'],
- [76,60,'rosh','Рошан — төменгі шұңқыр (түнде).'],
- [20,4,'torm','Терзатель (Dire жағы) — 15:00. Greater Horn of Battle түсіреді: әр линияға мегакрип толқыны. 2-сінен Aghanim\'s Shard.'],
- [80,96,'torm','Терзатель (Radiant жағы) — 15:00. Greater Horn of Battle + 2-сінен Aghanim\'s Shard.'],
- [43,3,'gate','Twin Gate (жоғарғы жиек) — 7.42: T1 мен T2 арасындағы бұрынғы кіші лагер орнына көшті.'],
- [57,97,'gate','Twin Gate (төменгі жиек) — 7.42: жаңа орны, ротация баяулады.'],
- [36,47.8,'rune','Күш руна (жоғарғы) — 6:00-ден бастап әр 2 мин.'],[64,52.2,'rune','Күш руна (төменгі) — 6:00-ден бастап әр 2 мин.'],
- [40,66,'bounty','Bounty руна — Radiant орманы, әр 3 мин.'],[18,54,'bounty','Bounty руна — Radiant орманы.'],[60,34,'bounty','Bounty руна — Dire орманы.'],[82,46,'bounty','Bounty руна — Dire орманы.'],
- [3,59,'wis','Wisdom руна/храм (батыс) — 7:00-ден әр 7 мин. 7.42: тәжірибе 200 + 200 әр келесісіне.'],[97,41,'wis','Wisdom руна/храм (шығыс).'],
- [4,25,'lotus','Лотос бассейні (батыс) — әр 3 мин лотос жиналады.'],[96,75,'lotus','Лотос бассейні (шығыс).'],
- [36,72,'out','Outpost — Radiant орманы (T2 құласа жау басып алады). 7.42: сайлентте де басып алуға болады.'],[64,28,'out','Outpost — Dire орманы.'],
- [72,96,'out','Outpost — шеткі (басып алынбайды).'],[28,4,'out','Outpost — шеткі (басып алынбайды).'],
- [16,50,'shop','Құпия дүкен (Radiant)'],[84,50,'shop','Құпия дүкен (Dire)']];
+const MAPO=[ // нақты 7.42 картасындағы белгілер үстіне басылатын нүктелер
+ [31,37,'rosh','Рошан — жоғарғы шұңқыр. 7.42: әр өлген сайын қайта тірілу 1 мин қысқарады (ең азы 5 мин).'],
+ [67,68,'rosh','Рошан — төменгі шұңқыр.'],
+ [37,2.5,'gate','Twin Gate (жоғарғы жиек) — 7.42-де осында көшті.'],[65,97.5,'gate','Twin Gate (төменгі жиек) — 7.42 жаңа орны.'],
+ [41,45,'rune','Өзен руна — күш руна 6:00-ден әр 2 мин.'],[58,60,'rune','Өзен руна — күш руна 6:00-ден әр 2 мин.'],
+ [46,25,'bounty','Орман руна (Dire жағы).'],[53,81,'bounty','Орман руна (Radiant жағы).'],
+ [3,26,'lotus','Лотос бассейні (батыс) — әр 3 мин.'],[94,80,'lotus','Лотос бассейні (шығыс).'],
+ [25,55,'out','Outpost — Radiant. 7.42: сайлентте де басып алуға болады.'],[71,54,'out','Outpost — Dire.'],
+ [92,11,'shop','Дүкен (Dire жағы)']];
 const MAPW=[ // варда: [x,y,санат,сипаттама]
- [14,44,'d','Жоғарғы T1 жар үсті — offlane-ді ганктан қорғау'],[34,61,'d','Мид T1 артындағы биік жер — мидті жабу'],[28,66,'d','Radiant орманының кіреберісі (T2 маңы)'],
- [60,83,'d','Radiant үшбұрышы — керриді үлкен орманда қорғау'],[52,71,'d','Өзеннен кіретін ганк жолы'],
- [64,31,'o','Dire орманы, outpost маңы — фармдаушыны ұстау'],[40,19,'o','Dire үшбұрышы — керриді ұстау (7.42: керри үлкен орманда көп)'],[70,44,'o','Dire мидінің биік жері'],
- [85,40,'o','Dire ауыр линиясы, T2 маңы — offlane агрессия'],[50,31,'o','Dire орман кіреберісі'],
- [21,37,'r','Жоғарғы Рошан шұңқыры үсті'],[79,63,'r','Төменгі Рошан шұңқыры үсті'],
- [24,8,'m','Терзатель (жоғарғы) мен Twin Gate арасы — 15:00 алдында'],[76,92,'m','Терзатель (төменгі) мен Twin Gate арасы'],
- [38,44,'m','Жоғарғы руна — мидке 6:00 руна'],[62,56,'m','Төменгі руна']];
+ [22,47,'d','Radiant биік жері — мид пен жоғарғы орманды көреді'],[35,62,'d','Мид T1 маңындағы жар — мидті ганктан қорғау'],
+ [40,72,'d','Radiant орманы — өзенге шығатын баспалдақ'],[62,88,'d','Radiant жеңіл линиясы — үлкен орман кіреберісі'],
+ [74,45,'o','Dire биік жері — оның орманы мен мидін көру'],[60,38,'o','Dire орманы — мид пен өзен арасы'],
+ [55,22,'o','Dire жоғарғы орманы — керриді ұстау'],[83,63,'o','Dire ауыр линиясы — T1 мен T2 арасы'],
+ [35,30,'r','Жоғарғы Рошан шұңқыры үсті'],[63,74,'r','Төменгі Рошан шұңқыры маңы'],
+ [38,8,'m','Жоғарғы Twin Gate маңы — ротацияны көру'],[62,92,'m','Төменгі Twin Gate маңы'],[45,51,'m','Өзен ортасы — руна мен ганкты көру']];
 let WSIDE=LS.get('wside')||'r', WF=LS.get('wf')||'all';
 const MCOL={d:'#4FB477',o:'#D9584A',r:'#B98CFF',m:'#E3B23C'}, MNAME={d:'Қорғаныс',o:'Шабуыл',r:'Рошан',m:'Нысан'};
 const OICO={rosh:['#B98CFF','R'],torm:['#E3B23C','T'],gate:['#5FD3F3','◎'],rune:['#7AB8FF','◆'],bounty:['#F4D58D','$'],wis:['#C79BFF','W'],lotus:['#F28BC0','✿'],out:['#ECE6D8','O'],shop:['#9FE3B5','S']};
@@ -2280,15 +2275,15 @@ function mapSvg(big){
     if(t==='a') return `<g><circle cx="${a}" cy="${b}" r="2.6" fill="${c}" opacity=".25"/><circle cx="${a}" cy="${b}" r="1.7" fill="${c}" stroke="#F4D58D" stroke-width=".4"/></g>`;
     return `<circle cx="${a}" cy="${b}" r="2" fill="none" stroke="${c}" stroke-width=".6" opacity=".9"/>`; }).join('');
   const ob=MAPO.map((o,i)=>{ const [a,b]=P(o[0],o[1]), [c,ch]=OICO[o[2]];
-    return `<g class="mo" data-o="${i}"><circle cx="${a}" cy="${b}" r="3.4" fill="transparent"/><circle cx="${a}" cy="${b}" r="1.9" fill="#0B0F18E6" stroke="${c}" stroke-width=".45"/><text x="${a}" y="${b+.75}" text-anchor="middle" font-size="2.1" font-weight="700" fill="${c}">${ch}</text></g>`; }).join('');
+    return `<g class="mo" data-o="${i}"><circle cx="${a}" cy="${b}" r="3.6" fill="transparent"/><circle class="mring" cx="${a}" cy="${b}" r="3" fill="none" stroke="${c}" stroke-width=".5" stroke-dasharray="1.2 .8"/></g>`; }).join('');
   const wl=MAPW.filter(w=>WF==='all'||w[2]===WF).map(w=>{ const i=MAPW.indexOf(w), [a,b]=P(w[0],w[1]), c=MCOL[w[2]];
     return `<g class="wd" data-w="${i}"><circle cx="${a}" cy="${b}" r="3.2" fill="transparent"/><circle class="wpulse" cx="${a}" cy="${b}" r="2.4" fill="${c}" opacity=".22"/><path d="M${a} ${b-1.7} L${a+1.1} ${b} L${a} ${b+1.7} L${a-1.1} ${b}Z" fill="${c}" stroke="#0B0F18" stroke-width=".3"/></g>`; }).join('');
-  return `<svg viewBox="0 0 100 100" class="wsvg${big?' big':''}"><image href="map742.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" ${flip?'transform="rotate(180 50 50)"':''}/>${bl}${ob}${wl}</svg>`;
+  return `<svg viewBox="0 0 100 100" class="wsvg${big?' big':''}"><image href="map742.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" ${flip?'transform="rotate(180 50 50)"':''}/>${ob}${wl}</svg>`;
 }
 function bindMap(root){
   const txt=root.querySelector('.wtx');
   root.querySelectorAll('.wd').forEach(g=>g.onclick=()=>{ const w=MAPW[+g.dataset.w]; txt.innerHTML=`<b style="color:${MCOL[w[2]]}">◆ ${MNAME[w[2]]}:</b> ${w[3]}`; buzz(6); });
-  root.querySelectorAll('.mo').forEach(g=>g.onclick=()=>{ const o=MAPO[+g.dataset.o]; txt.innerHTML=`<b style="color:${OICO[o[2]][0]}">${OICO[o[2]][1]}</b> ${o[3]}`; buzz(6); });
+  root.querySelectorAll('.mo').forEach(g=>g.onclick=()=>{ root.querySelectorAll('.mo.on').forEach(x=>x.classList.remove('on')); g.classList.add('on'); const o=MAPO[+g.dataset.o]; txt.innerHTML=`<b style="color:${OICO[o[2]][0]}">${OICO[o[2]][1]}</b> ${o[3]}`; buzz(6); });
 }
 function renderWard(){
   const box=document.getElementById('wmap'); if(!box) return;
@@ -2296,9 +2291,9 @@ function renderWard(){
     <div class="chips" style="margin:6px 0">${[['r','Radiant'],['d','Dire']].map(([k,n])=>`<button class="chip sm${WSIDE===k?' on':''}" data-ws="${k}">${n}</button>`).join('')}
       ${[['all','Бәрі'],['d','Қорғаныс'],['o','Шабуыл'],['r','Рошан'],['m','Нысан']].map(([k,n])=>`<button class="chip sm${WF===k?' on':''}" data-wf="${k}">${n}</button>`).join('')}</div>
     <div class="wwrap">${mapSvg()}<button class="wzoom" aria-label="Үлкейту">⤢</button></div>
-    <div class="wleg">${Object.entries({rosh:'Рошан',torm:'Терзатель',gate:'Twin Gate',rune:'Күш руна',bounty:'Bounty',wis:'Wisdom',lotus:'Лотос',out:'Outpost',shop:'Құпия дүкен'}).map(([k,n])=>`<span><i style="color:${OICO[k][0]};border-color:${OICO[k][0]}">${OICO[k][1]}</i>${n}</span>`).join('')}<span><i class="wdi">◆</i>Варда орны</span></div>
+    <div class="wleg">${Object.entries({rosh:'Рошан',gate:'Twin Gate',rune:'Руна',lotus:'Лотос',out:'Outpost'}).map(([k,n])=>`<span><i style="color:${OICO[k][0]};border-color:${OICO[k][0]}">${OICO[k][1]}</i>${n}</span>`).join('')}<span><i class="wdi">◆</i>Варда орны</span></div>
     <p class="why wtx" style="margin:8px 0 0">Белгіні бас — сипаттама шығады.</p>
-    <p class="why" style="opacity:.6;margin:4px 0 0">7.42 патч жазбасы бойынша (dota2.com): Twin Gate жаңа орны, Терзатель 15:00, Рошан таймері. Орындар шамамен.</p></div>`;
+    <p class="why" style="opacity:.6;margin:4px 0 0">Карта — ойындағы нақты 7.42 тактикалық картасы. Сызықпен қоршалған белгіні бас — түсіндірме. ◆ — варда орны.</p></div>`;
   box.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{ WSIDE=b.dataset.ws; LS.set('wside',WSIDE); renderWard(); });
   box.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{ WF=b.dataset.wf; LS.set('wf',WF); renderWard(); });
   bindMap(box);
