@@ -579,6 +579,25 @@ body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:tra
 .ptx{width:26px;height:26px;border-radius:8px;background:none;border:1px solid var(--line);color:var(--dim)}
 .ptb{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptb span{display:flex;align-items:center;gap:5px;font-size:11.5px;background:#0B0F18;border-radius:7px;padding:3px 7px 3px 3px}
 .ptb img{width:32px;height:18px;border-radius:3px;object-fit:cover}.ptb em{font-style:normal}.ptn{margin:6px 0 0;font-size:12.5px;color:var(--gold2)}
+/* v6.5 */
+.mref{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-size:12px;font-weight:600;color:#1D1404;
+  background:linear-gradient(180deg,#F6D98C,#D9A441 55%,#A9782F);border:1px solid #F4D58D;box-shadow:inset 0 1px 0 #FFF3C8,0 0 12px #D9A44144}
+.mref i{font-style:normal;font-size:14px;display:inline-block}.mref.busy i{animation:spin .8s linear infinite}.mref:active{transform:scale(.95)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hgs{position:relative}#hgQ{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #3A3426;background:#0D121B;color:var(--txt);font-size:14px}
+.hgl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.hgl:empty{display:none}
+.hgo{display:flex;align-items:center;gap:6px;padding:4px 9px 4px 4px;border-radius:8px;background:#0B0F18;border:1px solid #3A3426;color:var(--txt);font-size:12px}
+.hgo img{width:34px;height:19px;border-radius:4px;object-fit:cover}
+.hgt{display:flex;gap:10px;align-items:center;margin:12px 0 6px}.hgt img{width:92px;height:52px;border-radius:8px;object-fit:cover;box-shadow:0 0 0 1px #C9A15A}
+.hgt b{display:block;font-family:var(--disp);font-size:20px;letter-spacing:.04em;color:var(--gold2)}.hgt small{display:block;color:var(--dim);font-size:12px;margin:1px 0 4px}
+.ib7.st{position:static;display:inline-block;font-size:10px;padding:2px 7px}
+.hgtip{font-size:12.5px;line-height:1.5;margin:4px 0 6px;color:var(--txt)}
+.hg .gt{margin-top:12px}
+.hgg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.hgh{display:flex;flex-direction:column;align-items:center;background:#0B0F18;border:1px solid #2A2F38;border-radius:9px;padding:5px 4px;color:var(--txt)}
+.hgh img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:5px}.hgh span{font-size:10.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.hgh em{font-style:normal;font-family:var(--disp);font-size:13px}.hgh:active{transform:scale(.95)}
+.hgb{display:flex;gap:8px;margin-top:12px}.hgb .btn{flex:1;margin:0}
 </style>
 </head>
 <body>
@@ -651,14 +670,15 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
   <section id="p-meta" class="page">
     <div class="sec"><h2>Ойын таймері</h2><span class="hint" id="tmrHint">горнда баста</span></div>
     <div id="timer"></div>
-    <div class="sec"><h2>Жаттығу мен карта</h2><span class="hint">Captain's Mode · варда</span></div>
+    <div class="sec"><h2>Герой анықтамасы</h2><span class="hint">кез келген герой</span></div>
+    <div id="hguide"></div>
+    <div class="sec"><h2>Жаттығу</h2><span class="hint">Captain's Mode</span></div>
     <div class="card cmc"><h3>Captain's Mode жаттығу</h3><p class="why" style="margin:4px 0 10px">Бан мен пик кезегі, әр әрекетке 30 сек. Қарсыласты бот ойнайды: сенің пигіңе контрпик алып, мықты геройларыңды бандайды.</p>
       <button class="btn gold" id="cmGo">▶ Драфтты бастау</button></div>
-    <div id="wmap"></div>
     <div class="sec"><h2>MMR көтеру</h2><span class="hint">әр ойынға</span></div>
     <div id="chk"></div>
     <div id="myh"></div>
-    <div class="sec"><h2>Мета 7.42</h2><span class="hint">басып командаға қос</span></div>
+    <div class="sec"><h2>Мета 7.42</h2><button class="mref" id="metaRef"><i>⟳</i><span>Метаны жаңарту</span></button></div>
     <div class="chips" id="tierF"></div>
     <div id="tiers"></div>
     <div id="life"></div>
@@ -739,7 +759,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='6.4';
+const V='6.5';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1170,6 +1190,7 @@ Object.assign(I18N.ru,{"MMR көтеру":"Поднять MMR","әр ойынғ�
 Object.assign(I18N.en,{"MMR көтеру":"Climb MMR","әр ойынға":"every game","Сенің MMR геройларың":"Your MMR heroes","Рейтингте алма":"Avoid in ranked","Барлық ранг":"All ranks","жаңартылды:":"updated:","бұрын · OpenDota":"ago · OpenDota","сенікі":"yours"});
 Object.assign(I18N.ru,{"Линия": "Линия", "Жеңіл линия": "Лёгкая линия", "Мид": "Мид", "Ауыр линия": "Сложная линия", "6-деңгейден абайла.": "берегись с 6 уровня.", "Ерте өлтіруге қауіпті — Magic Stick/Wand ал, өзенге вард қой.": "Опасен в ранних убийствах — бери Magic Stick/Wand, вард на реку.", "Ол алыстан ұрады — Tango + Healing Salve, мүмкін болса Ring of Health.": "Бьёт издалека — Tango + Healing Salve, по возможности Ring of Health.", "Алғашқы 10 минут ол күшті — крипті мұнараға жақын тартып, қауіпсіз фарм.": "Первые 10 минут он сильнее — тяни крипов к вышке, фарми безопасно.", "Ол кеш ойын геройы — линияда басып, фармын бұз, саппортты шақыр.": "Он герой лейта — дави на линии, ломай фарм, зови саппорта.", "Көрінбейді — Dust of Appearance / Sentry дайын ұста.": "Невидимый — держи Dust of Appearance / Sentry.", "Сен линияда күштісің — 2/3-деңгейде агрессив бол.": "Ты сильнее на линии — агрессия на 2–3 уровне.", "Тең линия — денай мен ластхитке назар.": "Равная линия — следи за ластхитом и денаем.", "Жаттығу мен карта": "Тренировка и карта", "Captain's Mode жаттығу": "Тренировка Captain's Mode", "▶ Драфтты бастау": "▶ Начать драфт", "Бан мен пик кезегі, әр әрекетке 30 сек. Қарсыласты бот ойнайды: сенің пигіңе контрпик алып, мықты геройларыңды бандайды.": "Очерёдность банов и пиков, 30 с на ход. Соперник — бот: контрпикает тебя и банит твоих сильных героев.", "Сенің БАНың": "Твой БАН", "Сенің ПИГІҢ": "Твой ПИК", "Бот ойлап жатыр…": "Бот думает…", "Ұсыныс": "Совет", "Іздеу…": "Поиск…", "Драфтқа көшіру": "Перенести в драфт", "Қайта бастау": "Заново", "Сен (Radiant)": "Ты (Radiant)", "Бот (Dire)": "Бот (Dire)", "Уақыт бітті — автоматты таңдалды": "Время вышло — выбрано автоматически", "Драфт көшірілді": "Драфт перенесён", "Варда картасы": "Карта вардов", "· схема": "· схема", "Бәрі": "Все", "Қорғаныс": "Защита", "Шабуыл": "Атака", "Рошан": "Рошан", "Терзатель": "Терзатель", "Нүктені бас — сипаттама. Жасыл — қорғаныс, қызыл — шабуыл, күлгін — Рошан, алтын — Терзатель.": "Нажми точку — описание. Зелёный — защита, красный — атака, фиолетовый — Рошан, золотой — Терзатель.", "Пати": "Пати", "· достарыңның ID-і (4-ке дейін)": "· ID друзей (до 4)", "Қосу": "Добавить", "Досыңның Friend ID": "Friend ID друга", "Қазір алсын:": "Пусть берёт:", "Достарыңды қос — әрқайсысының мықты геройлары мен қазіргі драфтқа кім не алу керегін көрсетемін.": "Добавь друзей — покажу их сильных героев и кому что брать в текущем драфте.", "Неге жеңілдің — басты себеп": "Почему проиграл — главная причина", "Жеңіске не көмектесті": "Что помогло победить", "Зат уақыты (осы геройдағы басқалармен)": "Тайминги предметов (сравнение с другими на герое)", "әдетте": "обычно", "🔔 Хабарламаларды қосу": "🔔 Включить уведомления", "🔔 Хабарламалар қосулы ✓": "🔔 Уведомления включены ✓", "Тир-лист жаңарды": "Тир-лист обновился", "Турбо": "Турбо"});
 Object.assign(I18N.ru,{"7.42 картасы": "Карта 7.42", "Варда орны": "Место варда", "Нысан": "Объекты", "Құпия дүкен": "Секретная лавка", "Күш руна": "Руна силы", "Белгіні бас — сипаттама шығады.": "Нажми на значок — появится описание.", "Саусақпен жылжыт · белгіні бас": "Двигай пальцем · нажимай на значки"});
+Object.assign(I18N.ru,{"Герой анықтамасы": "Справочник героя", "кез келген герой": "любой герой", "Жаттығу": "Тренировка", "Геройды ізде… (мыс. Slark)": "Найди героя… (напр. Slark)", "Геройды таңда — оған кім қарсы, оған қандай зат керек, қалай ойнау керек.": "Выбери героя — кто его контрит, какие предметы против него, как играть.", "Оған қарсы герой (оны жеңеді)": "Контрпики (кто его бьёт)", "Ол жеңетін геройлар": "Кого он бьёт", "Оған қарсы заттар": "Предметы против него", "Скилл көтеру реті": "Порядок прокачки", "Қарсыласқа қос": "В соперники", "Командаға қос": "В команду", "Метаны жаңарту": "Обновить мету", "Жаңартылуда…": "Обновляется…", "Жаңартылды ✓": "Обновлено ✓", "Мета жаңартылды": "Мета обновлена", "жеңіс": "винрейт"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -1769,6 +1790,7 @@ function go(id,i,push){
   document.getElementById('hSet').classList.toggle('on',id==='p-set');
 }
 document.getElementById('cmGo').onclick=()=>cmStart();
+document.getElementById('metaRef').onclick=e=>metaRefresh(e.currentTarget);
 (()=>{ const b=document.getElementById('bNotif'); const upd=()=>{ if(!('Notification' in window)){ b.style.display='none'; return; } b.textContent=Notification.permission==='granted'?'🔔 Хабарламалар қосулы ✓':'🔔 Хабарламаларды қосу'; };
   upd(); b.onclick=async()=>{ try{ await Notification.requestPermission(); }catch(e){} upd(); if(Notification.permission==='granted') notify('Хабарламалар қосылды','Жаңа патч не тир-лист өзгерсе хабарлаймын.'); }; })();
 document.getElementById('hSet').onclick=()=>{ if(CURTAB==='p-set') go(LS.get('tabPrev')||'p-pick'); else { LS.set('tabPrev',CURTAB); go('p-set'); } };
@@ -2182,7 +2204,7 @@ let TIERRK=LS.get('tierrk')||(()=>{ const r=LS.get('rank'); if(!r) return '0'; c
 const wrB=h=>{ if(TIERRK==='T') return h.tp?h.tw/h.tp:h.base; const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; let p=0,w=0; if(!h.bp) return h.base; b.forEach(i=>{p+=h.bp[i]||0;w+=h.bw[i]||0;}); return p?w/p:h.base; };
 const pkB=h=>{ if(TIERRK==='T') return h.tp||0; const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; return h.bp?b.reduce((a,i)=>a+(h.bp[i]||0),0):(h.pk||0); };
 const TPOS=[['c','Керри'],['m','Мидер'],['o','Хард линия'],['s','Саппорт']];
-function renderMeta(){ renderTimer(); renderWard(); renderChk(); renderMyHeroes(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
+function renderMeta(){ renderTimer(); renderGuide(); renderChk(); renderMyHeroes(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
 /* ---------- CAPTAIN'S MODE жаттығу (кезек шамамен 7.3x: 7 бан · 2 пик · 3 бан · 6 пик · 4 бан · 2 пик) ---------- */
 const CMSEQ=[['b','A'],['b','B'],['b','B'],['b','A'],['b','A'],['b','B'],['b','B'],['p','A'],['p','B'],['b','A'],['b','A'],['b','B'],
   ['p','B'],['p','A'],['p','A'],['p','B'],['p','B'],['p','A'],['b','A'],['b','B'],['b','B'],['b','A'],['p','A'],['p','B']];
@@ -2242,66 +2264,56 @@ function cmRender(done){
   const c=o.querySelector('#cmCopy'); if(c) c.onclick=()=>{ S.mine=[...CM.A.p]; S.foe=[...CM.B.p]; S.ban=[...CM.A.b,...CM.B.b]; save(); cmClose(); board(); go('p-pick'); toast('Драфт көшірілді'); };
   const a=o.querySelector('#cmAgain'); if(a) a.onclick=cmStart;
 }
-/* ---------- 7.42 КАРТАСЫ: нысандар + варда орындары (Radiant көзқарасы, 0..100) ---------- */
-const MAPB=[ // ғимараттар: [x,y,түр,жақ]
- [10,47,'t','r'],[10,62,'t','r'],[10,75,'t','r'],[42,58,'t','r'],[32,68,'t','r'],[23,77,'t','r'],[70,90,'t','r'],[46,90,'t','r'],[25,90,'t','r'],
- [8,79.5,'x','r'],[12,79.5,'x','r'],[19.5,80,'x','r'],[21,82.5,'x','r'],[21,88,'x','r'],[21,92,'x','r'],[13,87,'a','r'],[4,96,'f','r'],
- [30,10,'t','d'],[54,10,'t','d'],[75,10,'t','d'],[58,42,'t','d'],[68,32,'t','d'],[77,23,'t','d'],[90,53,'t','d'],[90,38,'t','d'],[90,25,'t','d'],
- [79,8,'x','d'],[79,12,'x','d'],[80.5,19.5,'x','d'],[79,17.5,'x','d'],[88,20.5,'x','d'],[92,20.5,'x','d'],[87,13,'a','d'],[96,4,'f','d']];
-const MAPO=[ // нақты 7.42 картасындағы белгілер үстіне басылатын нүктелер
- [31,37,'rosh','Рошан — жоғарғы шұңқыр. 7.42: әр өлген сайын қайта тірілу 1 мин қысқарады (ең азы 5 мин).'],
- [67,68,'rosh','Рошан — төменгі шұңқыр.'],
- [37,2.5,'gate','Twin Gate (жоғарғы жиек) — 7.42-де осында көшті.'],[65,97.5,'gate','Twin Gate (төменгі жиек) — 7.42 жаңа орны.'],
- [41,45,'rune','Өзен руна — күш руна 6:00-ден әр 2 мин.'],[58,60,'rune','Өзен руна — күш руна 6:00-ден әр 2 мин.'],
- [46,25,'bounty','Орман руна (Dire жағы).'],[53,81,'bounty','Орман руна (Radiant жағы).'],
- [3,26,'lotus','Лотос бассейні (батыс) — әр 3 мин.'],[94,80,'lotus','Лотос бассейні (шығыс).'],
- [25,55,'out','Outpost — Radiant. 7.42: сайлентте де басып алуға болады.'],[71,54,'out','Outpost — Dire.'],
- [92,11,'shop','Дүкен (Dire жағы)']];
-const MAPW=[ // варда: [x,y,санат,сипаттама]
- [22,47,'d','Radiant биік жері — мид пен жоғарғы орманды көреді'],[35,62,'d','Мид T1 маңындағы жар — мидті ганктан қорғау'],
- [40,72,'d','Radiant орманы — өзенге шығатын баспалдақ'],[62,88,'d','Radiant жеңіл линиясы — үлкен орман кіреберісі'],
- [74,45,'o','Dire биік жері — оның орманы мен мидін көру'],[60,38,'o','Dire орманы — мид пен өзен арасы'],
- [55,22,'o','Dire жоғарғы орманы — керриді ұстау'],[83,63,'o','Dire ауыр линиясы — T1 мен T2 арасы'],
- [35,30,'r','Жоғарғы Рошан шұңқыры үсті'],[63,74,'r','Төменгі Рошан шұңқыры маңы'],
- [38,8,'m','Жоғарғы Twin Gate маңы — ротацияны көру'],[62,92,'m','Төменгі Twin Gate маңы'],[45,51,'m','Өзен ортасы — руна мен ганкты көру']];
-let WSIDE=LS.get('wside')||'r', WF=LS.get('wf')||'all';
-const MCOL={d:'#4FB477',o:'#D9584A',r:'#B98CFF',m:'#E3B23C'}, MNAME={d:'Қорғаныс',o:'Шабуыл',r:'Рошан',m:'Нысан'};
-const OICO={rosh:['#B98CFF','R'],torm:['#E3B23C','T'],gate:['#5FD3F3','◎'],rune:['#7AB8FF','◆'],bounty:['#F4D58D','$'],wis:['#C79BFF','W'],lotus:['#F28BC0','✿'],out:['#ECE6D8','O'],shop:['#9FE3B5','S']};
-function mapSvg(big){
-  const flip=WSIDE==='d', P=(x,y)=>flip?[100-x,100-y]:[x,y];
-  const bl=MAPB.map(([x,y,t,sd])=>{ const [a,b]=P(x,y), c=sd==='r'?'#4FB477':'#D9584A';
-    if(t==='t') return `<rect x="${a-1.1}" y="${b-1.1}" width="2.2" height="2.2" rx=".4" fill="${c}" stroke="#0B0F18" stroke-width=".35"/>`;
-    if(t==='x') return `<rect x="${a-.75}" y="${b-.75}" width="1.5" height="1.5" rx=".2" fill="${c}" opacity=".8" stroke="#0B0F18" stroke-width=".25"/>`;
-    if(t==='a') return `<g><circle cx="${a}" cy="${b}" r="2.6" fill="${c}" opacity=".25"/><circle cx="${a}" cy="${b}" r="1.7" fill="${c}" stroke="#F4D58D" stroke-width=".4"/></g>`;
-    return `<circle cx="${a}" cy="${b}" r="2" fill="none" stroke="${c}" stroke-width=".6" opacity=".9"/>`; }).join('');
-  const ob=MAPO.map((o,i)=>{ const [a,b]=P(o[0],o[1]), [c,ch]=OICO[o[2]];
-    return `<g class="mo" data-o="${i}"><circle cx="${a}" cy="${b}" r="3.6" fill="transparent"/><circle class="mring" cx="${a}" cy="${b}" r="3" fill="none" stroke="${c}" stroke-width=".5" stroke-dasharray="1.2 .8"/></g>`; }).join('');
-  const wl=MAPW.filter(w=>WF==='all'||w[2]===WF).map(w=>{ const i=MAPW.indexOf(w), [a,b]=P(w[0],w[1]), c=MCOL[w[2]];
-    return `<g class="wd" data-w="${i}"><circle cx="${a}" cy="${b}" r="3.2" fill="transparent"/><circle class="wpulse" cx="${a}" cy="${b}" r="2.4" fill="${c}" opacity=".22"/><path d="M${a} ${b-1.7} L${a+1.1} ${b} L${a} ${b+1.7} L${a-1.1} ${b}Z" fill="${c}" stroke="#0B0F18" stroke-width=".3"/></g>`; }).join('');
-  return `<svg viewBox="0 0 100 100" class="wsvg${big?' big':''}"><image href="map742.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" ${flip?'transform="rotate(180 50 50)"':''}/>${ob}${wl}</svg>`;
+/* ---------- ГЕРОЙ АНЫҚТАМАСЫ: кім жеңеді, кімді жеңеді, қарсы заттар, скилл, 7.42 ---------- */
+let HG=LS.get('hg')||null;
+function renderGuide(){
+  const box=document.getElementById('hguide'); if(!box) return;
+  const h=HG&&BYID[HG];
+  box.innerHTML=`<div class="card hg"><div class="hgs"><input id="hgQ" type="search" placeholder="Геройды ізде… (мыс. Slark)" autocomplete="off"><div id="hgL" class="hgl"></div></div><div id="hgB">${h?'':'<p class="why" style="margin:8px 0 0">Геройды таңда — оған кім қарсы, оған қандай зат керек, қалай ойнау керек.</p>'}</div></div>`;
+  const q=box.querySelector('#hgQ'), L=box.querySelector('#hgL');
+  q.oninput=()=>{ const v=q.value.trim().toLowerCase(); if(!v){ L.innerHTML=''; return; }
+    const m=HEROES.filter(x=>x.localized_name.toLowerCase().includes(v)).slice(0,8);
+    L.innerHTML=m.map(x=>`<button class="hgo" data-id="${x.id}"><img src="${x.img}" alt="">${x.localized_name}</button>`).join('');
+    L.querySelectorAll('.hgo').forEach(b=>b.onclick=()=>{ HG=+b.dataset.id; LS.set('hg',HG); buzz(8); renderGuide(); }); };
+  if(h) guideBody(h);
 }
-function bindMap(root){
-  const txt=root.querySelector('.wtx');
-  root.querySelectorAll('.wd').forEach(g=>g.onclick=()=>{ const w=MAPW[+g.dataset.w]; txt.innerHTML=`<b style="color:${MCOL[w[2]]}">◆ ${MNAME[w[2]]}:</b> ${w[3]}`; buzz(6); });
-  root.querySelectorAll('.mo').forEach(g=>g.onclick=()=>{ root.querySelectorAll('.mo.on').forEach(x=>x.classList.remove('on')); g.classList.add('on'); const o=MAPO[+g.dataset.o]; txt.innerHTML=`<b style="color:${OICO[o[2]][0]}">${OICO[o[2]][1]}</b> ${o[3]}`; buzz(6); });
+function guideBody(h){
+  const B=document.getElementById('hgB'), n=h.localized_name, cm=ctr(n);
+  const beats=[...cm.entries()].sort((a,b)=>b[1]-a[1]).map(([k,v])=>({h:HEROES.find(x=>x.localized_name===k),v})).filter(x=>x.h&&x.v>0).slice(0,6);
+  const weak=HEROES.map(x=>({h:x,v:ctr(x.localized_name).get(n)||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,5);
+  const hc=HCOUNTER[key(h)]||HCOUNTER[slug(n)], items=[...new Set([...(hc?hc.i:[]),...THREATS.filter(t=>has(t.list,h)).flatMap(t=>t.items)])].slice(0,6);
+  const tier=TPOS.filter(([k])=>slotsOf(h).includes(k)).map(([,nm])=>nm).join(' / ');
+  const tip=tip742(h), tg=P742.imba.includes(n)?'<span class="ib7 st">ИМБА 7.42</span>':P742.up.includes(n)?'<span class="ib7 up st">7.42 ↑</span>':P742.down.includes(n)?'<span class="ib7 dn st">7.42 ↓</span>':'';
+  const hr=(x,c)=>`<button class="hgh" data-id="${x.h.id}"><img src="${x.h.img}" alt=""><span>${x.h.localized_name}</span><em class="${c}">+${x.v.toFixed(1)}</em></button>`;
+  B.innerHTML=`<div class="hgt"><img src="${h.img}" alt=""><div><b>${n}</b><small>${tier||'—'} · жеңіс ${(wrB(h)*100).toFixed(1)}%</small>${tg}</div></div>
+    ${tip?`<p class="hgtip"><b>7.42:</b> ${tip}</p>`:''}
+    <div class="gt">Оған қарсы герой (оны жеңеді)</div><div class="hgg">${beats.map(x=>hr(x,'gl')).join('')||'<span class="why">—</span>'}</div>
+    <div class="gt">Ол жеңетін геройлар</div><div class="hgg">${weak.map(x=>hr(x,'gw')).join('')||'<span class="why">—</span>'}</div>
+    <div class="gt">Оған қарсы заттар</div><div class="tis">${items.map((x,i)=>tile(x,'hotc','').replace('<div class="ti','<div style="--i:'+i+'" class="ti')).join('')||'<span class="why">—</span>'}</div>
+    ${hc&&hc.w?`<p class="why" style="margin:6px 0 0">${hc.w}</p>`:''}
+    <div class="gt">Скилл көтеру реті</div><div id="hgSk">${SKILLS?skillRow(h,true):'<div class="sk" style="height:30px"></div>'}</div>
+    <div class="hgb"><button class="btn" data-a="foe">Қарсыласқа қос</button><button class="btn gold" data-a="mine">Командаға қос</button></div>`;
+  if(!SKILLS) loadSkills().then(()=>{ const e=document.getElementById('hgSk'); if(e&&HG===h.id) e.innerHTML=skillRow(h,true); });
+  B.querySelectorAll('.hgh').forEach(b=>b.onclick=()=>{ HG=+b.dataset.id; LS.set('hg',HG); buzz(8); renderGuide(); document.getElementById('hguide').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); });
+  B.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ const side=b.dataset.a, arr=S[side];
+    if(S.mine.includes(h.id)||S.foe.includes(h.id)) return toast(n+' таңдалған'); if(arr.length>=5) return toast('Команда толы');
+    arr.push(h.id); save(); board(); buzz(12); toast(n+(side==='mine'?' командаға қосылды':' қарсыласқа қосылды'));
+    if(side==='foe') loadMU(h.id).then(()=>board()); });
 }
-function renderWard(){
-  const box=document.getElementById('wmap'); if(!box) return;
-  box.innerHTML=`<div class="card wm"><h3>7.42 картасы</h3>
-    <div class="chips" style="margin:6px 0">${[['r','Radiant'],['d','Dire']].map(([k,n])=>`<button class="chip sm${WSIDE===k?' on':''}" data-ws="${k}">${n}</button>`).join('')}
-      ${[['all','Бәрі'],['d','Қорғаныс'],['o','Шабуыл'],['r','Рошан'],['m','Нысан']].map(([k,n])=>`<button class="chip sm${WF===k?' on':''}" data-wf="${k}">${n}</button>`).join('')}</div>
-    <div class="wwrap">${mapSvg()}<button class="wzoom" aria-label="Үлкейту">⤢</button></div>
-    <div class="wleg">${Object.entries({rosh:'Рошан',gate:'Twin Gate',rune:'Руна',lotus:'Лотос',out:'Outpost'}).map(([k,n])=>`<span><i style="color:${OICO[k][0]};border-color:${OICO[k][0]}">${OICO[k][1]}</i>${n}</span>`).join('')}<span><i class="wdi">◆</i>Варда орны</span></div>
-    <p class="why wtx" style="margin:8px 0 0">Белгіні бас — сипаттама шығады.</p>
-    <p class="why" style="opacity:.6;margin:4px 0 0">Карта — ойындағы нақты 7.42 тактикалық картасы. Сызықпен қоршалған белгіні бас — түсіндірме. ◆ — варда орны.</p></div>`;
-  box.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{ WSIDE=b.dataset.ws; LS.set('wside',WSIDE); renderWard(); });
-  box.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{ WF=b.dataset.wf; LS.set('wf',WF); renderWard(); });
-  bindMap(box);
-  box.querySelector('.wzoom').onclick=()=>{ const o=document.getElementById('cm'); o.innerHTML=`<div class="cmbox"><div class="cmhd"><h3>7.42 картасы</h3><button class="mx" id="wmX">✕</button></div>
-      <div class="wbig">${mapSvg(true)}</div><p class="why wtx" style="margin:8px 0 0">Саусақпен жылжыт · белгіні бас</p></div>`;
-    o.classList.add('on'); document.body.style.overflow='hidden'; bindMap(o);
-    const wb=o.querySelector('.wbig'); requestAnimationFrame(()=>{ wb.scrollLeft=(wb.scrollWidth-wb.clientWidth)/2; wb.scrollTop=(wb.scrollHeight-wb.clientHeight)/2; });
-    o.querySelector('#wmX').onclick=()=>{ o.classList.remove('on'); document.body.style.overflow=''; o.innerHTML=''; }; };
+/* ---------- МЕТАНЫ ЖАҢАРТУ батырмасы: OpenDota-дан жаңа статистика + матчаптар ---------- */
+async function metaRefresh(btn){
+  if(btn.classList.contains('busy')) return;
+  btn.classList.add('busy'); const sp=btn.querySelector('span'); sp.textContent='Жаңартылуда…';
+  try{
+    const d=await getJSON(API+'/heroStats'); if(!Array.isArray(d)||!d.length) throw 0;
+    LS.set('heroes',d); await loadHeroes(); TAGC.clear(); IDC.k=''; LS.del('mu'); MU={};
+    for(const id of S.foe) await loadMU(id,true);
+    const old=LS.get('ssig'); watchChanges();
+    renderTiers(); board(); buzz([15,40,15]);
+    const nw=old?sTierSig().filter(x=>!old.includes(x)):[];
+    sp.textContent='Жаңартылды ✓'; toast(nw.length?'Жаңа S-тир: '+nw.slice(0,3).join(', '):'Мета жаңартылды');
+  }catch(e){ sp.textContent='Қате — интернетті тексер'; }
+  btn.classList.remove('busy'); setTimeout(()=>{ sp.textContent='Метаны жаңарту'; },2500);
 }
 /* MMR: сенің ең жақсы геройларың (OpenDota тарихы) — пикте ★ белгісімен бірінші шығады */
 let MYH=LS.get('myh')||{};
