@@ -598,6 +598,12 @@ body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:tra
 .hgh img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:5px}.hgh span{font-size:10.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .hgh em{font-style:normal;font-family:var(--disp);font-size:13px}.hgh:active{transform:scale(.95)}
 .hgb{display:flex;gap:8px;margin-top:12px}.hgb .btn{flex:1;margin:0}
+.pcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:6px}
+.pch{position:relative;background:none;border:0;padding:0;color:var(--txt);text-align:center}.pch img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px;display:block}
+.pch span{display:block;font-size:9.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dim)}
+.pch.u img{box-shadow:0 0 0 1.5px var(--rad)}.pch.d img{box-shadow:0 0 0 1.5px var(--dire)}.pch.a img{box-shadow:0 0 0 1.5px var(--gold)}
+.pch::after{position:absolute;top:2px;right:3px;font-size:10px;font-weight:800;text-shadow:0 1px 2px #000}.pch.u::after{content:"▲";color:#7CE3A6}.pch.d::after{content:"▼";color:#FF8A7A}.pch.a::after{content:"◆";color:var(--gold2)}
+.pc .gt{margin-top:10px}
 </style>
 </head>
 <body>
@@ -678,9 +684,10 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
     <div class="sec"><h2>MMR көтеру</h2><span class="hint">әр ойынға</span></div>
     <div id="chk"></div>
     <div id="myh"></div>
-    <div class="sec"><h2>Мета 7.42</h2><button class="mref" id="metaRef"><i>⟳</i><span>Метаны жаңарту</span></button></div>
+    <div class="sec"><h2>Мета 7.42a</h2><button class="mref" id="metaRef"><i>⟳</i><span>Метаны жаңарту</span></button></div>
     <div class="chips" id="tierF"></div>
     <div id="tiers"></div>
+    <div id="p42a"></div>
     <div id="life"></div>
   </section>
 
@@ -759,7 +766,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='6.5';
+const V='6.6';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1170,7 +1177,7 @@ Object.assign(I18N.en,{"Нақты жинақ":"Actual builds","басып бе�
 Object.assign(I18N.ru,{"Мета":"Мета","Ойын таймері":"Таймер игры","горнда баста":"запусти на горне","Мета 7.42":"Мета 7.42","басып командаға қос":"нажми — добавить в команду","Саппорт":"Саппорт","⤴ Драфтпен бөлісу":"⤴ Поделиться драфтом","✕ Тазалау":"✕ Очистить","Драфт тазаланды":"Драфт очищен","Сілтеме көшірілді":"Ссылка скопирована","Драфт ашылды":"Драфт открыт","Күш руна":"Руна силы","Bounty руна":"Руна богатства","Wisdom руна":"Руна мудрости","Лотос":"Лотос","Күн":"День","Түн":"Ночь","Терзатель (Greater Horn)":"Терзатель (Greater Horn)","Aegis бітеді":"Aegis истекает","Рошан — ерте уақыт":"Рошан — раннее время","Рошан — соңғы уақыт":"Рошан — позднее время","Рошан өлді":"Рошан убит","Тоқтату":"Стоп","▶ Горн — бастау (0:00)":"▶ Горн — старт (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"За 15 с до события — вибрация и уведомление. Если время расходится с игрой — ±10с.","Қарсылас не жинайды":"Что собирает враг","Команда толы":"Команда полная"});
 Object.assign(I18N.en,{"Мета":"Meta","Ойын таймері":"Game timer","горнда баста":"start at the horn","Мета 7.42":"7.42 meta","басып командаға қос":"tap to add to team","Саппорт":"Support","⤴ Драфтпен бөлісу":"⤴ Share draft","✕ Тазалау":"✕ Clear","Драфт тазаланды":"Draft cleared","Сілтеме көшірілді":"Link copied","Драфт ашылды":"Draft opened","Күш руна":"Power rune","Bounty руна":"Bounty rune","Wisdom руна":"Wisdom rune","Лотос":"Lotus","Күн":"Day","Түн":"Night","Aegis бітеді":"Aegis expires","Рошан — ерте уақыт":"Roshan — earliest","Рошан — соңғы уақыт":"Roshan — latest","Рошан өлді":"Roshan died","Тоқтату":"Stop","▶ Горн — бастау (0:00)":"▶ Horn — start (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"Vibration + alert 15s before each event. Off from game clock? Use ±10s.","Қарсылас не жинайды":"Enemy builds","Команда толы":"Team is full"});
 Object.assign(I18N.ru,{"Ойын жоспары":"План игры","Басты қауіп:":"Главная угроза:","драка басында соны фокус қыл немесе бірінші байла.":"в начале драки фокусь его или контроль первым.","0–20 мин":"0–20 мин","20–35 мин":"20–35 мин","35+ мин":"35+ мин",
-"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Твоя сила — ранняя игра: 10–20 мин гангайте впятером, на 15:00 забирайте Терзателя и пушьте с мегакрипами. Старайтесь закончить до 30 минуты.",
+"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Твоя сила — ранняя игра: 10–20 мин гангайте впятером, на 15:00 забирайте Терзателя и пушьте с супер-крипами. Старайтесь закончить до 30 минуты.",
 "Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.":"Твоя сила — поздняя игра: безопасный фарм, избегай ранних драк, защищай вышки. После 35 минуты решай через Рошана и Aegis.",
 "Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.":"Твоя сила — мидгейм: собери 1–2 ключевых предмета (Blink, BKB) к 20 минуте, ищи драки на 20–35 минуте, забирай Рошана.",
 "Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"Нет инициации — Blink кому-то из героев или возьми Magnus/Tidehunter/Enigma.",
@@ -1191,6 +1198,7 @@ Object.assign(I18N.en,{"MMR көтеру":"Climb MMR","әр ойынға":"every
 Object.assign(I18N.ru,{"Линия": "Линия", "Жеңіл линия": "Лёгкая линия", "Мид": "Мид", "Ауыр линия": "Сложная линия", "6-деңгейден абайла.": "берегись с 6 уровня.", "Ерте өлтіруге қауіпті — Magic Stick/Wand ал, өзенге вард қой.": "Опасен в ранних убийствах — бери Magic Stick/Wand, вард на реку.", "Ол алыстан ұрады — Tango + Healing Salve, мүмкін болса Ring of Health.": "Бьёт издалека — Tango + Healing Salve, по возможности Ring of Health.", "Алғашқы 10 минут ол күшті — крипті мұнараға жақын тартып, қауіпсіз фарм.": "Первые 10 минут он сильнее — тяни крипов к вышке, фарми безопасно.", "Ол кеш ойын геройы — линияда басып, фармын бұз, саппортты шақыр.": "Он герой лейта — дави на линии, ломай фарм, зови саппорта.", "Көрінбейді — Dust of Appearance / Sentry дайын ұста.": "Невидимый — держи Dust of Appearance / Sentry.", "Сен линияда күштісің — 2/3-деңгейде агрессив бол.": "Ты сильнее на линии — агрессия на 2–3 уровне.", "Тең линия — денай мен ластхитке назар.": "Равная линия — следи за ластхитом и денаем.", "Жаттығу мен карта": "Тренировка и карта", "Captain's Mode жаттығу": "Тренировка Captain's Mode", "▶ Драфтты бастау": "▶ Начать драфт", "Бан мен пик кезегі, әр әрекетке 30 сек. Қарсыласты бот ойнайды: сенің пигіңе контрпик алып, мықты геройларыңды бандайды.": "Очерёдность банов и пиков, 30 с на ход. Соперник — бот: контрпикает тебя и банит твоих сильных героев.", "Сенің БАНың": "Твой БАН", "Сенің ПИГІҢ": "Твой ПИК", "Бот ойлап жатыр…": "Бот думает…", "Ұсыныс": "Совет", "Іздеу…": "Поиск…", "Драфтқа көшіру": "Перенести в драфт", "Қайта бастау": "Заново", "Сен (Radiant)": "Ты (Radiant)", "Бот (Dire)": "Бот (Dire)", "Уақыт бітті — автоматты таңдалды": "Время вышло — выбрано автоматически", "Драфт көшірілді": "Драфт перенесён", "Варда картасы": "Карта вардов", "· схема": "· схема", "Бәрі": "Все", "Қорғаныс": "Защита", "Шабуыл": "Атака", "Рошан": "Рошан", "Терзатель": "Терзатель", "Нүктені бас — сипаттама. Жасыл — қорғаныс, қызыл — шабуыл, күлгін — Рошан, алтын — Терзатель.": "Нажми точку — описание. Зелёный — защита, красный — атака, фиолетовый — Рошан, золотой — Терзатель.", "Пати": "Пати", "· достарыңның ID-і (4-ке дейін)": "· ID друзей (до 4)", "Қосу": "Добавить", "Досыңның Friend ID": "Friend ID друга", "Қазір алсын:": "Пусть берёт:", "Достарыңды қос — әрқайсысының мықты геройлары мен қазіргі драфтқа кім не алу керегін көрсетемін.": "Добавь друзей — покажу их сильных героев и кому что брать в текущем драфте.", "Неге жеңілдің — басты себеп": "Почему проиграл — главная причина", "Жеңіске не көмектесті": "Что помогло победить", "Зат уақыты (осы геройдағы басқалармен)": "Тайминги предметов (сравнение с другими на герое)", "әдетте": "обычно", "🔔 Хабарламаларды қосу": "🔔 Включить уведомления", "🔔 Хабарламалар қосулы ✓": "🔔 Уведомления включены ✓", "Тир-лист жаңарды": "Тир-лист обновился", "Турбо": "Турбо"});
 Object.assign(I18N.ru,{"7.42 картасы": "Карта 7.42", "Варда орны": "Место варда", "Нысан": "Объекты", "Құпия дүкен": "Секретная лавка", "Күш руна": "Руна силы", "Белгіні бас — сипаттама шығады.": "Нажми на значок — появится описание.", "Саусақпен жылжыт · белгіні бас": "Двигай пальцем · нажимай на значки"});
 Object.assign(I18N.ru,{"Герой анықтамасы": "Справочник героя", "кез келген герой": "любой герой", "Жаттығу": "Тренировка", "Геройды ізде… (мыс. Slark)": "Найди героя… (напр. Slark)", "Геройды таңда — оған кім қарсы, оған қандай зат керек, қалай ойнау керек.": "Выбери героя — кто его контрит, какие предметы против него, как играть.", "Оған қарсы герой (оны жеңеді)": "Контрпики (кто его бьёт)", "Ол жеңетін геройлар": "Кого он бьёт", "Оған қарсы заттар": "Предметы против него", "Скилл көтеру реті": "Порядок прокачки", "Қарсыласқа қос": "В соперники", "Командаға қос": "В команду", "Метаны жаңарту": "Обновить мету", "Жаңартылуда…": "Обновляется…", "Жаңартылды ✓": "Обновлено ✓", "Мета жаңартылды": "Мета обновлена", "жеңіс": "винрейт"});
+Object.assign(I18N.ru,{"Патч 7.42a": "Патч 7.42a", "· 24.11 · басып анықтама": "· 24.11 · нажми — справка", "Күшейді": "Усилены", "Әлсіреді": "Ослаблены", "Өзгерді": "Изменены", "Заттар мен механика": "Предметы и механики", "Мета 7.42a": "Мета 7.42a"});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -2204,7 +2212,18 @@ let TIERRK=LS.get('tierrk')||(()=>{ const r=LS.get('rank'); if(!r) return '0'; c
 const wrB=h=>{ if(TIERRK==='T') return h.tp?h.tw/h.tp:h.base; const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; let p=0,w=0; if(!h.bp) return h.base; b.forEach(i=>{p+=h.bp[i]||0;w+=h.bw[i]||0;}); return p?w/p:h.base; };
 const pkB=h=>{ if(TIERRK==='T') return h.tp||0; const b=(TRK.find(x=>x[0]===TIERRK)||TRK[0])[2]; return h.bp?b.reduce((a,i)=>a+(h.bp[i]||0),0):(h.pk||0); };
 const TPOS=[['c','Керри'],['m','Мидер'],['o','Хард линия'],['s','Саппорт']];
-function renderMeta(){ renderTimer(); renderGuide(); renderChk(); renderMyHeroes(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
+function renderPatch(){
+  const box=document.getElementById('p42a'); if(!box) return;
+  const L=(arr,c)=>arr.filter(n=>P42A[n]).map(n=>{ const h=HEROES.find(x=>x.localized_name===n); return h?`<button class="pch ${c}" data-id="${h.id}"><img src="${h.img}" alt=""><span>${n}</span></button>`:''; }).join('');
+  const up=['Huskar','Lina','Juggernaut','Snapfire','Timbersaw','Naga Siren','Faceless Void','Gyrocopter','Necrophos'], dn=['Riki','Phantom Assassin','Meepo','Abaddon','Lycan','Beastmaster','Medusa','Dazzle','Troll Warlord','Wraith King','Visage','Broodmother','Phantom Lancer','Shadow Shaman','Primal Beast'], ad=['Chaos Knight','Sven'];
+  box.innerHTML=`<details class="card pc" open><summary><h3 style="display:inline">Патч 7.42a</h3> <span class="why">· 24.11 · басып анықтама</span></summary>
+    <div class="gt">Күшейді</div><div class="pcg">${L(up,'u')}</div>
+    <div class="gt">Әлсіреді</div><div class="pcg">${L(dn,'d')}</div>
+    <div class="gt">Өзгерді</div><div class="pcg">${L(ad,'a')}</div>
+    <div class="gt">Заттар мен механика</div><ul class="why" style="margin:4px 0 0;padding-left:18px">${P42AITEM.map(x=>`<li style="margin:3px 0">${x}</li>`).join('')}</ul></details>`;
+  box.querySelectorAll('.pch').forEach(b=>b.onclick=()=>{ HG=+b.dataset.id; LS.set('hg',HG); buzz(8); renderGuide(); document.getElementById('hguide').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); });
+}
+function renderMeta(){ renderPatch(); renderTimer(); renderGuide(); renderChk(); renderMyHeroes(); renderTiers(); document.getElementById('life').innerHTML=life742Card(); }
 /* ---------- CAPTAIN'S MODE жаттығу (кезек шамамен 7.3x: 7 бан · 2 пик · 3 бан · 6 пик · 4 бан · 2 пик) ---------- */
 const CMSEQ=[['b','A'],['b','B'],['b','B'],['b','A'],['b','A'],['b','B'],['b','B'],['p','A'],['p','B'],['b','A'],['b','A'],['b','B'],
   ['p','B'],['p','A'],['p','A'],['p','B'],['p','B'],['p','A'],['b','A'],['b','B'],['b','B'],['b','A'],['p','A'],['p','B']];
@@ -2283,10 +2302,10 @@ function guideBody(h){
   const weak=HEROES.map(x=>({h:x,v:ctr(x.localized_name).get(n)||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,5);
   const hc=HCOUNTER[key(h)]||HCOUNTER[slug(n)], items=[...new Set([...(hc?hc.i:[]),...THREATS.filter(t=>has(t.list,h)).flatMap(t=>t.items)])].slice(0,6);
   const tier=TPOS.filter(([k])=>slotsOf(h).includes(k)).map(([,nm])=>nm).join(' / ');
-  const tip=tip742(h), tg=P742.imba.includes(n)?'<span class="ib7 st">ИМБА 7.42</span>':P742.up.includes(n)?'<span class="ib7 up st">7.42 ↑</span>':P742.down.includes(n)?'<span class="ib7 dn st">7.42 ↓</span>':'';
+  const a42=P42A[n]; const tip=tip742(h), tg=P742.imba.includes(n)?'<span class="ib7 st">ИМБА 7.42a</span>':P742.up.includes(n)?'<span class="ib7 up st">7.42a ↑</span>':P742.down.includes(n)?'<span class="ib7 dn st">7.42a ↓</span>':'';
   const hr=(x,c)=>`<button class="hgh" data-id="${x.h.id}"><img src="${x.h.img}" alt=""><span>${x.h.localized_name}</span><em class="${c}">+${x.v.toFixed(1)}</em></button>`;
   B.innerHTML=`<div class="hgt"><img src="${h.img}" alt=""><div><b>${n}</b><small>${tier||'—'} · жеңіс ${(wrB(h)*100).toFixed(1)}%</small>${tg}</div></div>
-    ${tip?`<p class="hgtip"><b>7.42:</b> ${tip}</p>`:''}
+    ${a42?`<p class="hgtip"><b>7.42a:</b> ${a42}</p>`:''}${tip?`<p class="hgtip"><b>7.42:</b> ${tip}</p>`:''}
     <div class="gt">Оған қарсы герой (оны жеңеді)</div><div class="hgg">${beats.map(x=>hr(x,'gl')).join('')||'<span class="why">—</span>'}</div>
     <div class="gt">Ол жеңетін геройлар</div><div class="hgg">${weak.map(x=>hr(x,'gw')).join('')||'<span class="why">—</span>'}</div>
     <div class="gt">Оған қарсы заттар</div><div class="tis">${items.map((x,i)=>tile(x,'hotc','').replace('<div class="ti','<div style="--i:'+i+'" class="ti')).join('')||'<span class="why">—</span>'}</div>
@@ -2835,12 +2854,27 @@ function itemOk(n,pp,h){
 }
 const UPG742=[["Heaven's Halberd",'Skypiercer'],["Vladmir's Offering","Ristul's Devotion"],['Armlet of Mordiggian','Sabatons of Mordiggian'],['Meteor Hammer','Starforge'],['Phylactery','Caduceus']];
 /* 7.42 патчы: күшейтілген / әлсіретілген / имба геройлар (патч жазбалары мен 7.41f жеңіс пайызы бойынша) */
-const P742={
-  up:['Sven','Spectre','Phantom Lancer','Chen','Pugna','Lifestealer','Ancient Apparition','Broodmother','Beastmaster','Bristleback','Bloodseeker','Drow Ranger','Faceless Void','Venomancer','Clockwerk','Chaos Knight','Lycan','Marci','Mars','Monkey King','Magnus','Disruptor','Razor','Void Spirit'],
-  down:['Axe','Brewmaster','Bounty Hunter','Centaur Warrunner','Pudge','Lion','Invoker','Lina','Crystal Maiden','Hoodwink','Luna','Techies','Tinker'],
-  imba:['Wraith King','Chaos Knight','Clockwerk','Beastmaster','Broodmother','Lycan','Pugna','Chen']};
+const P742={ // 7.42 + 7.42a (24.11.2026) — dota2.com патч жазбасы
+  up:['Sven','Spectre','Chen','Pugna','Lifestealer','Ancient Apparition','Broodmother','Beastmaster','Bristleback','Bloodseeker','Drow Ranger','Faceless Void','Venomancer','Clockwerk','Chaos Knight','Lycan','Marci','Mars','Monkey King','Magnus','Disruptor','Razor','Void Spirit',
+      'Huskar','Lina','Juggernaut','Snapfire','Timbersaw','Naga Siren','Gyrocopter','Necrophos','Nature\'s Prophet'],
+  down:['Axe','Brewmaster','Bounty Hunter','Pudge','Lion','Invoker','Crystal Maiden','Hoodwink','Luna','Techies','Tinker',
+      'Riki','Phantom Assassin','Meepo','Abaddon','Dazzle','Medusa','Visage','Troll Warlord','Shadow Shaman','Omniknight','Primal Beast','Shadow Demon','Phantom Lancer'],
+  imba:['Chaos Knight','Clockwerk','Pugna','Chen','Huskar']};
+const PATCH='7.42a';
+const P42A={ // 7.42a: геройға не өзгерді (қысқа)
+ 'Huskar':'Burning Spear 0.6% (0.5 еді), Life Break CD −1с, секіргенде 80% маг. қорғаныс.','Lina':'+1 күш, ептілік өсімі 2.6, Flame Cloak 40% маг. қорғаныс, 8 сек.',
+ 'Juggernaut':'Bladeform 12 стак, Healing Ward 110 мана.','Snapfire':'Cookie CD −1с, Lil\' Shredder арзан.','Timbersaw':'Миссқа да Reactive Armor стагы беріледі.',
+ 'Naga Siren':'Eelskin 5% әр Нагаға, радиус 1200.','Faceless Void':'Time Dilation DPS 9/10/11/12.','Gyrocopter':'Flak Cannon CD 24с.','Necrophos':'Reaper\'s Scythe CD 95с.',
+ 'Riki':'Ептілік 30→26, Smoke Screen CD +1с, өлтіргенде тәжірибе аз.','Phantom Assassin':'Dagger зияны −5%, Phantom Strike шабуыл жылд. 150 (200 еді).',
+ 'Meepo':'Жылдамдық 305, ептілік өсімі 2.0, тәжірибе айыбы 10с.','Abaddon':'Aphotic Shield CD +1с, Withering Mist әлсіз.','Lycan':'Белгілерді тек 1200 радиуста қоя алады, белгі диспелденеді.',
+ 'Beastmaster':'Thunderhide 2100 HP, 30% маг. қорғаныс, Slam баяулату 2с.','Chaos Knight':'Ahead, Armageddon әр Phantasm сайын жаңарады, бірақ бір рет қана.',
+ 'Sven':'Wrath of God: 0.15 + 0.01/деңгей (ерте күшті), God\'s Strength баяулауға қарсылық 30%.','Wraith King':'Ептілік өсімі 1.5, Bone Guard мана көп.',
+ 'Medusa':'Stone Gaze 0.5с қысқа.','Dazzle':'Интеллект 23, Shard ауқымы азайды.','Troll Warlord':'Жылдамдық бонустары азайды.','Visage':'Интеллект өсімі 2.6.',
+ 'Broodmother':'Spiderlings мана 100/125/150.','Shadow Shaman':'Shackles CD +1с.','Phantom Lancer':'Illusory Armaments 15%.','Primal Beast':'Colossal баяулауға қарсылық 0.75%.'};
+const P42AITEM=['Eye of Skadi: барлық атрибут +35 → +32','Bloodslinger: граната құны 75 → 100 HP','Greater Horn of Battle: <b>супер-криптер</b> шақырады, мега-криптер тек барлық барак құласа','Smoke астында нейтралға тисең — олар қашады'];
+
 const patchMod=h=>{ const n=h.localized_name; return (P742.imba.includes(n)?1.2:0)+(P742.up.includes(n)?0.6:0)-(P742.down.includes(n)?0.8:0); };
-const patchTag=h=>{ const n=h.localized_name; return P742.imba.includes(n)?' · <b class="imba">ИМБА 7.42</b>':P742.up.includes(n)?' · <b class="gw">7.42 ↑</b>':P742.down.includes(n)?' · <b class="gl">7.42 ↓</b>':''; };
+const patchTag=h=>{ const n=h.localized_name; return P742.imba.includes(n)?' · <b class="imba">ИМБА 7.42a</b>':P742.up.includes(n)?' · <b class="gw">7.42a ↑</b>':P742.down.includes(n)?' · <b class="gl">7.42a ↓</b>':''; };
 /* 7.42 гайдтар мен лайфхактар — dota2.ru (ImmortalFaith гайдтары, патч шолуы, про ойыншылар пікірі, 19.11.2026) */
 const HERO742={
  'Chaos Knight':{must:['Sabatons of Mordiggian','Harpoon',"Aghanim's Scepter",'Shadow Blade'],
@@ -2876,7 +2910,7 @@ const HERO742={
  'Lifestealer':{must:['Sabatons of Mordiggian'],kk:'Sabatons (Armlet + Phase) кеш ойында слот үнемдейді, баяулатуға 40% төзімділік.',ru:'Sabatons (Armlet + Phase) экономит слот в лейте, +40% сопротивления замедлениям.',en:'Sabatons (Armlet + Phase) saves a slot, +40% slow resistance.'},
  'Wraith King':{must:['Sabatons of Mordiggian'],kk:'Sabatons (Armlet + Phase) — слот үнемдейді, баяулатуға 40% төзімділік.',ru:'Sabatons экономит слот, +40% сопротивления замедлениям.',en:'Sabatons saves a slot, +40% slow resistance.'},
  'Pangolier':{ban:['Desolator'],kk:'Swashbuckle соққылары заттардың тек 60% әсерін алады — Desolator бар болғаны −3,6 броня. Башер сирек іске қосылады.',ru:'Удары Swashbuckle имеют 60% действенности предметов — Desolator снижает лишь 3,6 брони; башит реже.',en:'Swashbuckle hits have 60% item effectiveness — Desolator only −3.6 armor; fewer bashes.'},
- 'Lina':{kk:'Әлсіретілді: Flame Cloak енді максимум заряд бермейді, −5% урон; Laguna 1-деңгейде 360. Ерте ойында белсенді бол.',ru:'Понерфлена: Flame Cloak не даёт макс. заряды, −5% урона; Laguna на 1 уровне — 360.',en:'Nerfed: Flame Cloak no longer grants max stacks, −5% damage; Laguna 360 at level 1.'},
+ 'Lina':{kk:'7.42-де әлсіреп, 7.42a-да қайта күшейді: Flame Cloak 40% маг. қорғаныс, 8 сек. Керри/мид Lina қайта ойнауға тұрарлық.',ru:'Понерфлена: Flame Cloak не даёт макс. заряды, −5% урона; Laguna на 1 уровне — 360.',en:'Nerfed: Flame Cloak no longer grants max stacks, −5% damage; Laguna 360 at level 1.'},
  'Invoker':{kk:'Sun Strike мен Chaos Meteor уроны азайды, екі қосымша метеор таланты 25-деңгейде, Deafening Blast дизармы оңай диспелденеді.',ru:'Меньше урона от Sun Strike и Chaos Meteor, талант на две «тефтели» на 25 уровне, дизарм Deafening Blast легко развеивается.',en:'Less Sun Strike / Chaos Meteor damage, double-meteor talent moved to 25, Deafening Blast disarm is easily dispelled.'},
  'Tinker':{kk:'Warp Flare енді оцепенение бермейді — 3 сек 100% баяулатады.',ru:'Warp Flare не накладывает оцепенение — замедляет на 100% на 3 с.',en:'Warp Flare no longer roots — 100% slow for 3s.'},
  'Techies':{kk:'Proximity Mines-та кішкене кулдаун пайда болды — жауды бірден жару мүмкін емес.',ru:'У Proximity Mines появилась перезарядка — мгновенно взорвать нельзя.',en:'Proximity Mines now have a small cooldown — no instant blow-ups.'},
@@ -2884,8 +2918,8 @@ const HERO742={
 };
 const tip742=h=>{ const d=HERO742[h.localized_name]; return d?(d[LANG]||d.kk):''; };
 const LIFE742={kk:[
- 'Терзатель енді 15:00-де шығады (бұрын 20:00). Өлгенде <b>Greater Horn of Battle</b> жерге түседі — рюкзактан да қолданылады, әр линияңа мегакрип толқынын шақырады (байрақшы + катапульт). Екінші Терзательден қосымша Aghanim\'s Shard.',
- 'Ерте ойынды ұтып, 15:00-де Терзательді ал да бір линиямен итер — бір глиф мегакриптерді тоқтата алмайды. Саммон/пуш геройлары (Chen, Lycan, Broodmother, Beastmaster) күшейді.',
+ 'Терзатель енді 15:00-де шығады (бұрын 20:00). Өлгенде <b>Greater Horn of Battle</b> жерге түседі — рюкзактан да қолданылады, әр линияңа <b>супер-крип</b> толқынын шақырады (7.42a: мега-крип тек барлық барак құласа). Екінші Терзательден қосымша Aghanim\'s Shard.',
+ 'Ерте ойынды ұтып, 15:00-де Терзательді ал да бір линиямен итер — бір глиф супер-криптерді тоқтата алмайды. Саммон/пуш геройлары (Chen, Lycan, Broodmother, Beastmaster) күшейді.',
  'Порталдар жеңіл линиядағы Т1 мұнараның артына, карта шетіне жылжыды — ротация баяу. Керрилер үлкен орманды көбірек фармдайды → сонда ганк жаса, өз керриіңді сонда қорға.',
  'Smoke of Deceit: дүкенде 4 дана (бұрын 3), 330 сек сайын толады; +25% жылдамдық, 50 сек. Смокпен көбірек ганк.',
  'Барлық геройлар старт горнынан кейін минутына 50 тәжірибе пассив алады (өлі кезде де) — саппорттар линияда аз фармдаса да болады, ульт тезірек.',
@@ -3438,7 +3472,7 @@ async function showPlan(h){
       <p class="why" style="margin:7px 0 0">Өзгерту: «Таңдау» бетінде өз геройыңды бас.</p></div>`:'';
   const notes=[]; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&r.note) notes.push({f:f.localized_name,it,note:r.note}); }));
   const noteCard=notes.length?`<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`+notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')+'</div>':'';
-  const t7=tip742(h), card742=t7?`<div class="card"><h3>7.42 — қалай ойнау керек</h3><p class="why" style="margin:6px 0 0">${t7}</p><p class="why" style="margin:6px 0 0;opacity:.7">dota2.ru</p></div>`:'';
+  const t7=(P42A[h.localized_name]?'<b>7.42a:</b> '+P42A[h.localized_name]+'<br>':'')+tip742(h), card742=t7?`<div class="card"><h3>7.42 — қалай ойнау керек</h3><p class="why" style="margin:6px 0 0">${t7}</p><p class="why" style="margin:6px 0 0;opacity:.7">dota2.ru</p></div>`:'';
   bd.innerHTML=head+card742+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h);
   const ph=document.getElementById('planHead'); if(ph) bindPos(ph,h,()=>showPlan(h));
 }
