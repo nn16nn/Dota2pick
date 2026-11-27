@@ -644,6 +644,21 @@ input[type=search],input[type=text],#hgQ,#cmQ{background:var(--s2)!important;bor
 /* ЖЫЛДАМДЫҚ: экраннан тыс бөліктерді салмау, суреттер асинхронды */
 #recs .rec,#ideal,#pairs,#itTeam,#tiers,#life,#chk,#myh,#p42a,#hguide{content-visibility:auto;contain-intrinsic-size:auto 120px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* v7.2 */
+.gcin{display:flex;gap:6px;margin:8px 0}.gcin input,.gcin select{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid var(--hair);background:var(--s2);color:var(--txt);font-size:15px;font-family:var(--disp)}
+.gca{margin:4px 0 0;font-size:13.5px;line-height:1.5}
+.gco{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;margin-top:6px}
+.gci{position:relative;background:var(--s2);border:1px solid var(--hair);border-radius:10px;padding:4px;color:var(--dim);font-size:10px;text-align:center}
+.gci img{width:100%;aspect-ratio:88/64;object-fit:cover;border-radius:6px;display:block}.gci span{display:block;margin-top:2px}
+.gci.on{border-color:var(--rad)}.gci.on img{opacity:.45}.gci.on::after{content:"✓";position:absolute;top:6px;left:0;right:0;text-align:center;font-weight:800;color:var(--rad);font-size:18px}
+.nc .ntab{margin:10px 0 4px}.nr{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--hair)}
+.nr img{width:44px;height:32px;border-radius:6px;object-fit:cover;flex:0 0 auto;background:var(--s3)}.nr b{display:block;font-size:13px}.nr b i{font-style:normal;color:var(--imba)}
+.nr small{display:block;font-size:11.5px;color:var(--dim);line-height:1.4}.nr.st{background:linear-gradient(90deg,rgba(240,185,74,.07),transparent);border-radius:8px}
+.wks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.wks div{background:var(--s2);border:1px solid var(--hair);border-radius:12px;padding:8px;text-align:center}
+.wks b{display:block;font-family:var(--disp);font-size:18px}.wks small{font-size:10.5px;color:var(--dim)}
+.wkd{display:flex;gap:6px;align-items:flex-end;margin:6px 0 8px}.wkd div{flex:1;text-align:center}.wkd span{display:flex;flex-direction:column-reverse;align-items:center;height:48px;justify-content:flex-start;gap:1px}
+.wkd i{width:14px;border-radius:3px}.wkd i.w{background:var(--rad)}.wkd i.l{background:var(--dire)}.wkd small{font-size:10px;color:var(--mute)}
+.rgb{height:8px;border-radius:99px;background:var(--s3);overflow:hidden;margin:6px 0}.rgb i{display:block;height:100%;background:linear-gradient(90deg,#5D78F5,#A9BBFF);border-radius:99px;transition:width .6s var(--ease)}
 </style>
 </head>
 <body>
@@ -738,6 +753,8 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
       <div class="acrow"><input id="acctIn" type="text" inputmode="numeric" autocomplete="off" placeholder="Friend ID / Steam ID / сілтеме"><button class="btn sm" id="acctGo">Ашу</button></div>
       <p class="why" style="margin:8px 0 0">Dota 2 → профиль → Friend ID (сандар). Ойын баптауында «Expose Public Match Data» қосулы болуы керек.</p>
     </div>
+    <div id="week"></div>
+    <div id="rankg"></div>
     <div id="party"></div>
     <div id="match"></div>
     <div id="prof"></div>
@@ -806,7 +823,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='7.1';
+const V='7.2';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1239,6 +1256,7 @@ Object.assign(I18N.ru,{"Линия": "Линия", "Жеңіл линия": "Л�
 Object.assign(I18N.ru,{"7.42 картасы": "Карта 7.42", "Варда орны": "Место варда", "Нысан": "Объекты", "Құпия дүкен": "Секретная лавка", "Күш руна": "Руна силы", "Белгіні бас — сипаттама шығады.": "Нажми на значок — появится описание.", "Саусақпен жылжыт · белгіні бас": "Двигай пальцем · нажимай на значки"});
 Object.assign(I18N.ru,{"Герой анықтамасы": "Справочник героя", "кез келген герой": "любой герой", "Жаттығу": "Тренировка", "Геройды ізде… (мыс. Slark)": "Найди героя… (напр. Slark)", "Геройды таңда — оған кім қарсы, оған қандай зат керек, қалай ойнау керек.": "Выбери героя — кто его контрит, какие предметы против него, как играть.", "Оған қарсы герой (оны жеңеді)": "Контрпики (кто его бьёт)", "Ол жеңетін геройлар": "Кого он бьёт", "Оған қарсы заттар": "Предметы против него", "Скилл көтеру реті": "Порядок прокачки", "Қарсыласқа қос": "В соперники", "Командаға қос": "В команду", "Метаны жаңарту": "Обновить мету", "Жаңартылуда…": "Обновляется…", "Жаңартылды ✓": "Обновлено ✓", "Мета жаңартылды": "Мета обновлена", "жеңіс": "винрейт"});
 Object.assign(I18N.ru,{"Патч 7.42a": "Патч 7.42a", "· 24.11 · басып анықтама": "· 24.11 · нажми — справка", "Күшейді": "Усилены", "Әлсіреді": "Ослаблены", "Өзгерді": "Изменены", "Заттар мен механика": "Предметы и механики", "Мета 7.42a": "Мета 7.42a"});
+Object.assign(I18N.ru,{"Алтын кеңесі": "Совет по золоту", "Қолдағы алтын": "Золото на руках", "Алғандарыңды белгіле": "Отметь купленное", "Нейтрал заттар 7.42a": "Нейтральные предметы 7.42a", "Апталық есеп": "Отчёт за неделю", "ойын": "игр", "Ең жақсы:": "Лучший:", "Ең көп жеңілген:": "Больше всего поражений:", "Рангқа дейін": "До ранга", "Қазіргі MMR": "Текущий MMR", "⛺ Стак ескерту": "⛺ Напоминание о стаке", "Стак (лагерьді тарт)": "Стак (оттяни лагерь)", "Соңғы 7 күнде ойын жоқ.": "За 7 дней игр нет.", "Ағымдағы MMR-іңді жаз (Dota → профиль → рейтинг).": "Введи текущий MMR (Dota → профиль → рейтинг)."});
 const I18MAP={}, I18RE={};
 function trStr(t){
   if(LANG==='kk'||!I18N[LANG]) return t;
@@ -2380,7 +2398,7 @@ async function loadMyHeroes(force){
   const id=LS.get('acct'); if(!id) return null;
   let d=force?null:LS.get('myh_raw'+id,1);
   if(!d){ try{ d=await getJSON(API+'/players/'+id+'/heroes?date=365'); LS.set('myh_raw'+id,d); }catch(e){ return null; } }
-  const m={}; (d||[]).forEach(x=>{ const g=x.games||0, w=x.win||0; if(g>=5) m[x.hero_id]={g,w,wr:w/g}; });
+  const m={}; (Array.isArray(d)?d:[]).forEach(x=>{ const g=x.games||0, w=x.win||0; if(g>=5) m[x.hero_id]={g,w,wr:w/g}; });
   MYH={}; Object.entries(m).filter(([,v])=>v.wr>=.53).forEach(([k,v])=>MYH[k]=v); LS.set('myh',MYH);
   return m;
 }
@@ -2464,6 +2482,7 @@ function tEvents(t){
     {k:'lt',n:'Лотос',at:nextEvery(t,180,180),c:'#F28BC0'},
     {k:'dn',n:(Math.floor(Math.max(t,0)/300)%2?'Күн':'Түн'),at:nextEvery(t,0,300),c:'#9AA4B8'}];
   if(t<900) ev.push({k:'tr',n:'Терзатель (Greater Horn)',at:900,c:'#D9584A',big:1});
+  if(LS.get('stk')&&t>=60) ev.push({k:'st',n:'Стак (лагерьді тарт)',at:Math.floor((t+7)/60)*60+53,c:'#9FE3B5'});
   if(TMR&&TMR.rosh!=null){ const d=TMR.rosh;
     if(t<d+300) ev.push({k:'ag',n:'Aegis бітеді',at:d+300,c:'#E3B23C'});
     if(t<d+480) ev.push({k:'r1',n:'Рошан — ерте уақыт',at:d+480,c:'#4FB477',big:1});
@@ -2475,13 +2494,14 @@ function renderTimer(){
   const on=!!TMR, t=gameT();
   box.innerHTML=`<div class="card tmr"><div class="clk" id="clk">${on?fmt(t):'0:00'}</div>
     <div class="tbtn">${on?`<button class="chip" data-a="m">−10с</button><button class="chip" data-a="p">+10с</button><button class="chip gold" data-a="r">Рошан өлді</button><button class="chip" data-a="x">Тоқтату</button>`
-      :`<button class="btn gold" data-a="s">▶ Горн — бастау (0:00)</button>`}</div>
+      :`<button class="btn gold" data-a="s">▶ Горн — бастау (0:00)</button>`}<button class="chip${LS.get('stk')?' on':''}" data-a="k">⛺ Стак ескерту</button></div>
     <div id="evs"></div><p class="why" style="margin:8px 0 0">Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.</p></div>`;
   box.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ const a=b.dataset.a; buzz(10);
     if(a==='s'){ TMR={t0:Date.now(),rosh:null}; TMRW={}; LS.set('chk',{}); renderChk(); }
     if(a==='m') TMR.t0+=10000; if(a==='p') TMR.t0-=10000;
     if(a==='r'){ TMR.rosh=gameT(); toast('Рошан: '+fmt(TMR.rosh+480)+' – '+fmt(TMR.rosh+660)); }
     if(a==='x'){ TMR=null; }
+    if(a==='k'){ LS.set('stk',!LS.get('stk')); toast(LS.get('stk')?'Стак ескерту қосулы (xx:53)':'Стак ескерту өшірулі'); }
     LS.set('tmr',TMR); renderTimer(); });
   tickTimer(); clearInterval(TMRI); if(on) TMRI=setInterval(tickTimer,500);
 }
@@ -3135,7 +3155,7 @@ async function renderParty(){
   const rows=await Promise.all(P.map(async id=>{
     let pr=LS.get('ptp'+id,7), hs=LS.get('pth'+id,1);
     try{ if(!pr){ pr=await getJSON(API+'/players/'+id); LS.set('ptp'+id,pr); } if(!hs){ hs=await getJSON(API+'/players/'+id+'/heroes?date=365'); LS.set('pth'+id,hs); } }catch(e){}
-    const best=(hs||[]).filter(x=>x.games>=5).map(x=>({h:BYID[+x.hero_id],g:x.games,wr:x.win/x.games})).filter(x=>x.h).sort((a,b)=>b.wr-a.wr);
+    const best=(Array.isArray(hs)?hs:[]).filter(x=>x.games>=5).map(x=>({h:BYID[+x.hero_id],g:x.games,wr:x.win/x.games})).filter(x=>x.h).sort((a,b)=>b.wr-a.wr);
     const now=best.filter(x=>!tk.has(x.h.id)).map(x=>({...x,r:rank.get(x.h.id)||999})).sort((a,b)=>(a.r-b.r)||(b.wr-a.wr))[0];
     return {id,name:(pr&&pr.profile&&pr.profile.personaname)||id,best:best.slice(0,3),now};
   }));
@@ -3144,8 +3164,51 @@ async function renderParty(){
     ${r.now&&S.foe.length?`<p class="ptn">Қазір алсын: <b>${r.now.h.localized_name}</b> — ${Math.round(r.now.wr*100)}%${r.now.r<999?` · ұсыныста #${r.now.r}`:''}</p>`:''}</div>`).join('');
   box.querySelectorAll('.ptx').forEach(b=>b.onclick=()=>{ LS.set('party',(LS.get('party')||[]).filter(x=>x!==+b.dataset.id)); renderParty(); });
 }
+/* ---------- АПТАЛЫҚ ЕСЕП ---------- */
+let WEEK=null;
+async function renderWeek(){
+  const box=document.getElementById('week'), id=LS.get('acct'); if(!box) return; if(!id){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="sk" style="height:150px;margin-bottom:9px"></div>';
+  let m=LS.get('wk'+id,.1);
+  if(!m){ m=(await safeJSON(API+'/players/'+id+'/matches?date=7&project=hero_id&project=kills&project=deaths&project=assists&project=gold_per_min&project=duration&project=radiant_win&project=player_slot&project=start_time',null)).v; if(m) LS.set('wk'+id,m); }
+  if(!m){ box.innerHTML=''; return; }
+  const won=x=>(x.player_slot<128)===x.radiant_win, N=m.length, W=m.filter(won).length; WEEK={N,W};
+  if(!N){ box.innerHTML=`<div class="card wk"><h3>Апталық есеп</h3><p class="why" style="margin:4px 0 0">Соңғы 7 күнде ойын жоқ.</p></div>`; return; }
+  const by={}; m.forEach(x=>{ const b=by[x.hero_id]||(by[x.hero_id]={g:0,w:0,d:0}); b.g++; if(won(x)) b.w++; b.d+=x.deaths||0; });
+  const hs=Object.entries(by).map(([k,v])=>({h:BYID[k],...v})).filter(x=>x.h);
+  const best=[...hs].sort((a,b)=>(b.w/b.g-a.w/a.g)||(b.g-a.g))[0], worst=hs.filter(x=>x.g>=2).sort((a,b)=>a.w/a.g-b.w/b.g)[0];
+  const avg=k=>(m.reduce((a,x)=>a+(x[k]||0),0)/N);
+  const kda=((avg('kills')+avg('assists'))/Math.max(1,avg('deaths'))).toFixed(1);
+  const days=[...Array(7)].map((_,i)=>{ const d0=new Date(); d0.setHours(0,0,0,0); d0.setDate(d0.getDate()-6+i); const a=d0/1000, b=a+86400;
+    const g=m.filter(x=>x.start_time>=a&&x.start_time<b); return {g:g.length,w:g.filter(won).length,l:['Жс','Дс','Сс','Ср','Бс','Жм','Сн'][d0.getDay()]}; });
+  const mx=Math.max(1,...days.map(d=>d.g));
+  box.innerHTML=`<div class="card wk"><h3>Апталық есеп</h3>
+    <div class="wks"><div><b>${N}</b><small>ойын</small></div><div><b class="${W/N>=.5?'gw':'gl'}">${Math.round(W/N*100)}%</b><small>${W} – ${N-W}</small></div><div><b>${kda}</b><small>KDA</small></div><div><b>${Math.round(avg('gold_per_min'))}</b><small>GPM</small></div></div>
+    <div class="wkd">${days.map(d=>`<div><span><i class="w" style="height:${d.w/mx*44}px"></i><i class="l" style="height:${(d.g-d.w)/mx*44}px"></i></span><small>${d.l}</small></div>`).join('')}</div>
+    ${best?`<p class="gpl"><b class="gw">Ең жақсы:</b> ${best.h.localized_name} — ${best.w}/${best.g}</p>`:''}
+    ${worst&&worst.w/worst.g<.5?`<p class="gpl"><b class="gl">Ең көп жеңілген:</b> ${worst.h.localized_name} — ${worst.w}/${worst.g}, орта есеппен ${(worst.d/worst.g).toFixed(1)} өлім</p>`:''}</div>`;
+  renderRankGoal();
+}
+/* ---------- РАНГҚА ДЕЙІН ---------- */
+const MEDALS=[['Herald',0],['Guardian',770],['Crusader',1540],['Archon',2310],['Legend',3080],['Ancient',3850],['Divine',4620],['Immortal',5420]];
+function renderRankGoal(){
+  const box=document.getElementById('rankg'); if(!box||!LS.get('acct')) { if(box) box.innerHTML=''; return; }
+  const cur=+(LS.get('mmr')||0), tgt=LS.get('mmrT')||'Divine', T=(MEDALS.find(x=>x[0]===tgt)||MEDALS[6])[1];
+  const wr=WEEK&&WEEK.N>=5?WEEK.W/WEEK.N:.5, per=25*(2*wr-1), diff=T-cur;
+  let res;
+  if(!cur) res='Ағымдағы MMR-іңді жаз (Dota → профиль → рейтинг).';
+  else if(diff<=0) res=`<b class="gw">Сен мақсатқа жеттің! 🎉</b> Келесі мақсат қой.`;
+  else if(per<=0.5) res=`Қазіргі <b>${Math.round(wr*100)}%</b> жеңіспен MMR өспейді. <b>${tgt}</b>-ке 55% жеңіспен шамамен <b>${Math.ceil(diff/(25*.1))}</b> ойын керек.`;
+  else res=`<b>${tgt}</b>-ке дейін <b>${diff}</b> MMR. Апталық <b>${Math.round(wr*100)}%</b> жеңіспен — шамамен <b>${Math.ceil(diff/per)}</b> ойын (бір ойын ±25 MMR).`;
+  const pct=cur?Math.min(100,cur/T*100):0;
+  box.innerHTML=`<div class="card rg"><h3>Рангқа дейін</h3>
+    <div class="gcin"><input id="mmrIn" type="number" inputmode="numeric" placeholder="Қазіргі MMR" value="${cur||''}"><select id="mmrT">${MEDALS.slice(1).map(([n])=>`<option${n===tgt?' selected':''}>${n}</option>`).join('')}</select></div>
+    <div class="rgb"><i style="width:${pct}%"></i></div><p class="gca">${res}</p></div>`;
+  document.getElementById('mmrIn').onchange=e=>{ LS.set('mmr',+e.target.value||0); renderRankGoal(); };
+  document.getElementById('mmrT').onchange=e=>{ LS.set('mmrT',e.target.value); renderRankGoal(); };
+}
 async function renderGames(force){
-  renderParty();
+  renderParty(); renderWeek();
   const id=LS.get('acct'), inp=document.getElementById('acctIn');
   const prof=document.getElementById('prof'), games=document.getElementById('games');
   if(id&&!inp.value) inp.value=id;
@@ -3482,6 +3545,52 @@ async function renderItems(){
 }
 
 /* геройға арналған жоспар: негізгі жинақ + қарсыласқа қарсы (команда ішінде қайталанбайды) + тағы не + скилдар */
+/* ---------- АЛТЫН КЕҢЕСІ: қолдағы алтынға қарай қазір не алу керек ---------- */
+function goldAdvice(h,p,G){
+  const seq=seqOf(p).map(x=>x.n), own=LS.get('own'+h.id)||[], cps=compOf();
+  const next=seq.find(n=>!own.includes(n)); if(!next) return {html:'<b class="gw">Жинақ толық ✓</b> — енді артық алтынды Buyback-қа сақта.'};
+  const cost=itemCost(next);
+  if(!G) return {html:`Келесі зат: <b>${next}</b> — ${cost} алтын.`,next};
+  if(G>=cost){ let left=G-cost, more=seq.slice(seq.indexOf(next)+1).find(n=>!own.includes(n)&&itemCost(n)<=left);
+    return {html:`✅ <b>Қазір ал: ${next}</b> (${cost}).${more?` Артылған ${left} алтынға — <b>${more}</b> (${itemCost(more)}).`:left>=300?` Қалғаны ${left} — келесі затқа жина.`:''}`,next}; }
+  const comps=(cps[next]||[]).filter(c=>!own.includes(c)).map(c=>({n:c,c:itemCost(c)})).filter(c=>c.c<=G&&c.c>0).sort((a,b)=>b.c-a.c);
+  if(comps.length) return {html:`<b>${next}</b> (${cost}) жинап жатырсың: қазір <b>${comps[0].n}</b> (${comps[0].c}) ал. ${next}-ке тағы <b>${cost-G}</b> алтын керек.`,next};
+  return {html:`<b>${next}</b> (${cost}) үшін тағы <b>${cost-G}</b> алтын жина. Ешнәрсеге асықпа — TP Scroll бар ма, тексер.`,next};
+}
+function goldCard(h,p){
+  const seq=seqOf(p).map(x=>x.n).slice(0,9), own=LS.get('own'+h.id)||[], G=+(LS.get('gold')||0);
+  return `<div class="card gc"><h3>Алтын кеңесі</h3>
+    <div class="gcin"><input id="gIn" type="number" inputmode="numeric" placeholder="Қолдағы алтын" value="${G||''}"><button class="chip" data-g="-500">−500</button><button class="chip" data-g="500">+500</button></div>
+    <p class="gca" id="gAdv">${goldAdvice(h,p,G).html}</p>
+    <div class="gt" style="margin-top:8px">Алғандарыңды белгіле</div>
+    <div class="gco">${seq.map(n=>`<button class="gci${own.includes(n)?' on':''}" data-n="${n.replace(/"/g,'&quot;')}">${itemIcon(n)}<span>${itemCost(n)}</span></button>`).join('')}</div></div>`;
+}
+function bindGold(h,p){
+  const inp=document.getElementById('gIn'); if(!inp) return; const adv=document.getElementById('gAdv');
+  const upd=()=>{ const G=Math.max(0,+inp.value||0); LS.set('gold',G); adv.innerHTML=goldAdvice(h,p,G).html; };
+  inp.oninput=upd;
+  document.querySelectorAll('.gc [data-g]').forEach(b=>b.onclick=()=>{ inp.value=Math.max(0,(+inp.value||0)+ +b.dataset.g); buzz(6); upd(); });
+  document.querySelectorAll('.gci').forEach(b=>b.onclick=()=>{ const n=b.dataset.n, own=LS.get('own'+h.id)||[], i=own.indexOf(n);
+    if(i>=0) own.splice(i,1); else { own.push(n); const G=Math.max(0,(+inp.value||0)-itemCost(n)); inp.value=G||''; }
+    LS.set('own'+h.id,own); b.classList.toggle('on',i<0); buzz(8); upd(); });
+}
+/* ---------- НЕЙТРАЛ ЗАТТАР 7.42a (Valve neutral_items.txt) — геройға сайларын ★ ---------- */
+const NEUT=[{"t":"0:00","i":[["chipped_vest","Chipped Vest","Every time you are attacked, you return 40 damage to heroes and 20 damage to creeps."],["ash_legion_shield","Ash Legion Shield","Reduce your own movement speed by 20 to provide a 180 physical damage barrier to allied player controlled targets in a 800 unit radius. Lasts for 6 seconds."],["possessed_mask","Possessed Mask","Heals the attacker for 7 HP on each attack."],["dormant_curio","Dormant Curio","Neutral Artifacts you craft while holding a Dormant Curio have their potency increased by 30%."],["red_ledger","Red Ledger","Generates a list of hero bounties. Killing a hero on the list grants 50 gold plus an additional 12 for every level higher the target is than you. Assists award 75% of the bounty."],["weighted_dice","Weighted Dice","Increases your base damage maximum by 8. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken."],["polliwog_charm","Pollywog Charm","Increases the health regeneration of a target ally by 8 for 14 seconds. While standing in water, the blessed unit also moves 10% faster."],["seeds_of_serenity","Seeds of Serenity","Target the ground with a 400 radius. Provides health regeneration to all allied units while they are in the area of effect equal to 3 + 25% of the caster's health regeneration at the time of casting. Lasts 8 seconds."],["foragers_kit","Forager's Kit","When the cooldown is ready, nearby trees that can be foraged will appear. By standing next to a tree for 0.75s, you can forage the tree and find flora, fungi or a bag of gold containing 30 gold."],["kobold_cup","Kobold Cup","Increases movement speed of all allied units by 10% in a 1000 unit radius around the caster for 8 seconds."],["stonefeather_satchel","Stonefeather Satchel","Toggle to switch the contents of the Satchel between a pound of Feathers or Rocks.\n\nFeathers: increase movement speed by 15 and distance of forced movement effects applied to the wearer by 30%.\n\nRocks: increase armor by "],["pogo_stick","Tumbler's Toy","Propels your hero forward 350 units. Tumbler's Toy gets disabled for 3 seconds if its owner receives damage from a player source."]],"e":{"global":[["enhancement_quickened","Quickened","+ 14 / 22 / 30 Movement Speed, + 0 / 130 / 200 Mana, + 0 / 0 / 15% Evasion"],["enhancement_vital","Vital","+ 2.25 / 3 Health Regeneration, + 0 / 0.8 Mana Regeneration"]],"strength":[["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"]],"agility":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"]],"intelligence":[["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"]],"universal":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"]]}},{"t":"15:00","i":[["psychic_headband","Psychic Headband","Pushes the target unit away from you 400 distance."],["safety_bubble","Safety Bubble","Equipped Hero has a 125 HP Barrier against enemy damage. Barrier fully regenerates after not receiving damage for 8 seconds. Self-inflicted damage bypasses the barrier."],["metamorphic_mandible","Metamorphic Mandible","Enter into an insect form for 5 seconds, increasing magic resistance by 40% and movement speed by 15%. While an insect, your size is decreased and your armor is reduced by 30%."],["jidi_pollen_bag","Jidi Pollen Bag","Spreads pollen on all enemy units in a 900 unit radius for 9 seconds, decreasing their health restoration by 65% and dealing damage per second, the total equal to 9% of their maximum health."],["brick","Brick","Tosses a brick at the target enemy, removing 200 from any active barrier and dealing 150 physical damage."],["crippling_crossbow","Crippling Crossbow","Hits an enemy for 25 damage, then slows them by 65% and reduces Health Restoration by 40% for 4 seconds. The slow gradually fades over the duration of the spell."],["imp_claw","Imp Claw","Empowers your next attack, causing it to be a critical strike dealing 130% damage."],["gunpowder_gauntlets","Gunpowder Gauntlet","Your next attack deals an additional 40 magic damage and splashes to units within 250 units for 60% of the original attack's damage plus the additional magic damage."],["defiant_shell","Defiant Shell","When attacked, the hero counter-attacks a target within their attack range for 80% of their regular attack damage."],["partisans_brand","Partisan's Brand","Increases spell damage dealt to player controlled targets by 7%."],["spellslinger","Spellslinger","20% of the mana used to cast abilities is recovered over 8 seconds."],["mana_draught","Mana Draught","Restores 90 + 3% of the caster's maximum mana over 6 seconds. If the hero is attacked by an enemy hero or Roshan, the effect is lost.\n\nHold Control to use on an allied hero. Cooldown Speed of Mana Draught is increased by"]],"e":{"global":[["enhancement_quickened","Quickened","+ 14 / 22 / 30 Movement Speed, + 0 / 130 / 200 Mana, + 0 / 0 / 15% Evasion"],["enhancement_vital","Vital","+ 2.25 / 3 Health Regeneration, + 0 / 0.8 Mana Regeneration"]],"strength":[["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"],["enhancement_crude","Crude","+ 10 / 15% Health Restoration, - 7 / 12% Base Attack Time, - -9% Intelligence"]],"agility":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"],["enhancement_nimble","Nimble","+ 6 / 8% Movement Speed, + 12 / 18 Damage, - 2 / 3 Health Regeneration"]],"intelligence":[["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"],["enhancement_keen_eyed","Keen-eyed","+ 100 / 120 Cast Range, + 1 / 2 Mana Regeneration, - 10 / 14% Max Mana"]],"universal":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"],["enhancement_titanic","Titanic","+ 10 / 15% Base Attack Damage, + 11 / 13% Status Resistance, - -9% Attack Speed"]]}},{"t":"30:00","i":[["prophets_pendulum","Prophet's Pendulum","30% of incoming damage is delayed over 8 seconds."],["dandelion_amulet","Dandelion Amulet","Every 10s, blocks up to 300 magic damage from damage instances over 75 damage."],["idol_of_screeauk","Idol of Scree'auk","Gain 60% slow resistance, phased movement, and 40% evasion for 6.5 seconds."],["balmhook","Balmhook","Targeting a friendly unit with a spell increases their Health Regeneration by 12 for 12 seconds."],["rattlecage","Rattlecage","After taking 220 damage from any source, the wearer fires a projectile at up to 2 random enemies in a 600 radius, prioritizing heroes, that deal 110 physical damage and slow the targets movement and attack speed by 100% "],["stormcrafter","Stormcrafter","Zaps 2 enemy targets within 700 range, dealing 90 damage and a 40% slow for 0.4 seconds."],["enchanters_bauble","Enchanter's Bauble","Increases the bonuses of the item's Neutral Enchantment by 10%. Every time this item is crafted again the bonus is increased by 35%."],["ceremonial_robe","Ceremonial Robe","Lowers enemy Status Resistance by 10% and Magic Resistance by 10%.\n\nRadius: 850"],["harmonizer","Harmonizer","Gain 7% spell mana cost reduction for every ability off cooldown and 9% Spell Lifesteal for every ability on cooldown."],["vile_phial","Vile Phial","Attacking the same enemy 4 times within 10 seconds poisons them for 5 seconds, reducing their Health Restoration by 35% and dealing 40 damage per second."],["serrated_shiv","Serrated Shiv","Attacks have a 30% chance to have True Strike and deal 10% of the target's current health as bonus physical damage. Deals a flat bonus of 200 against Roshan."],["revenants_brooch","Revenant's Brooch","Grants each attack a 15% chance to deal an additional 50% of the attack's damage as bonus magical damage."]],"e":{"global":[["enhancement_quickened","Quickened","+ 14 / 22 / 30 Movement Speed, + 0 / 130 / 200 Mana, + 0 / 0 / 15% Evasion"],["enhancement_greedy","Greedy","+GPM BONUS 80, + 200 Mana, - -70 Attack Damage"]],"strength":[["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"],["enhancement_crude","Crude","+ 10 / 15% Health Restoration, - 7 / 12% Base Attack Time, - -9% Intelligence"]],"agility":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_brawny","Brawny","+ 110 / 170 / 230 Health, + 0 / 4 / 8 Health Regeneration, + 0 / 0 / 16% Lifesteal"],["enhancement_nimble","Nimble","+ 6 / 8% Movement Speed, + 12 / 18 Damage, - 2 / 3 Health Regeneration"]],"intelligence":[["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"],["enhancement_tough","Tough","+ 6 / 11 / 16 Damage, + 0 / 5 / 7 Armor, + 0 / 0 / 40% Knockback Resistance"],["enhancement_keen_eyed","Keen-eyed","+ 100 / 120 Cast Range, + 1 / 2 Mana Regeneration, - 10 / 14% Max Mana"]],"universal":[["enhancement_alert","Alert","+ 8 / 18 / 28 Attack Speed, + 0 / 150 / 200 Bonus Night Vision, + 0 / 0 / 80 Attack Range (Ranged Only), + 0 / 0 / 40 Attack Range (Melee Only)"],["enhancement_mystical","Mystical","+ 0.8 / 2 / 3.2 Mana Regeneration, + 0 / 12 / 15% Magic Resistance, + 0 / 0 / 15% Mana Cost/Mana Loss Reduction"],["enhancement_titanic","Titanic","+ 10 / 15% Base Attack Damage, + 11 / 13% Status Resistance, - -9% Attack Speed"]]}},{"t":"50:00","i":[["fallen_sky","Fallen Sky","Transform into a meteor that strikes down at the target area after 1 seconds in a 315 AoE, stunning enemies for 1.6 seconds and dealing impact damage. Continues to deal damage every 1 seconds to enemy units and buildings"],["flicker","Flicker","Dispells debuffs and blinks you in a random forward direction for a random distance between 200 and 600. If cast within 3 seconds of receiving player damage, it will blink in place.\n\nDispel Type: Basic Dispel"],["minotaur_horn","Minotaur Horn","Applies a basic dispel. Grants 60% magic resistance and immunity to reflected and pure damage for 3s. For the duration of the effect, any negative effect from enemy spells has no effect.\n\nDispel Type: Basic Dispel"],["mind_breaker","Mind Breaker","The next attack silences the hit enemy for 2 seconds."],["divine_regalia","Divine Regalia","Increases outgoing damage by 25%. Dying permanently disables this Neutral Item and the current Enchantment is lost."],["heavy_blade","Witchbane","Dispel all enemies and allies in a 300 unit radius.\n\nDispel Type: Basic Dispel Your attacks deal bonus magical damage equal to 4% of your target's Max Mana."],["helm_of_the_hivemind","Helm of the Hivemind","Merge consciousness with an unknown monarch, gaining 120 cast range. Bonus cast range is increased by 80 and maximum health is decreased by 8% for every assimilated hero on both teams."],["dezun_bloodrite","Dezun Bloodrite","Spells have a 20% larger Area of Effect, but now additionally cost health equal to 25% of their mana cost."],["conjurers_catalyst","Conjurer's Catalyst","Dealing 150 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 80 damage to their allies, other targets deal 20 damage."],["giants_ring","Giant's Ring","Can path over any terrain and deals 100% of your strength per second to units you are standing ontop of."],["demonicon","Book of the Dead","Summon 2 demonic warriors and 2 demonic archers that last 65 seconds. The Warrior burns mana every hit and deals magical damage to whoever kills it. The Archer has a basic dispel ability with a slow and a passive movemen"],["riftshadow_prism","Riftshadow Prism","Spend 4% of your current life total to create a full health strong illusion that lasts for 20 seconds. The illusion has 60% outgoing damage, takes 200% of incoming damage, and has 100% Item Potency."]],"e":{"global":[["enhancement_timeless","Timeless","+ 15% Debuff Duration, + 10% Spell Amplification"],["enhancement_evolved","Evolved","+ 20% Item Potency, + 20 Primary Attribute, primary_stat_universal 12"],["enhancement_fleetfooted","Fleetfooted","+ 115 Movement Speed"],["enhancement_vampiric","Vampiric","+ 30% Lifesteal, + 20% Spell Lifesteal, + 300 Night Vision"]],"strength":[["enhancement_hulking","Hulking","+ 5% Health, + 1.5% Max Health Regen, - -30% Attack Speed"]],"agility":[["enhancement_audacious","Audacious","+ 100 Attack Speed, + 80 Magic Attack Damage, + 10% Incoming Damage"]],"intelligence":[["enhancement_feverish","Feverish","+ 15% Cooldown Reduction, - 20% Max Mana"]],"universal":[["enhancement_manic","Manic","- 18% Base Attack Time, + 20% Cast Speed Bonus, - 20% Vision"]]}}];
+const NATTR={str:'strength',agi:'agility',int:'intelligence',all:'universal'};
+const NKW={core:/damage|attack|lifesteal|armor|evasion|critical|bash|agility|strength|movement|last hit|creep/i,sup:/mana|heal|barrier|ally|allied|aura|cast|cooldown|spell|vision|ward|restore|regen|bount/i};
+function neutCard(h){
+  const core=kindOf(h).includes('core'), kw=core?NKW.core:NKW.sup, at=NATTR[h.primary_attr]||'universal';
+  const row=(x,star)=>`<div class="nr${star?' st':''}"><img src="${IMG(x[0])}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div><b>${x[1]}${star?' <i>★</i>':''}</b><small>${x[2]}</small></div></div>`;
+  return `<details class="card nc"><summary><h3 style="display:inline">Нейтрал заттар 7.42a</h3> <span class="why">· ★ — ${h.localized_name}-ға</span></summary>
+    <div class="chips ntab">${NEUT.map((t,i)=>`<button class="chip${i?'':' on'}" data-t="${i}">T${i+1} · ${t.t}</button>`).join('')}</div>
+    ${NEUT.map((t,i)=>{ const its=t.i.map(x=>({x,v:(x[2].match(new RegExp(kw.source,'gi'))||[]).length})).sort((a,b)=>b.v-a.v), top=new Set(its.slice(0,3).filter(y=>y.v>0).map(y=>y.x[0]));
+      const en=[...(t.e[at]||[]),...(t.e.global||[])];
+      return `<div class="ntp" data-p="${i}"${i?' hidden':''}><div class="gt">Артефактар (${t.t}-тан бастап)</div>${its.map(y=>row(y.x,top.has(y.x[0]))).join('')}
+        <div class="gt" style="margin-top:10px">Жақсарту (${({strength:'күш',agility:'ептілік',intelligence:'ақыл',universal:'әмбебап'})[at]} + жалпы)</div>${en.map(x=>row(x,(t.e[at]||[]).some(y=>y[0]===x[0]))).join('')}</div>`; }).join('')}
+    <p class="why" style="margin:8px 0 0;opacity:.7">Дереккөз: Valve ойын файлы (neutral_items.txt, 26.11.2026).</p></details>`;
+}
+function bindNeut(h){ document.querySelectorAll('.ntab .chip').forEach(c=>c.onclick=()=>{ document.querySelectorAll('.ntab .chip').forEach(x=>x.classList.toggle('on',x===c));
+  document.querySelectorAll('.ntp').forEach(x=>x.hidden=x.dataset.p!==c.dataset.t); buzz(6); }); }
 async function showPlan(h){
   const bd=document.getElementById('build');
   bd.innerHTML=skel(4);
@@ -3513,7 +3622,8 @@ async function showPlan(h){
   const notes=[]; fs.forEach(f=>(S.fi[f.id]||[]).forEach(it=>{ const r=IREACT[it]; if(r&&r.note) notes.push({f:f.localized_name,it,note:r.note}); }));
   const noteCard=notes.length?`<div class="card"><h3>Қарсыластың заттарына қарсы амал</h3>`+notes.map(n=>`<div class="pl"><div><div class="pn">${n.f} — ${n.it}</div><div class="pw">${n.note}</div></div></div>`).join('')+'</div>':'';
   const t7=(P42A[h.localized_name]?'<b>7.42a:</b> '+P42A[h.localized_name]+'<br>':'')+tip742(h), card742=t7?`<div class="card"><h3>7.42 — қалай ойнау керек</h3><p class="why" style="margin:6px 0 0">${t7}</p><p class="why" style="margin:6px 0 0;opacity:.7">dota2.ru</p></div>`:'';
-  bd.innerHTML=head+card742+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h);
+  bd.innerHTML=head+card742+goldCard(h,p)+coreCard+counter+extra+have+ownCard+noteCard+skillsCard(h)+neutCard(h);
+  bindGold(h,p); bindNeut(h);
   const ph=document.getElementById('planHead'); if(ph) bindPos(ph,h,()=>showPlan(h));
 }
 
