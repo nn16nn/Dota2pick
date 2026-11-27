@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08090C">
+<meta name="theme-color" content="#060A14">
 <title>Dota 2 Pick — таңдау көмекшісі</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -254,7 +254,7 @@ input{font-family:inherit}
 .load{text-align:center;color:var(--dim);font-size:13px;padding:14px}
 
 /* ===== бренд қабаты: ашылу экраны, ауа-фон, анимация ===== */
-#splash{position:fixed;inset:0;z-index:200;background:var(--void);display:flex;flex-direction:column;
+#splash{position:fixed;inset:0;z-index:200;background:#060A14;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:14px;transition:opacity .45s ease,visibility .45s}
 #splash.gone{opacity:0;visibility:hidden}
 .sp-glow{position:absolute;width:280px;height:280px;border-radius:50%;
@@ -552,9 +552,10 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 /* ================= v7.0 ДИЗАЙН ЖҮЙЕСІ — премиум қараңғы, бір токен жүйесі, 8pt тор =================
    Түстер: фон → бет (s1) → көтерілген (s2); бір ғана акцент (алтын); Radiant/Dire — тек команда белгісі. */
 :root{
-  --bg:#08090C; --s1:#111319; --s2:#181B23; --s3:#20242E; --hair:rgba(255,255,255,.07); --hair2:rgba(255,255,255,.12);
-  --txt:#F3F4F6; --dim:#8E95A3; --mute:#5E6573;
-  --gold:#F0B94A; --gold2:#FFD887; --rad:#34D399; --dire:#FB6A5B; --blue:#7AA7FF;
+  /* «Түнгі көк» бренд түсі */
+  --bg:#060A14; --s1:#0D1424; --s2:#131C30; --s3:#1A253C; --hair:rgba(140,170,255,.09); --hair2:rgba(140,170,255,.16);
+  --txt:#EEF2FF; --dim:#8C97B5; --mute:#5D6886;
+  --gold:#6E8BFF; --gold2:#A9BBFF; --rad:#3DDC97; --dire:#FF6B6B; --blue:#6E8BFF; --imba:#F0B94A;
   --panel:var(--s1); --line:var(--hair); --r:20px; --r2:14px; --r3:10px;
   --disp:"Unbounded","Inter",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --sh:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -12px rgba(0,0,0,.7);
@@ -562,11 +563,11 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 html,body{background:var(--bg)!important;color:var(--txt);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{background:radial-gradient(80% 40% at 50% -6%,#1A1D27 0%,var(--bg) 70%) no-repeat,var(--bg)!important}
+body{background:radial-gradient(85% 42% at 50% -6%,#15284D 0%,var(--bg) 72%) no-repeat,var(--bg)!important}
 body::before{content:none!important}
 /* тақырып жолағы */
 .top{background:linear-gradient(180deg,var(--bg) 60%,transparent)!important;border:0!important;box-shadow:none!important}
-.top.scr{background:rgba(8,9,12,.94)!important;box-shadow:0 1px 0 var(--hair)!important}
+.top.scr{background:rgba(6,10,20,.95)!important;box-shadow:0 1px 0 var(--hair)!important}
 .top h1{font-family:var(--disp);font-weight:700;font-size:17px;letter-spacing:-.01em;text-transform:none;background:none!important;color:var(--txt)!important;-webkit-text-fill-color:currentColor;filter:none}
 .mark{border-radius:9px;box-shadow:none}
 .hset{background:var(--s2)!important;border:1px solid var(--hair)!important;border-radius:12px;color:var(--dim)}
@@ -600,9 +601,9 @@ body::before{content:none!important}
 .btn{background:var(--s2)!important;border:1px solid var(--hair2)!important;color:var(--txt)!important;border-radius:var(--r2)!important;font-weight:600;letter-spacing:0;box-shadow:none!important;text-shadow:none!important;
   transition:transform .3s var(--ease),background .2s}
 .btn:active{transform:scale(.97)!important}
-.btn.gold,.chip.gold{background:var(--gold)!important;color:#1A1204!important;border-color:transparent!important;box-shadow:0 8px 24px -10px rgba(240,185,74,.7)!important}
+.btn.gold,.chip.gold{background:linear-gradient(180deg,#7C97FF,#5D78F5)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 10px 26px -10px rgba(110,139,255,.8)!important;font-weight:700}
 .chip{background:var(--s2)!important;border:1px solid var(--hair)!important;color:var(--dim)!important;font-weight:500;box-shadow:none!important;text-shadow:none!important}
-.chip.on{background:var(--txt)!important;color:#0B0D12!important;border-color:transparent!important;box-shadow:none!important}
+.chip.on{background:var(--gold)!important;color:#fff!important;border-color:transparent!important;box-shadow:none!important}
 .mref{background:var(--s2)!important;color:var(--txt)!important;border:1px solid var(--hair2)!important;box-shadow:none!important;font-weight:600}
 .mref i{color:var(--gold)}
 /* ұсыныс жолдары */
@@ -620,18 +621,18 @@ body::before{content:none!important}
 .wbar i{background:var(--rad)!important;box-shadow:none!important;border-radius:99px 0 0 99px}
 .wbar em{width:3px!important;background:var(--txt)!important;box-shadow:0 0 0 3px var(--bg)!important}
 /* мәзір */
-.tabs{background:rgba(17,19,25,.96)!important;border:1px solid var(--hair)!important;border-radius:22px!important;box-shadow:var(--sh2)!important}
-.tabind{background:var(--txt)!important;box-shadow:none!important;border-radius:16px}
+.tabs{background:rgba(13,20,36,.96)!important;border:1px solid var(--hair)!important;border-radius:22px!important;box-shadow:var(--sh2)!important}
+.tabind{background:linear-gradient(180deg,#7C97FF,#5D78F5)!important;box-shadow:0 6px 18px -6px rgba(110,139,255,.8)!important;border-radius:16px}
 .tab{color:var(--mute)!important;font-family:var(--body);font-weight:600;letter-spacing:0;text-transform:none}
-.tab.on{color:#0B0D12!important}
+.tab.on{color:#fff!important}
 /* тир, MMR, т.б. */
 .tl{font-family:var(--disp);box-shadow:none!important;border-radius:12px!important}
-.tS .tl{background:var(--gold)!important;color:#1A1204}.tA .tl{background:var(--rad)!important;color:#05140D}.tB .tl{background:var(--blue)!important;color:#08142B}.tC .tl{background:var(--s3)!important;color:var(--dim)}
+.tS .tl{background:var(--imba)!important;color:#1A1204}.tA .tl{background:var(--rad)!important;color:#05140D}.tB .tl{background:var(--blue)!important;color:#08142B}.tC .tl{background:var(--s3)!important;color:var(--dim)}
 .clk{font-family:var(--disp);font-weight:700;letter-spacing:-.03em;text-shadow:none}
 .cki b,.mhr span,.itm b,.lnh em,.hgh em{font-family:var(--disp);font-weight:600}
-.cb2{border-color:var(--hair2)!important}.cki.on .cb2{background:var(--gold)!important;border-color:transparent!important}
+.cb2{border-color:var(--hair2)!important}.cki.on .cb2{background:var(--gold)!important;border-color:transparent!important}.cki.on .cb2::after{color:#fff!important}
 .ckb i{background:var(--gold)!important}
-.ib7{background:var(--gold)!important;color:#1A1204}.ib7.up{background:var(--rad)!important;color:#05140D}.ib7.dn{background:var(--dire)!important;color:#fff}
+.ib7{background:var(--imba)!important;color:#1A1204}.ib7.up{background:var(--rad)!important;color:#05140D}.ib7.dn{background:var(--dire)!important;color:#fff}
 .hgt b{font-family:var(--disp);font-weight:600;font-size:18px;color:var(--txt)}
 .hgt img,.mhr img,.ptb img{box-shadow:none!important}
 .hgh,.hgo,.ptb span,.cvc{background:var(--s2)!important;border:1px solid var(--hair)!important}
@@ -805,7 +806,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='7.0';
+const V='7.1';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
