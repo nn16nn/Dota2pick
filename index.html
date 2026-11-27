@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0A0E15">
+<meta name="theme-color" content="#08090C">
 <title>Dota 2 Pick — таңдау көмекшісі</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;800&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://cdn.cloudflare.steamstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.opendota.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
 <style>
 :root{
   --void:#0F1420; --panel:#171E2C; --panel2:#1D2637; --line:#28324A;
@@ -450,67 +453,9 @@ ul.src{margin:6px 0 0;padding-left:18px}ul.src li{margin:3px 0}
 .ti{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .slot.full{transition:transform .25s cubic-bezier(.2,.8,.3,1),opacity .2s,background .2s}
 .slot.full.del{background:#D9584A33;border-color:var(--dire)}
-/* ===== v6.0: DOTA ОЙЫН СТИЛІ — қола-алтын жиек, тас текстура, Radiant/Dire жарқылы ===== */
-:root{--void:#0A0E15;--panel:#141A24;--panel2:#1A2230;--line:#2A2F38;--gold:#D9A441;--gold2:#F4D58D;--bronze:#8A6A3A;--txt:#ECE6D8;--dim:#9A9384;
-  --metal:linear-gradient(180deg,#1C2330 0%,#121821 100%);
-  --edge:linear-gradient(160deg,#C9A15A 0%,#5C4626 28%,#2A2418 55%,#7A5E33 100%);
-  --sh:0 2px 6px rgba(0,0,0,.5),0 12px 28px rgba(0,0,0,.55)}
-html,body{background:#06090E}
-body{background:radial-gradient(120% 60% at 50% -10%,#1B2638 0%,#0B1019 55%,#06090E 100%) fixed,#06090E;}
-body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6  0 0 0 0 .55  0 0 0 0 .45  0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.9;mix-blend-mode:overlay}
-.amb .a1{opacity:.10}.amb .a2{opacity:.09}.amb .a3{opacity:.05}
-/* қола жиекті панельдер */
-.card,.side,.rec,.win,.tier,.bn,.tabs,.hset,.ev{border:1px solid transparent!important;
-  background:var(--metal) padding-box,var(--edge) border-box!important}
-.card,.side,.rec,.win,.tier{position:relative;box-shadow:inset 0 1px 0 #ffffff0d,var(--sh)}
-.card::before,.win::before{content:"";position:absolute;left:12px;right:12px;top:0;height:1px;background:linear-gradient(90deg,transparent,#F4D58D66,transparent);pointer-events:none}
-/* тақырыптар: алтын әріп + ромб сызық */
-.sec h2{background:linear-gradient(180deg,#F7E2A8 0%,#D9A441 60%,#9C7232 100%);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.09em;display:flex;align-items:center;gap:8px}
-.sec h2::before{content:"◆";font-size:9px;color:var(--gold);-webkit-text-fill-color:var(--gold);filter:drop-shadow(0 0 4px #D9A44199)}
-.card h3{color:var(--gold2);letter-spacing:.08em}
-.top{background:linear-gradient(180deg,#0A0E15 70%,#0A0E1500)}
-.top.scr{background:linear-gradient(180deg,#111722F2,#0B1019EE);border-bottom:1px solid #5C462680;box-shadow:0 1px 0 #C9A15A26,0 8px 20px #0008}
-.top h1{background:linear-gradient(180deg,#FFF1C9 0%,#E2B65A 55%,#A0752F 100%);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.12em;filter:drop-shadow(0 1px 0 #0009)}
-.mark{border-radius:50%;box-shadow:0 0 0 1.5px #C9A15A,0 0 12px #D9A44155}
-/* Radiant / Dire */
-.side{padding-top:22px}
-.side::after{position:absolute;top:6px;left:10px;font-family:var(--disp);font-size:9px;letter-spacing:.32em;font-weight:600}
-.side.us::after{content:"RADIANT";color:#6FD49A;text-shadow:0 0 8px #4FB47799}
-.side.them::after{content:"DIRE";color:#F07A6A;text-shadow:0 0 8px #D9584A99}
-.side.us{box-shadow:inset 0 2px 0 var(--rad),inset 0 40px 50px -40px #4FB47740,var(--sh)!important}
-.side.them{box-shadow:inset 0 2px 0 var(--dire),inset 0 40px 50px -40px #D9584A40,var(--sh)!important}
-.side.us,.side.them{border-top:1px solid transparent}
-.slot{background:#0D121B;border-color:#2A2F38}
-.slot.full{background:linear-gradient(90deg,#1E2633,#151B26);border:1px solid #3A3426}
-.slot.full .por{box-shadow:0 0 0 1px #C9A15A80}
-.side.us .slot.full{box-shadow:inset 2px 0 0 var(--rad)}.side.them .slot.full{box-shadow:inset 2px 0 0 var(--dire)}
-.seam{background:linear-gradient(180deg,transparent,#D9A441,transparent)!important;width:1px!important}
-/* батырмалар: металл-алтын */
-.btn{background:linear-gradient(180deg,#2A3142,#1A202C);border:1px solid #4A3E28;color:var(--txt);letter-spacing:.04em}
-.btn.gold,.chip.gold,.chip.on{background:linear-gradient(180deg,#F6D98C 0%,#D9A441 50%,#A9782F 100%)!important;color:#1D1404!important;border-color:#F4D58D!important;
-  box-shadow:inset 0 1px 0 #FFF3C8,inset 0 -2px 0 #7A5420,0 0 14px #D9A44140!important;text-shadow:0 1px 0 #FFE9B080}
-.btn.gold{box-shadow:inset 0 1px 0 #FFF3C8,0 3px 0 #6B4A1A,0 0 16px #D9A44155!important}
-.chip{background:#121823;border-color:#3A3426;color:#CFC6B2}
-/* таб мәзірі: металл панель + алтын пилл */
-.tabs{background:linear-gradient(180deg,#1A2130F2,#0F141DF2) padding-box,var(--edge) border-box!important;box-shadow:0 -1px 0 #C9A15A1F,var(--sh2)}
-.tabind{background:linear-gradient(180deg,#F6D98C 0%,#D9A441 55%,#A9782F 100%);box-shadow:inset 0 1px 0 #FFF3C8,inset 0 -2px 0 #7A5420,0 0 18px #D9A44166}
-.tab{color:#8E8775}.tab.on{color:#1D1404}
-/* жеңіс жолағы: Radiant vs Dire */
-.wbar{height:12px;background:linear-gradient(90deg,#7A2A22,var(--dire));box-shadow:inset 0 1px 2px #000a;border:1px solid #3A3426}
-.wbar i{background:linear-gradient(90deg,#1F6B3E,#4FB477 70%,#8BE3AE)}
-.wbar em{background:var(--gold2);box-shadow:0 0 10px var(--gold)}
-.win .wl .r{text-shadow:0 0 14px #4FB47780}.win .wl .d{text-shadow:0 0 14px #D9584A80}
-/* ұсыныс жолдары мен тир */
-.rec:active{filter:brightness(1.15)}
-.tl{box-shadow:inset 0 1px 0 #ffffff55,inset 0 -2px 0 #0004}
-.tS .tl{background:linear-gradient(180deg,#FFE7A3,#D9A441 60%,#9C7232)}
-.imba{background:linear-gradient(90deg,#D9A441,#FFF1C9,#E06A4A,#D9A441)!important;background-size:300% 100%!important}
-.toast,#toast{background:linear-gradient(180deg,#1E2633F5,#141A24F5);border:1px solid #5C4626;border-left:3px solid var(--gold)}
-.sheet .box{background:linear-gradient(180deg,#161D29,#0E131C)!important;border-top:1px solid #8A6A3A}
 /* v6.1: жылдамдық — ауыр эффектілерді алып тастау (blur-жарық, blend, backdrop, шексіз анимация) */
 .amb{display:none}
-body{background:radial-gradient(120% 60% at 50% -10%,#1B2638 0%,#0B1019 55%,#06090E 100%) no-repeat,#06090E!important}
-body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:translateZ(0)}
+
 .top.scr,.tabs,#toast{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .imba{animation:none!important;background-position:0 0!important}
 .wbar i::after{display:none}
@@ -604,6 +549,100 @@ body::before{mix-blend-mode:normal!important;opacity:.55!important;transform:tra
 .pch.u img{box-shadow:0 0 0 1.5px var(--rad)}.pch.d img{box-shadow:0 0 0 1.5px var(--dire)}.pch.a img{box-shadow:0 0 0 1.5px var(--gold)}
 .pch::after{position:absolute;top:2px;right:3px;font-size:10px;font-weight:800;text-shadow:0 1px 2px #000}.pch.u::after{content:"▲";color:#7CE3A6}.pch.d::after{content:"▼";color:#FF8A7A}.pch.a::after{content:"◆";color:var(--gold2)}
 .pc .gt{margin-top:10px}
+/* ================= v7.0 ДИЗАЙН ЖҮЙЕСІ — премиум қараңғы, бір токен жүйесі, 8pt тор =================
+   Түстер: фон → бет (s1) → көтерілген (s2); бір ғана акцент (алтын); Radiant/Dire — тек команда белгісі. */
+:root{
+  --bg:#08090C; --s1:#111319; --s2:#181B23; --s3:#20242E; --hair:rgba(255,255,255,.07); --hair2:rgba(255,255,255,.12);
+  --txt:#F3F4F6; --dim:#8E95A3; --mute:#5E6573;
+  --gold:#F0B94A; --gold2:#FFD887; --rad:#34D399; --dire:#FB6A5B; --blue:#7AA7FF;
+  --panel:var(--s1); --line:var(--hair); --r:20px; --r2:14px; --r3:10px;
+  --disp:"Unbounded","Inter",system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --sh:0 1px 0 rgba(255,255,255,.04) inset,0 10px 30px -12px rgba(0,0,0,.7);
+  --sh2:0 20px 50px -10px rgba(0,0,0,.8);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+html,body{background:var(--bg)!important;color:var(--txt);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:radial-gradient(80% 40% at 50% -6%,#1A1D27 0%,var(--bg) 70%) no-repeat,var(--bg)!important}
+body::before{content:none!important}
+/* тақырып жолағы */
+.top{background:linear-gradient(180deg,var(--bg) 60%,transparent)!important;border:0!important;box-shadow:none!important}
+.top.scr{background:rgba(8,9,12,.94)!important;box-shadow:0 1px 0 var(--hair)!important}
+.top h1{font-family:var(--disp);font-weight:700;font-size:17px;letter-spacing:-.01em;text-transform:none;background:none!important;color:var(--txt)!important;-webkit-text-fill-color:currentColor;filter:none}
+.mark{border-radius:9px;box-shadow:none}
+.hset{background:var(--s2)!important;border:1px solid var(--hair)!important;border-radius:12px;color:var(--dim)}
+/* бөлім тақырыптары: кіші әріппен, таза */
+.sec{margin:28px 2px 12px;align-items:center}
+.sec h2{font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:-.01em;text-transform:none;color:var(--txt);background:none!important;-webkit-text-fill-color:currentColor}
+.sec h2::before{content:none!important}
+.sec .hint{font-size:12px;color:var(--mute);margin-left:auto}
+.gt{font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+/* карточкалар — бір стиль */
+.card,.rec,.win,.tier,.side{background:var(--s1)!important;border:1px solid var(--hair)!important;border-radius:var(--r)!important;box-shadow:var(--sh)!important}
+.card::before,.win::before{content:none!important}
+.card{padding:16px}
+.card h3{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:-.01em;text-transform:none;color:var(--txt)}
+.why{color:var(--dim)}
+/* драфт тақтасы */
+.board{gap:10px}
+.side{padding:14px 10px 10px!important;position:relative;overflow:hidden}
+.side::before{content:"";position:absolute;left:0;right:0;top:0;height:2px}
+.side.us::before{background:linear-gradient(90deg,transparent,var(--rad),transparent)}.side.them::before{background:linear-gradient(90deg,transparent,var(--dire),transparent)}
+.side::after{content:none!important}
+.side h2{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:0;text-transform:none;margin-bottom:8px}
+.side.us h2{color:var(--rad)}.side.them h2{color:var(--dire)}
+.side h2 em{font-family:var(--disp);opacity:.55}
+.seam{display:none!important}
+.slot{background:var(--s2)!important;border:1px dashed var(--hair2)!important;border-radius:12px!important;min-height:44px}
+.slot.full{border:1px solid var(--hair)!important;background:var(--s2)!important;box-shadow:none!important}
+.side.us .slot.full{box-shadow:inset 3px 0 0 var(--rad)!important}.side.them .slot.full{box-shadow:inset 3px 0 0 var(--dire)!important}
+.slot .por,.slot img{border-radius:8px}
+/* батырмалар мен чиптер */
+.btn{background:var(--s2)!important;border:1px solid var(--hair2)!important;color:var(--txt)!important;border-radius:var(--r2)!important;font-weight:600;letter-spacing:0;box-shadow:none!important;text-shadow:none!important;
+  transition:transform .3s var(--ease),background .2s}
+.btn:active{transform:scale(.97)!important}
+.btn.gold,.chip.gold{background:var(--gold)!important;color:#1A1204!important;border-color:transparent!important;box-shadow:0 8px 24px -10px rgba(240,185,74,.7)!important}
+.chip{background:var(--s2)!important;border:1px solid var(--hair)!important;color:var(--dim)!important;font-weight:500;box-shadow:none!important;text-shadow:none!important}
+.chip.on{background:var(--txt)!important;color:#0B0D12!important;border-color:transparent!important;box-shadow:none!important}
+.mref{background:var(--s2)!important;color:var(--txt)!important;border:1px solid var(--hair2)!important;box-shadow:none!important;font-weight:600}
+.mref i{color:var(--gold)}
+/* ұсыныс жолдары */
+.rec{padding:10px 12px!important;border-radius:16px!important;margin-bottom:8px}
+.rec .por{border-radius:10px;width:64px;height:36px}
+.rec .nm{font-weight:600;font-size:14px}
+.rec .val{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:-.02em}
+.rec .bar{background:var(--s3);height:4px}
+.imba{background:linear-gradient(90deg,#F0B94A,#FFD887)!important;color:#1A1204!important;-webkit-text-fill-color:#1A1204;box-shadow:none!important;border-radius:6px;padding:0 5px}
+/* жеңіс картасы */
+.win .wl b{font-family:var(--disp);font-weight:700;font-size:30px;letter-spacing:-.03em}
+.win .wl span{font-size:11px;letter-spacing:.08em}
+.win .wl .r,.win .wl .d{text-shadow:none!important}
+.wbar{height:8px!important;border:0!important;background:rgba(251,106,91,.85)!important;box-shadow:none!important;border-radius:99px!important}
+.wbar i{background:var(--rad)!important;box-shadow:none!important;border-radius:99px 0 0 99px}
+.wbar em{width:3px!important;background:var(--txt)!important;box-shadow:0 0 0 3px var(--bg)!important}
+/* мәзір */
+.tabs{background:rgba(17,19,25,.96)!important;border:1px solid var(--hair)!important;border-radius:22px!important;box-shadow:var(--sh2)!important}
+.tabind{background:var(--txt)!important;box-shadow:none!important;border-radius:16px}
+.tab{color:var(--mute)!important;font-family:var(--body);font-weight:600;letter-spacing:0;text-transform:none}
+.tab.on{color:#0B0D12!important}
+/* тир, MMR, т.б. */
+.tl{font-family:var(--disp);box-shadow:none!important;border-radius:12px!important}
+.tS .tl{background:var(--gold)!important;color:#1A1204}.tA .tl{background:var(--rad)!important;color:#05140D}.tB .tl{background:var(--blue)!important;color:#08142B}.tC .tl{background:var(--s3)!important;color:var(--dim)}
+.clk{font-family:var(--disp);font-weight:700;letter-spacing:-.03em;text-shadow:none}
+.cki b,.mhr span,.itm b,.lnh em,.hgh em{font-family:var(--disp);font-weight:600}
+.cb2{border-color:var(--hair2)!important}.cki.on .cb2{background:var(--gold)!important;border-color:transparent!important}
+.ckb i{background:var(--gold)!important}
+.ib7{background:var(--gold)!important;color:#1A1204}.ib7.up{background:var(--rad)!important;color:#05140D}.ib7.dn{background:var(--dire)!important;color:#fff}
+.hgt b{font-family:var(--disp);font-weight:600;font-size:18px;color:var(--txt)}
+.hgt img,.mhr img,.ptb img{box-shadow:none!important}
+.hgh,.hgo,.ptb span,.cvc{background:var(--s2)!important;border:1px solid var(--hair)!important}
+.cmrow{background:var(--s1)!important;border:1px solid var(--hair)!important}
+#toast{background:var(--s3)!important;border:1px solid var(--hair2)!important;border-left:0!important;border-radius:14px!important;box-shadow:var(--sh2)!important}
+.sheet .box{background:var(--s1)!important;border-top:1px solid var(--hair2)!important;border-radius:24px 24px 0 0!important}
+input[type=search],input[type=text],#hgQ,#cmQ{background:var(--s2)!important;border:1px solid var(--hair)!important;border-radius:12px!important}
+.lead.b{background:rgba(251,106,91,.08)}.lead.g{background:rgba(52,211,153,.08)}
+/* ЖЫЛДАМДЫҚ: экраннан тыс бөліктерді салмау, суреттер асинхронды */
+#recs .rec,#ideal,#pairs,#itTeam,#tiers,#life,#chk,#myh,#p42a,#hguide{content-visibility:auto;contain-intrinsic-size:auto 120px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
@@ -766,7 +805,7 @@ try{ if(sessionStorage.getItem('d2s')) document.getElementById('splash').classNa
 </div>
 
 <script>
-const V='6.6';
+const V='7.0';
 const CDN='https://cdn.cloudflare.steamstatic.com';
 const API='https://api.opendota.com/api';
 const IMG=n=>CDN+'/apps/dota2/images/dota_react/items/'+n+'.png';
@@ -1177,7 +1216,7 @@ Object.assign(I18N.en,{"Нақты жинақ":"Actual builds","басып бе�
 Object.assign(I18N.ru,{"Мета":"Мета","Ойын таймері":"Таймер игры","горнда баста":"запусти на горне","Мета 7.42":"Мета 7.42","басып командаға қос":"нажми — добавить в команду","Саппорт":"Саппорт","⤴ Драфтпен бөлісу":"⤴ Поделиться драфтом","✕ Тазалау":"✕ Очистить","Драфт тазаланды":"Драфт очищен","Сілтеме көшірілді":"Ссылка скопирована","Драфт ашылды":"Драфт открыт","Күш руна":"Руна силы","Bounty руна":"Руна богатства","Wisdom руна":"Руна мудрости","Лотос":"Лотос","Күн":"День","Түн":"Ночь","Терзатель (Greater Horn)":"Терзатель (Greater Horn)","Aegis бітеді":"Aegis истекает","Рошан — ерте уақыт":"Рошан — раннее время","Рошан — соңғы уақыт":"Рошан — позднее время","Рошан өлді":"Рошан убит","Тоқтату":"Стоп","▶ Горн — бастау (0:00)":"▶ Горн — старт (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"За 15 с до события — вибрация и уведомление. Если время расходится с игрой — ±10с.","Қарсылас не жинайды":"Что собирает враг","Команда толы":"Команда полная"});
 Object.assign(I18N.en,{"Мета":"Meta","Ойын таймері":"Game timer","горнда баста":"start at the horn","Мета 7.42":"7.42 meta","басып командаға қос":"tap to add to team","Саппорт":"Support","⤴ Драфтпен бөлісу":"⤴ Share draft","✕ Тазалау":"✕ Clear","Драфт тазаланды":"Draft cleared","Сілтеме көшірілді":"Link copied","Драфт ашылды":"Draft opened","Күш руна":"Power rune","Bounty руна":"Bounty rune","Wisdom руна":"Wisdom rune","Лотос":"Lotus","Күн":"Day","Түн":"Night","Aegis бітеді":"Aegis expires","Рошан — ерте уақыт":"Roshan — earliest","Рошан — соңғы уақыт":"Roshan — latest","Рошан өлді":"Roshan died","Тоқтату":"Stop","▶ Горн — бастау (0:00)":"▶ Horn — start (0:00)","Оқиғадан 15 сек бұрын діріл мен хабар. Уақыт ойыннан қашықтаса — ±10с.":"Vibration + alert 15s before each event. Off from game clock? Use ±10s.","Қарсылас не жинайды":"Enemy builds","Команда толы":"Team is full"});
 Object.assign(I18N.ru,{"Ойын жоспары":"План игры","Басты қауіп:":"Главная угроза:","драка басында соны фокус қыл немесе бірінші байла.":"в начале драки фокусь его или контроль первым.","0–20 мин":"0–20 мин","20–35 мин":"20–35 мин","35+ мин":"35+ мин",
-"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Твоя сила — ранняя игра: 10–20 мин гангайте впятером, на 15:00 забирайте Терзателя и пушьте с супер-крипами. Старайтесь закончить до 30 минуты.",
+"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да супер-криптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Твоя сила — ранняя игра: 10–20 мин гангайте впятером, на 15:00 забирайте Терзателя и пушьте с супер-крипами. Старайтесь закончить до 30 минуты.",
 "Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.":"Твоя сила — поздняя игра: безопасный фарм, избегай ранних драк, защищай вышки. После 35 минуты решай через Рошана и Aegis.",
 "Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.":"Твоя сила — мидгейм: собери 1–2 ключевых предмета (Blink, BKB) к 20 минуте, ищи драки на 20–35 минуте, забирай Рошана.",
 "Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"Нет инициации — Blink кому-то из героев или возьми Magnus/Tidehunter/Enigma.",
@@ -1186,7 +1225,7 @@ Object.assign(I18N.ru,{"Ойын жоспары":"План игры","Басты
 "Тек сиқыр зияны — қарсылас BKB/Pipe алса әлсірейсің: кеш ойынды созба.":"Только магический урон — BKB/Pipe врага ослабят: не затягивай игру.",
 "Итеретін герой жоқ — мұнараны Терзатель мүйізімен (Greater Horn) және смокпен бұз.":"Нет пушеров — ломай вышки с Greater Horn от Терзателя и через смок.","Оған қарсы:":"Против него:","алтын":"золота"});
 Object.assign(I18N.en,{"Ойын жоспары":"Game plan","Басты қауіп:":"Main threat:","драка басында соны фокус қыл немесе бірінші байла.":"focus or disable him first in fights.",
-"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Early game is yours: group and gank at 10–20 min, take Tormentor at 15:00 and push with megacreeps. Try to end before 30 min.",
+"Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да супер-криптермен итер. 30 минутқа дейін аяқтауға тырыс.":"Early game is yours: group and gank at 10–20 min, take Tormentor at 15:00 and push with megacreeps. Try to end before 30 min.",
 "Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.":"Late game is yours: farm safely, avoid early fights, defend towers. After 35 min decide it with Roshan and Aegis.",
 "Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.":"Mid game is yours: get 1–2 key items (Blink, BKB) by 20 min, look for fights at 20–35 min, take Roshan.",
 "Бастама жоқ — Blink алатын геройға Blink, не Magnus/Tidehunter/Enigma ал.":"No initiation — get a Blink or pick Magnus/Tidehunter/Enigma.","Стан/байлау аз — Rod of Atos, Scythe of Vyse не Abyssal Blade қажет.":"Little control — get Rod of Atos, Scythe of Vyse or Abyssal Blade.",
@@ -2128,7 +2167,7 @@ function renderPlan(){
   if(me.length<2&&!(me.length&&fs.length)){ box.innerHTML=''; return; }
   const a=curve(me), b=curve(fs), ph=['0–20 мин','20–35 мин','35+ мин'];
   const d=a.map((x,i)=>x-b[i]), best=d.indexOf(Math.max(...d));
-  const plan=best===0?'Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да мегакриптермен итер. 30 минутқа дейін аяқтауға тырыс.'
+  const plan=best===0?'Ерте ойын сенікі: 10–20 мин топ болып ганк жаса, 15:00-де Терзательді ал да супер-криптермен итер. 30 минутқа дейін аяқтауға тырыс.'
     :best===2?'Кеш ойын сенікі: линияда қауіпсіз фарм, ерте драканы болдырма, мұнараларды қорға. 35+ минутта Рошан мен Aegis-пен шеш.'
     :'Орта ойын сенікі: 1–2 негізгі затыңды (Blink, BKB) 20 минутқа жинап, 20–35 минут аралығында драка іздеп, Рошанды ал.';
   // драфт кемшілігі

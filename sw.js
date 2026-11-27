@@ -1,5 +1,5 @@
 /* Dota 2 Pick — service worker (автожаңарту) */
-const V = '6.6';
+const V = '7.0';
 const C = 'd2pick-' + V;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './skills.json'];
 
@@ -15,7 +15,7 @@ self.addEventListener('message', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))
+      .then(ks => Promise.all(ks.filter(k => k !== C && k !== 'd2pick-assets').map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -23,7 +23,15 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  if (u.origin !== location.origin) return;          // API мен суреттер — браузердің өзіне
+  // герой/зат суреттері мен шрифттер — бір рет жүктеп, телефонда сақтаймыз (cache-first) → қосымша лезде ашылады
+  if (/steamstatic\.com$|fonts\.(googleapis|gstatic)\.com$/.test(u.hostname)) {
+    e.respondWith(caches.open('d2pick-assets').then(c => c.match(e.request).then(hit => hit || fetch(e.request).then(r => {
+      if (r && (r.ok || r.type === 'opaque')) c.put(e.request, r.clone()).catch(() => {});
+      return r;
+    }).catch(() => hit))));
+    return;
+  }
+  if (u.origin !== location.origin) return;          // API — браузердің өзіне
   if (!u.protocol.startsWith('http')) return;
 
   // әрқашан алдымен желі: жаңа патч шықса, бірден жаңасы келеді
